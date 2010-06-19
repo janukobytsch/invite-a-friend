@@ -412,7 +412,7 @@ function insert_data_060($action, $version)
 				$sql_ary[] = array('config_name' => 'remove_newly_registered', 	'config_value' => 1);
 				$sql_ary[] = array('config_name' => 'invite_require_activation','config_value' => 0);
 				$sql_ary[] = array('config_name' => 'invite_multiple', 			'config_value' => 1);
-				$sql_ary[] = array('config_name' => 'prevent_abuse', 			'config_value' => 1);
+				$sql_ary[] = array('config_name' => 'prevent_abuse', 			'config_value' => 0);
 				$sql_ary[] = array('config_name' => 'invite_confirm_code', 		'config_value' => 1);
 				$sql_ary[] = array('config_name' => 'set_cookie', 				'config_value' => 1);
 				$sql_ary[] = array('config_name' => 'enable_email_identification','config_value' => 1);
