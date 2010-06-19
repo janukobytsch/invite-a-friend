@@ -3,7 +3,7 @@
 * @author Bycoja bycoja@web.de
 *
 * @package acp
-* @version $Id: acp_invite.php 053 2009-11-24 22:35:59GMT Bycoja $
+* @version $Id: acp_invite.php 054 2009-11-28 14:41:59GMT Bycoja $
 * @copyright (c) 2008 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -22,7 +22,7 @@ if (!defined('IN_PHPBB'))
 */
 class acp_invite_info
 {
-	var $version 	= '0.5.3';
+	var $version 	= '0.5.4';
 	var $module		= array(
 		'acp_settings'	=> 'ACP_INVITE',
 		'acp_log'		=> 'ACP_INVITE_LOG',
@@ -120,6 +120,9 @@ class acp_invite_info
 			'enable'					=> 1,
 			'enable_key'				=> 1,
 			'key_group'					=> 2,
+			'key_group_default'			=> 1,
+			'remove_newly_registered'	=> 1,
+			'set_cookie'				=> 1,
 			'confirm'					=> 2,
 			'confirm_method'			=> 2,
 			'invite_require_activation'	=> 3,
@@ -134,11 +137,14 @@ class acp_invite_info
 			'limit_invite_user'			=> 500,
 			'limit_invite_user_posts'	=> 0,
 			'limit_invite_user_topics'	=> 0,
+			'autohide_valid_key'		=> 1,
 			'display_navigation'		=> 1,
 			'display_registration'		=> 1,
+			'display_t_inviter'			=> 0,
 			'display_t_invite'			=> 1,
 			'display_t_register'		=> 1,
 			'display_t_name'			=> 0,
+			'display_p_inviter'			=> 1,
 			'display_p_invite'			=> 1,
 			'display_p_register'		=> 1,
 			'display_p_name'			=> 1,
@@ -380,7 +386,7 @@ class acp_invite_info
 	/*
 	* UNINSTALL SQL
 	*
-	DROP TABLE `phpbb_invite_config` ,`phpbb_invite_log` ,`phpbb_invite_message` ;
+	DROP TABLE `phpbb_invite_config` ,`phpbb_invite_log` ;
 	DELETE FROM `phpbb_acl_options` WHERE `auth_option` ='u_send_invite' LIMIT 1 ;
 	DELETE FROM `phpbb_config` WHERE CONVERT( `config_name` USING utf8 ) = 'invite_version' LIMIT 1 ;
 	DELETE FROM `phpbb_modules` WHERE `module_langname` = 'ACP_INVITE';

@@ -3,7 +3,7 @@
 * @author Bycoja bycoja@web.de
 *
 * @package phpBB3
-* @version $Id: functions_invite.php 053 2009-11-24 22:35:59GMT Bycoja $
+* @version $Id: functions_invite.php 054 2009-11-28 14:41:59GMT Bycoja $
 * @copyright (c) 2008 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -31,7 +31,7 @@ $INVITE_MESSAGE_TYPE = array(
 */              
 class invite
 {
-	var $version = '0.5.3';
+	var $version = '0.5.4';
 	var $INVITE_MESSAGE_TYPE = array(
 			'invite'	=> 0,
 			'confirm'	=> 1,
@@ -171,6 +171,17 @@ class invite
 
 			phpbb_chmod($destination, CHMOD_READ | CHMOD_WRITE);
 		}
+	}
+
+	/**
+	* function set_cookie
+	* Sets a cookie containing the registration key
+	*/
+	function set_cookie($key)
+	{
+		global $user;
+
+		$user->set_cookie('reg_key', $key, 0); // Session cookie
 	}
 
 	/**
@@ -535,23 +546,30 @@ class invite
 		}
 		$db->sql_freeresult($result);
 
-		// Add user to group
-		if ($this->config['enable_key'] == 2)
+		// Group handling
+		if ($this->config['enable_key'] == 2 && $this->valid_key($key) && !empty($key))
 		{
-			/**
-			* if ($this->config['key_group_only'] == 1)
-			* {
-			* 	$db->sql_query('DELETE FROM ' . USER_GROUP_TABLE . ' WHERE user_id = ' . $register_user_id);
-			* }
-			*/
+			$sql = 'SELECT group_id
+				FROM ' . GROUPS_TABLE . "
+				WHERE group_name = 'NEWLY_REGISTERED'
+					AND group_type = " . GROUP_SPECIAL;
+			$result = $db->sql_query($sql);
+			$newly_group_id = (int) $db->sql_fetchfield('group_id');
+			$db->sql_freeresult($result);
+		
+			if ($this->config['remove_newly_registered'] == 1 && $this->config['key_group'] != $newly_group_id)
+			{
+				remove_newly_registered($register_user_id);
+			}
 
-			$sql_ary = array(
-				'user_id'		=> (int) $register_user_id,
-				'group_id'		=> (int) $this->config['key_group'],
-				'group_leader'	=> 0,
-				'user_pending'	=> 0,
-			);
-			$db->sql_query('INSERT INTO ' . USER_GROUP_TABLE . $db->sql_build_array('INSERT', $sql_ary));
+			if ($this->config['key_group_default'])
+			{
+				group_user_add($this->config['key_group'], $register_user_id, false, false, true);
+			}
+			else
+			{
+				group_user_add($this->config['key_group'], $register_user_id);
+			}
 		}
 
 		// Send confirmation
@@ -638,9 +656,9 @@ class invite
 		if ($mode == 'log')
 		{
 			$sql = "SELECT l.*, u.username, u.username_clean, u.user_colour
-			FROM " . LOG_TABLE . " l, " . USERS_TABLE . " u
-			WHERE l.log_id = " . (int) $log_id . "
-				AND u.user_id = l.user_id";
+				FROM " . LOG_TABLE . " l, " . USERS_TABLE . " u
+				WHERE l.log_id = " . (int) $log_id . "
+					AND u.user_id = l.user_id";
 		}
 		else
 		{
@@ -657,6 +675,14 @@ class invite
 			);
 		}
 		$db->sql_freeresult($result);
+
+		// Inviter
+		$sql = 'SELECT invite_user_id FROM ' . INVITE_LOG_TABLE . ' WHERE register_user_id = ' . (int) $user_id;
+		$result = $db->sql_query($sql);
+		$inviter = (int) $db->sql_fetchfield('invite_user_id');
+		$db->sql_freeresult($result);
+
+		$data['inviter'] = ($inviter) ? get_username_string('full', $inviter, $this->user_return_data($inviter, 'user_id', 'username'), $this->user_return_data($inviter, 'user_id', 'user_colour'), false, $profile_url) : '';
 
 		// Invitations sent
 		$sql	= 'SELECT COUNT(log_id) as invitations FROM ' . INVITE_LOG_TABLE . ' WHERE invite_user_id = ' . (int) $data['user_id'];
@@ -721,15 +747,18 @@ class invite
 		$info = $this->get_profile_info('', 'profile', $poster_id);
 
 		$invite_row = array(
+			'POSTER_INVITE_INVITER'		=> $info['inviter'],
 			'POSTER_INVITE_INVITE'		=> $info['invitations'],
 			'POSTER_INVITE_REGISTER'	=> $info['registrations'],
 			'POSTER_INVITE_NAME'		=> $info['reg_users'],
 		);
 
 		$template->assign_vars(array(
+			'S_T_DISPLAY_INVITER'	=> ($this->config['display_t_inviter'] && !empty($info['inviter'])) ? true : false,
 			'S_T_DISPLAY_INVITE'	=> $this->config['display_t_invite'],
 			'S_T_DISPLAY_REGISTER'	=> $this->config['display_t_register'],
 			'S_T_DISPLAY_NAME'		=> $this->config['display_t_name'],
+			'S_P_DISPLAY_INVITER'	=> ($this->config['display_p_inviter'] && !empty($info['inviter'])) ? true : false,
 			'S_P_DISPLAY_INVITE'	=> $this->config['display_p_invite'],
 			'S_P_DISPLAY_REGISTER'	=> $this->config['display_p_register'],
 			'S_P_DISPLAY_NAME'		=> $this->config['display_p_name'],

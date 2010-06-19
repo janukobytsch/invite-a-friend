@@ -19,7 +19,7 @@
 			</author>
 		</author-group>
 
-		<mod-version>0.5.3</mod-version>
+		<mod-version>0.5.4</mod-version>
 
 		<installation>
 			<level>easy</level>
@@ -28,6 +28,17 @@
 		</installation>
 
 		<history>
+			<entry>
+				<date>2009-11-28</date>
+				<rev-version>0.5.4 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Usage of cookies</change>
+					<change>[Added] Profile field: "Invited by"</change>
+					<change>[Added] Autohide key input field</change>
+					<change>[Added] Extended group options</change>
+					<change>[Fixed] User in the same group twice</change>
+				</changelog>
+			</entry>
 			<entry>
 				<date>2009-11-24</date>
 				<rev-version>0.5.3 [Beta]</rev-version>
@@ -191,7 +202,15 @@ define('LOG_INVITE', 				4);]]></action>
 
 		$invite			= new invite();
 		$register_key	= request_var('key', '', true);
-		$url_key 		= ($register_key) ? 'key=' . $register_key . '&amp;' : '';]]></action>
+
+		if (!empty($register_key) && $invite->valid_key($register_key) && $invite->config['set_cookie'])
+		{
+			$invite->set_cookie($register_key);
+		}
+		$cookie_key		= (isset($_COOKIE[$config['cookie_name'] . '_reg_key'])) ? $_COOKIE[$config['cookie_name'] . '_reg_key'] : '';
+		$register_key 	= (!empty($cookie_key)) ? $cookie_key : $register_key;
+		$url_key 		= (!empty($register_key)) ? 'key=' . $register_key . '&amp;' : '';
+]]></action>
 			</edit>
 
 				<edit>
@@ -390,7 +409,7 @@ define('LOG_INVITE', 				4);]]></action>
 				<action type="replace-with"><![CDATA[			'S_UCP_ACTION'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", $url_key . 'mode=register'),
 
 			'REGISTER_KEY'				=> $register_key,
-			'S_DISPLAY_REGISTER_KEY'	=> (!$invite->config['enable']) ? false : (($invite->config['display_registration']) ? true : false),
+			'S_DISPLAY_REGISTER_KEY'	=> (!empty($register_key) && $invite->valid_key($register_key) && $invite->config['autohide_valid_key']) ? false : ((!$invite->config['enable']) ? false : (($invite->config['display_registration']) ? true : false)),
 			'S_ENABLE_KEY_OPTIONAL'		=> (!$invite->config['enable']) ? false : (($invite->config['enable_key'] == OPTIONAL) ? true : false),]]></action>
 			</edit>
 		</open>
@@ -418,23 +437,12 @@ define('LOG_INVITE', 				4);]]></action>
 			</edit>
 		</open>
 
-		<open src="styles/prosilver/template/overall_header.html">
-			<edit>
-				<find><![CDATA[					<a href="{U_SEARCH_SELF}">{L_SEARCH_SELF}</a>]]></find>
-				<action type="after-add"><![CDATA[					<!-- IF S_DISPLAY_INVITE --> &bull; <a href="{U_INVITE_A_FRIEND}">{L_ACP_INVITE}</a><!-- ENDIF -->]]></action>
-			</edit>
-		</open>
-
-		<open src="styles/prosilver/template/viewtopic_body.html">
-			<edit>
-				<find><![CDATA[		<!-- IF postrow.POSTER_FROM --><dd><strong>{L_LOCATION}:</strong> {postrow.POSTER_FROM}</dd><!-- ENDIF -->]]></find>
-				<action type="after-add"><![CDATA[		<!-- IF S_T_DISPLAY_INVITE --><br /><dd><strong>{L_DISPLAY_INVITE}:</strong> {postrow.POSTER_INVITE_INVITE}</dd><!-- ENDIF -->
-		<!-- IF S_T_DISPLAY_REGISTER --><dd><strong>{L_DISPLAY_REGISTER}:</strong> {postrow.POSTER_INVITE_REGISTER}</dd><!-- ENDIF -->
-		<!-- IF postrow.POSTER_INVITE_NAME and S_T_DISPLAY_NAME --><dd><strong>{L_DISPLAY_NAME}:</strong> {postrow.POSTER_INVITE_NAME}</dd><!-- ENDIF -->]]></action>
-			</edit>
-		</open>
-
 		<open src="styles/prosilver/template/memberlist_view.html">
+			<edit>
+				<find><![CDATA[			<dt>{L_VISITED}:</dt> <dd>{VISITED}</dd>]]></find>
+				<action type="after-add"><![CDATA[			<!-- IF POSTER_INVITE_INVITER and S_P_DISPLAY_INVITER --><dt>{L_DISPLAY_INVITER}:</dt> <dd>{POSTER_INVITE_INVITER}</dd><!-- ENDIF -->]]></action>
+			</edit>
+
 			<edit>
 				<find><![CDATA[			<!-- IF S_SHOW_ACTIVITY and POSTS -->
 				<dt>{L_ACTIVE_IN_FORUM}:</dt> <dd><!-- IF ACTIVE_FORUM --><strong><a href="{U_ACTIVE_FORUM}">{ACTIVE_FORUM}</a></strong><br />({ACTIVE_FORUM_POSTS} / {ACTIVE_FORUM_PCT})<!-- ELSE --> - <!-- ENDIF --></dd>
@@ -443,6 +451,27 @@ define('LOG_INVITE', 				4);]]></action>
 				<action type="after-add"><![CDATA[			<!-- IF S_P_DISPLAY_INVITE --><br /><dt>{L_DISPLAY_INVITE}:</dt> <dd>{POSTER_INVITE_INVITE}</dd><!-- ENDIF -->
 			<!-- IF S_P_DISPLAY_REGISTER --><dt>{L_DISPLAY_REGISTER}:</dt> <dd>{POSTER_INVITE_REGISTER}</dd><!-- ENDIF -->
 			<!-- IF POSTER_INVITE_NAME and S_P_DISPLAY_NAME --><dt>{L_DISPLAY_NAME}:</dt> <dd>{POSTER_INVITE_NAME}</dd><!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+
+		<open src="styles/prosilver/template/viewtopic_body.html">
+			<edit>
+				<find><![CDATA[		<!-- IF postrow.POSTER_JOINED --><dd><strong>{L_JOINED}:</strong> {postrow.POSTER_JOINED}</dd><!-- ENDIF -->]]></find>
+				<action type="after-add"><![CDATA[		<!-- IF postrow.POSTER_INVITE_INVITER and S_T_DISPLAY_INVITER --><dd><strong>{L_DISPLAY_INVITER}:</strong> {postrow.POSTER_INVITE_INVITER}</dd><!-- ENDIF -->]]></action>
+			</edit>
+
+			<edit>
+				<find><![CDATA[		<!-- IF postrow.POSTER_FROM --><dd><strong>{L_LOCATION}:</strong> {postrow.POSTER_FROM}</dd><!-- ENDIF -->]]></find>
+				<action type="after-add"><![CDATA[		<!-- IF S_T_DISPLAY_INVITE --><br /><dd><strong>{L_DISPLAY_INVITE}:</strong> {postrow.POSTER_INVITE_INVITE}</dd><!-- ENDIF -->
+		<!-- IF S_T_DISPLAY_REGISTER --><dd><strong>{L_DISPLAY_REGISTER}:</strong> {postrow.POSTER_INVITE_REGISTER}</dd><!-- ENDIF -->
+		<!-- IF postrow.POSTER_INVITE_NAME and S_T_DISPLAY_NAME --><dd><strong>{L_DISPLAY_NAME}:</strong> {postrow.POSTER_INVITE_NAME}</dd><!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+
+		<open src="styles/prosilver/template/overall_header.html">
+			<edit>
+				<find><![CDATA[					<a href="{U_SEARCH_SELF}">{L_SEARCH_SELF}</a>]]></find>
+				<action type="after-add"><![CDATA[					<!-- IF S_DISPLAY_INVITE --> &bull; <a href="{U_INVITE_A_FRIEND}">{L_ACP_INVITE}</a><!-- ENDIF -->]]></action>
 			</edit>
 		</open>
 

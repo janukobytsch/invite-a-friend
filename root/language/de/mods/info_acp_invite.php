@@ -4,7 +4,7 @@
 * info_acp_invite [Deutsch — Du]
 *
 * @package language
-* @version $Id: info_acp_invite.php 053 2009-11-24 22:35:59GMT Bycoja $
+* @version $Id: info_acp_invite.php 054 2009-11-28 14:41:59GMT Bycoja $
 * @copyright (c) 2008 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -60,6 +60,12 @@ $lang = array_merge($lang, array(
 	'SETTINGS_ENABLE_KEY'						=> 'Registrierungs-Schlüssel anfordern',
 	'SETTINGS_ENABLE_KEY_EXPLAIN'				=> 'Einen Registrierungs-Schlüssel, der zuvor von einem Freund versendet wurde, zur Registrierung neuer Benutzer anfordern.',
 	'SETTINGS_KEY_GROUP_EXPLAIN'				=> 'Benutzer, die einen Registrierungs-Schlüssel angeben, werden automatisch zu der hier ausgewählten Benutzergruppe hinzugefügt.',
+	'SETTINGS_KEY_GROUP_DEFAULT'				=> 'Ausgewählte Gruppe als Standard setzen',
+	'SETTINGS_KEY_GROUP_DEFAULT_EXPLAIN'		=> 'Wenn diese Funktion aktiviert ist, werden Benutzer, die einen gültigen Registrierungs-Schlüssel angeben, nicht nur in die ausgewählte Gruppe aufgenommen, sondern diese ist zugleich ihre Standardgruppe.',
+	'SETTINGS_REMOVE_NEWLY_REGISTERED'			=> 'Aus kürzlich registrierte Benutzer entfernen',
+	'SETTINGS_REMOVE_NEWLY_REGISTERED_EXPLAIN'	=> 'Benutzer, die einen gültigen Registrierungs-Schlüssel angeben, werden aus der Gruppe der kürzlich registrierten Benutzer entfernt.',
+	'SETTINGS_SET_COOKIE'						=> 'Cookie setzen',
+	'SETTINGS_SET_COOKIE_EXPLAIN'				=> 'Wenn diese Funktion aktiviert ist, wird ein Browser-Cookie mit dem Registrierungs-Schlüssel gesetzt, sodass ein eingeladener Freund das Board vor der Registrierung erkunden kann.',
 	'SETTINGS_CONFIRM'							=> 'Bestätigung versenden',
 	'SETTINGS_CONFIRM_EXPLAIN'					=> 'Diese Einstellung legt fest, ob eine Bestätigung an Benutzer, deren eingeladene Freunde sich registrieren, versendet wird.',
 	'SETTINGS_ZEBRA'							=> 'Freundesliste',
@@ -90,12 +96,15 @@ $lang = array_merge($lang, array(
 	'INVITATIONS'								=> 'Einladungen',
 
 	'DISPLAY_OPTIONS'							=> 'Anzeige-Optionen',
+	'SETTINGS_AUTOHIDE_VALID_KEY'				=> 'Eingabefeld automatisch verstecken',
+	'SETTINGS_AUTOHIDE_VALID_KEY_EXPLAIN'		=> 'Wenn der übergebene Registrierungs-Schlüssel gültig ist, wird dessen Eingabefeld automatisch ausgeblendet.',
 	'SETTINGS_DISPLAY_NAVIGATION'				=> 'Navigations-Link anzeigen',
 	'SETTINGS_DISPLAY_NAVIGATION_EXPLAIN'		=> 'Einen Link zum Verfassen von Einladungen im Persönlichen Bereich in der oberen Navigation angezeigen.',
 	'SETTINGS_DISPLAY_REGISTRATION'				=> 'Eingabefeld anzeigen',
 	'SETTINGS_DISPLAY_REGISTRATION_EXPLAIN'		=> 'Das Eingabefeld für Registrierungs-Schlüssel bei der Registrierung anzeigen.',
 	'SETTINGS_PROFILE_FIELDS'					=> 'Profilfelder anzeigen',
 	'SETTINGS_PROFILE_FIELDS_EXPLAIN'			=> 'Die angegebenen Profilfelder an dem hier ausgewählten Ort anzeigen.',	
+	'DISPLAY_INVITER'							=> 'Eingeladen von',
 	'DISPLAY_INVITE'							=> 'Versendete Einladungen',
 	'DISPLAY_REGISTER'							=> 'Geworbene Benutzer',
 	'DISPLAY_NAME'								=> 'Geworbene Benutzer (Namen)',

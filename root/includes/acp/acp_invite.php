@@ -3,7 +3,7 @@
 * @author Bycoja bycoja@web.de
 *
 * @package acp
-* @version $Id: acp_invite.php 053 2009-11-24 22:35:59GMT Bycoja $
+* @version $Id: acp_invite.php 054 2009-11-28 14:41:59GMT Bycoja $
 * @copyright (c) 2008 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -368,6 +368,7 @@ class acp_invite
 
 			case 'profile_type':
 				$array = array(
+					'DISPLAY_INVITER'	=> 'inviter',
 					'DISPLAY_INVITE'	=> 'invite',
 					'DISPLAY_REGISTER'	=> 'register',
 					'DISPLAY_NAME'		=> 'name',

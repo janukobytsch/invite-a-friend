@@ -4,7 +4,7 @@
 * info_acp_invite [British English]
 *
 * @package language
-* @version $Id: info_acp_invite.php 053 2009-11-24 22:35:59GMT Bycoja $
+* @version $Id: info_acp_invite.php 054 2009-11-28 14:41:59GMT Bycoja $
 * @copyright (c) 2008 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -60,6 +60,12 @@ $lang = array_merge($lang, array(
 	'SETTINGS_ENABLE_KEY'						=> 'Enable registration keys',
 	'SETTINGS_ENABLE_KEY_EXPLAIN'				=> 'A registration key, which is obtained by a user of this board, is required in order to register.',
 	'SETTINGS_KEY_GROUP_EXPLAIN'				=> 'Users, who enter a registration key, will be added to the selected group automatically.',
+	'SETTINGS_KEY_GROUP_DEFAULT'				=> 'Set selected group to default',
+	'SETTINGS_KEY_GROUP_DEFAULT_EXPLAIN'		=> 'If set to yes, users, who enter a valid registration key, will be not only put into the selected group, but this group also being their default one.',
+	'SETTINGS_REMOVE_NEWLY_REGISTERED'			=> 'Remove from Newly Registered Users',
+	'SETTINGS_REMOVE_NEWLY_REGISTERED_EXPLAIN'	=> 'Users, who enter a valid registration key, will be removed from Newly Registered Users group.',
+	'SETTINGS_SET_COOKIE'						=> 'Set cookie',
+	'SETTINGS_SET_COOKIE_EXPLAIN'				=> 'If set to yes, a cookie containing the registration key will be set up, so the invited user can explore your board before registering.',
 	'SETTINGS_CONFIRM'							=> 'Confirmation',
 	'SETTINGS_CONFIRM_EXPLAIN'					=> 'This determines whether a confirmation will be send to the user whose invited friend registers.',
 	'SETTINGS_ZEBRA'							=> 'Add friend',
@@ -90,12 +96,15 @@ $lang = array_merge($lang, array(
 	'INVITATIONS'								=> 'Invitations',
 
 	'DISPLAY_OPTIONS'							=> 'Display options',
+	'SETTINGS_AUTOHIDE_VALID_KEY'				=> 'Autohide registration key input field',
+	'SETTINGS_AUTOHIDE_VALID_KEY_EXPLAIN'		=> 'If the passed registration key is valid, the input field for registration keys will be hidden automatically.',
 	'SETTINGS_DISPLAY_NAVIGATION'				=> 'Display link in navigation',
 	'SETTINGS_DISPLAY_NAVIGATION_EXPLAIN'		=> 'A link to the User Control Panel (Compose invitation) is displayed in the navigation.',
 	'SETTINGS_DISPLAY_REGISTRATION'				=> 'Display registration keys',
 	'SETTINGS_DISPLAY_REGISTRATION_EXPLAIN'		=> 'The input field for registration keys is displayed while registering.',
 	'SETTINGS_PROFILE_FIELDS'					=> 'Display profile information',
 	'SETTINGS_PROFILE_FIELDS_EXPLAIN'			=> 'The profile information is displayed at the here chosen locations.',	
+	'DISPLAY_INVITER'							=> 'Invited by',
 	'DISPLAY_INVITE'							=> 'Invitations sent',
 	'DISPLAY_REGISTER'							=> 'Registered friends',
 	'DISPLAY_NAME'								=> 'Registered friends (names)',

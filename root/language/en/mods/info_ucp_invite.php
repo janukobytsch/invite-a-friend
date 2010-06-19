@@ -4,7 +4,7 @@
 * info_acp_invite [British English]
 *
 * @package language
-* @version $Id: info_ucp_invite.php 053 2009-11-24 22:35:59GMT Bycoja $
+* @version $Id: info_ucp_invite.php 054 2009-11-28 14:41:59GMT Bycoja $
 * @copyright (c) 2008 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
