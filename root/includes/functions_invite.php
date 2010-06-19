@@ -34,7 +34,7 @@ class invite
 {
 	var $version = '0.6.0';
 	var $INVITE_MESSAGE_TYPE = array('invite' => 0, 'confirm' => 1,);
-		
+
 	var $config;
 	var $message;
 	var $invite_user;

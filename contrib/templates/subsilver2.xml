@@ -7,7 +7,7 @@
 		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
 
 		<title lang="en">Invite A Friend</title>
-		<description lang="en">Invite A Friend is an addition to phpBB3 including invitation features. It enables your users to draw their friends' attention to your board by sending them an invitation e-mail with a registration key attached. Invite A Friend is highly configurable and you cannot only decide whether the attached key is required to register or not, but you can also keep track of who invited whom, limit the amount of invitations and add more social features. Supports Ultimate Points and Cash Mod.</description>
+		<description lang="en">Installing the templates of Invite A Friend for subsilver2 style.</description>
 		<author-notes lang="en">For further information and bug reports please visit <![CDATA[http://www.phpbb.com/community/viewtopic.php?f=70&t=1224005]]></author-notes>
 
 		<author-group>
@@ -158,16 +158,16 @@
 		</history>
 
 		<link-group>
-			<link type="parent" href="../install.xml" lang="en">install.xml</link>
+			<link type="parent" href="../../install.xml" lang="en">install.xml</link>
 		</link-group>
 	</header>
 
 	<action-group>
 		<copy>
-			<file from="/root/styles/subsilver2/template/ucp_invite_invite.html" to="/styles/subsilver2/template/ucp_invite_invite.html" />
+			<file from="root/styles/subsilver2/template/ucp_invite_invite.html" to="styles/subsilver2/template/ucp_invite_invite.html" />
 		</copy>
 
-		<open src="styles/prosilver/template/memberlist_body.html">
+		<open src="styles/subsilver2/template/memberlist_body.html">
 			<edit>
 				<find><![CDATA[<!-- IF S_SHOW_GROUP --><!-- INCLUDE memberlist_group.html --><!-- ENDIF -->]]></find>
 				<action type="after-add"><![CDATA[<!-- IF S_ENABLE_INVITE_FILTER and S_INVITE_FILTER --><h2 class="solo">{PAGE_TITLE_INVITE_SEARCH}</h2><!-- ENDIF -->]]></action>
@@ -202,7 +202,7 @@
 			</edit>
 		</open>
 
-		<open src="styles/prosilver/template/memberlist_search.html">
+		<open src="styles/subsilver2/template/memberlist_search.html">
 			<edit>
 				<find><![CDATA[	<td class="row1"><b class="genmed">{L_AIM}:</b></td>
 	<td class="row2"><input class="post" type="text" name="aim" value="{AIM}" /></td>

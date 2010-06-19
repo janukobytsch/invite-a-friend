@@ -71,7 +71,7 @@ $versions = array(
 			array('u_send_invite', true),
 		),
 
-		// Add role permissions
+		// Add role and group permissions
 		'permission_set' => array(
 			array('ROLE_ADMIN_STANDARD', 'a_invite_settings', 'role'),
 			array('ROLE_ADMIN_STANDARD', 'a_invite_log', 'role'),
@@ -81,6 +81,7 @@ $versions = array(
 			array('ROLE_USER_STANDARD', 'u_send_invite', 'role'),
 			array('ROLE_USER_NOPM', 'u_send_invite', 'role'),
 			array('ROLE_USER_NOAVATAR', 'u_send_invite', 'role'),
+			array('REGISTERED', 'u_send_invite', 'group'),
 		),
 
 		// Add modules

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<!--For security purposes, please check: http
+://www.phpbb.com/mods/ for the latest version of this MOD. Although MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD. No support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
+	<header>
+		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+
+		<title lang="en">Invite A Friend</title>
+		<description lang="en">Updating the German language package for Invite A Friend from 0.5.4 to 0.6.0.</description>
+		<author-notes lang="en">For further information and bug reports please visit <![CDATA[http://www.phpbb.com/community/viewtopic.php?f=70&t=1224005]]></author-notes>
+
+		<author-group>
+			<author>
+				<realname></realname>
+				<email>bycoja@web.de</email>
+				<username>Bycoja</username>
+				<homepage>http://bycoja.bplaced.net</homepage>
+			</author>
+		</author-group>
+
+		<mod-version>0.6.0</mod-version>
+
+		<installation>
+			<level>intermediate</level>
+			<time>1200</time>
+			<target-version>3.0.7-PL1</target-version>
+		</installation>
+
+		<history>
+			<entry>
+				<date>2010-04-02</date>
+				<rev-version>0.6.0 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Advanced profile statistics (percent of total invitations, etc.)</change>
+					<change>[Added] Search for specific actions within the invitation log</change>
+					<change>[Added] Display statistics in memberlist</change>
+					<change>[Added] Search for members by invitation related criteria</change>
+					<change>[Added] Log administrator actions for the invitation log</change>
+					<change>[Added] Advanced limitation options</change>
+					<change>[Added] Invitation mail priority settings</change>
+					<change>[Added] Advanced invitation language settings</change>
+					<change>[Added] Templates module in the ACP</change>
+					<change>[Added] Templates for subjects</change>
+					<change>[Added] List of possible wildcards in templates</change>
+					<change>[Added] Turkish translation (thanks to muiketi)</change>
+					<change>[Added] AutoMOD support</change>
+					<change>[Added] Unified MOD Install Library (UMIL) support</change>
+					<change>[Changed] List of invited users in profile has been removed as you can search for members now</change>
+					<change>[Improved] Translations for better understanding</change>
+					<change>[Improved] Show queue time in the related error message</change>
+					<change>[Improved] Show invitation limit in the related error message</change>
+					<change>[Improved] Invitation form looks more appealing now</change>
+					<change>[Improved] Database queries to increase performance</change>
+					<change>[Fixed] Encode usernames in the registration url</change>
+					<change>[Fixed] Disable the whole modification will actually disable it now</change>
+					<change>[Fixed] Identify users-to-be related to invitations by e-mail-addresses</change>
+					<change>[Fixed] Search for specific username in the invitation log</change>
+					<change>[Fixed] Mutated vowels in e-mails</change>
+					<change>[Fixed] Display an error if the invitation could not be sent</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2009-11-28</date>
+				<rev-version>0.5.4 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Usage of cookies</change>
+					<change>[Added] Profile field: "Invited by"</change>
+					<change>[Added] Autohide key input field</change>
+					<change>[Added] Extended group options</change>
+					<change>[Fixed] User in the same group twice</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2009-11-24</date>
+				<rev-version>0.5.3 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Ultimate Points support</change>
+					<change>[Added] Identify invited users by e-mail address</change>
+					<change>[Added] Several checks for unexpected cases</change>
+					<change>[Changed] Improved key generation</change>
+					<change>[Changed] Code cleanup</change>
+					<change>[Changed] MOD description</change>
+					<change>[Fixed] Broken CAPTCHAs</change>
+					<change>[Fixed] Template system</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2009-05-20</date>
+				<rev-version>0.5.2 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Add users, who enter a registration key, to the selected group</change>
+					<change>[Changed] Create registration keys (even if keys are disabled) to identify friends</change>
+					<change>[Changed] Removed constant 'REGISTER_KEY_DISABLED'</change>
+					<change>[Fixed] Report #020: Messenger vars not parsed in PM</change>
+					<change>[Fixed] Report #019: Missing language vars</change>
+					<change>[Fixed] Report #018: E-mail already taken</change>
+					<change>[Fixed] Report #016: CAPTCHA</change>
+					<change>[Fixed] Report #016: function install(), messages</change>
+					<change>[Fixed] Report #015: function install(), permissions</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2009-04-12</date>
+				<rev-version>0.5.1 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Account activation</change>
+					<change>[Added] Limitation: Topics</change>
+					<change>[Added] Automatically create sql tables, install permissions, ...</change>
+					<change>[Added] Automatically add messages referring to installed languages</change>
+					<change>[Fixed] Report #013: COPPA Bug</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2009-04-08</date>
+				<rev-version>0.5.0 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Compatibility with 'Advanced Points System'</change>
+					<change>[Added] Many options (CAPTCHA, Limitation, ..)</change>
+					<change>[Improved] Rewrote some code</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2008-10-10</date>
+				<rev-version>0.2.2 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Compatibility with 'Cash Mod'</change>
+					<change>[Added] Highly improved log</change>
+					<change>[Added] UCP Module</change>
+					<change>[Fixed] Report #009: [phpBB Debug] Undefined variable: new_user_row</change>
+					<change>[Fixed] Report #008: [phpBB Debug] Undefined variable: invitation_data</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2008-10-06</date>
+				<rev-version>0.2.1 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Optional registration-key</change>
+					<change>[Added] Prohibit multiple registrations</change>
+					<change>[Fixed] Report #007: Empty {USERNAME}</change>
+					<change>[Fixed] Report #006: Missing var</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2008-10-05</date>
+				<rev-version>0.2.0 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Confirmation e-mail</change>
+					<change>[Added] New settings</change>
+					<change>[Added] Log</change>
+					<change>[Fixed] Report #005: Invite yourself</change>
+					<change>[Fixed] Report #004: phpBB Debug</change>
+					<change>[Fixed] Report #003: ACP: Edit Mail</change>
+					<change>[Fixed] Report #002: 'Invite a friend' shown in navigation</change>
+					<change>[Fixed] Report #001: Registration-keys</change>
+				</changelog>
+			</entry>
+		</history>
+
+		<link-group>
+			<link type="parent" href="../update.xml" lang="en">update.xml</link>
+			<link type="parent" href="../../../../install.xml" lang="en">install.xml</link>
+		</link-group>
+	</header>
+
+	<action-group>
+		<copy>
+			<file from="root/language/de/mods/info_acp_invite.php" to="language/de/mods/info_acp_invite.php" />
+			<file from="root/language/de/mods/info_ucp_invite.php" to="language/de/mods/info_ucp_invite.php" />
+			<file from="root/language/de/email/confirm_subject.txt" to="language/de/email/confirm_subject.txt" />
+			<file from="root/language/de/email/confirm_message.txt" to="language/de/email/confirm_message.txt" />
+			<file from="root/language/de/email/invite_subject.txt" to="language/de/email/invite_subject.txt" />
+			<file from="root/language/de/email/invite_message.txt" to="language/de/email/invite_message.txt" />
+		</copy>
+
+		<diy-instructions lang="en">Just copy the language files to the corresponding folder of your phpBB installation.</diy-instructions>
+	</action-group>
+</mod>
