@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<!--For security purposes, please check: http://www.phpbb.com/mods/ for the latest version of this MOD. Although MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD. No support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.0.1.xsd">
+
+<header>
+	<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+	<title lang="en">Invite a friend</title>
+	<description lang="en">This mods enables your users to send emails to their friends and advice them of your board.
+Also enables registration-keys which must be entered to register and can only be obtained by 'Invite a friend'-emails.</description>
+	<author-notes lang="en"></author-notes>
+	<author-group>
+		<author>
+			<realname></realname>
+			<email>bycoja@web.de</email>
+			<username>Bycoja</username>
+			<homepage></homepage>	
+		</author>
+	</author-group>
+	<mod-version>
+		<major>0</major>
+		<minor>1</minor>
+		<revision>0</revision>
+	</mod-version>
+	<installation>
+		<level>easy</level>
+		<time>300</time>
+		
+		<target-version>
+			<target-primary>3.0</target-primary>
+			<target-major allow="exact">3</target-major>
+			<target-minor allow="exact">0</target-minor>
+		</target-version>
+	</installation>
+	
+	<history>
+	</history>
+</header>
+
+<action-group>
+	<copy>
+		<file from="/root/includes/acp/info/acp_invite.php" to="/includes/acp/info/acp_invite.php" />
+		<file from="/root/includes/acp/acp_invite.php" to="/includes/acp/acp_invite.php" />
+		<file from="/root/adm/style/acp_invite.html" to="/adm/style/acp_invite.html" />
+		<file from="/root/includes/functions_invite.php" to="/includes/functions_invite.php" />
+		<file from="/root/invite.php" to="/invite.php" />
+		<file from="/root/language/de/invite.php" to="/language/de/invite.php" />
+		<file from="/root/language/en/invite.php" to="/language/en/invite.php" />
+		<file from="/root/language/de/mods/info_acp_invite.php" to="/language/de/mods/info_acp_invite.php" />
+		<file from="/root/language/en/mods/info_acp_invite.php" to="/language/en/mods/info_acp_invite.php" />
+		<file from="/root/language/de/email/invite.txt" to="/language/de/email/invite.txt" />
+		<file from="/root/language/en/email/invite.txt" to="/language/en/email/invite.txt" />
+		<file from="/root/styles/prosilver/template/invite.html" to="/styles/prosilver/template/invite.html" />
+		<file from="/root/styles/subsilver2/template/invite.html" to="/styles/subsilver2/template/invite.html" />
+	</copy>
+
+	<sql><![CDATA[--
+-- Change the prefix if required!
+--
+
+CREATE TABLE IF NOT EXISTS `phpbb_iaf_config` (
+  `config_id` tinyint(1) unsigned NOT NULL auto_increment,
+  `enable` tinyint(1) unsigned NOT NULL,
+  `auth_key` tinyint(1) unsigned NOT NULL,
+  `send_now` tinyint(1) unsigned NOT NULL,
+  `max_message` mediumint(8) unsigned NOT NULL,
+  `max_subject` mediumint(8) unsigned NOT NULL,
+  `key_min_chars` mediumint(8) unsigned NOT NULL,
+  `key_max_chars` mediumint(8) unsigned NOT NULL,
+  `time` mediumint(8) unsigned NOT NULL,
+  `charset` varchar(250) character set utf8 collate utf8_bin NOT NULL,
+  PRIMARY KEY  (`config_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+--
+-- Change the prefix if required!
+--
+
+INSERT INTO `phpbb_iaf_config` (`config_id`, `enable`, `auth_key`, `send_now`, `max_message`, `max_subject`, `key_min_chars`, `key_max_chars`, `time`, `charset`) VALUES
+(1, 1, 1, 1, 1000, 25, 12, 18, 300, 'abcdefghijkmnpqrstuvwxyz123456789ABCDEFGHIJKLMNPQRSTUVWXYZ');
+
+-- --------------------------------------------------------
+
+--
+-- Change the prefix if required!
+--
+
+CREATE TABLE IF NOT EXISTS `phpbb_iaf_keys` (
+  `key_id` mediumint(8) unsigned NOT NULL auto_increment,
+  `user_id` mediumint(8) unsigned NOT NULL,
+  `auth_key` varchar(40) character set utf8 collate utf8_bin NOT NULL,
+  `key_time` int(11) unsigned NOT NULL,
+  PRIMARY KEY  (`key_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Change the prefix if required!
+--
+
+INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('u_send_iaf', 1, 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Change the prefix if required!
+--
+
+INSERT INTO `phpbb_acl_groups` (  `group_id` ,  `forum_id` ,  `auth_option_id` ,  `auth_role_id` ,  `auth_setting`  )
+VALUES ('1', '0', (SELECT `auth_option_id` FROM `phpbb_acl_options` WHERE `auth_option` = 'u_send_iaf'), '0', '0');
+
+INSERT INTO `phpbb_acl_groups` (  `group_id` ,  `forum_id` ,  `auth_option_id` ,  `auth_role_id` ,  `auth_setting`  )
+VALUES ('2', '0', (SELECT `auth_option_id` FROM `phpbb_acl_options` WHERE `auth_option` = 'u_send_iaf'), '0', '1');
+
+INSERT INTO `phpbb_acl_groups` (  `group_id` ,  `forum_id` ,  `auth_option_id` ,  `auth_role_id` ,  `auth_setting`  )
+VALUES ('3', '0', (SELECT `auth_option_id` FROM `phpbb_acl_options` WHERE `auth_option` = 'u_send_iaf'), '0', '1');
+
+INSERT INTO `phpbb_acl_groups` (  `group_id` ,  `forum_id` ,  `auth_option_id` ,  `auth_role_id` ,  `auth_setting`  )
+VALUES ('4', '0', (SELECT `auth_option_id` FROM `phpbb_acl_options` WHERE `auth_option` = 'u_send_iaf'), '0', '1');
+
+INSERT INTO `phpbb_acl_groups` (  `group_id` ,  `forum_id` ,  `auth_option_id` ,  `auth_role_id` ,  `auth_setting`  )
+VALUES ('5', '0', (SELECT `auth_option_id` FROM `phpbb_acl_options` WHERE `auth_option` = 'u_send_iaf'), '0', '1');
+
+INSERT INTO `phpbb_acl_groups` (  `group_id` ,  `forum_id` ,  `auth_option_id` ,  `auth_role_id` ,  `auth_setting`  )
+VALUES ('6', '0', (SELECT `auth_option_id` FROM `phpbb_acl_options` WHERE `auth_option` = 'u_send_iaf'), '0', '0');]]></sql>
+
+	<open src="includes/constants.php">
+	    <edit>
+	        <find><![CDATA[// Additional tables]]></find>
+	        <action type="after-add"><![CDATA[define('INVITE_KEYS_TABLE',			$table_prefix . 'iaf_keys');
+define('INVITE_CONFIG_TABLE',		$table_prefix . 'iaf_config');]]></action>
+	    </edit>
+	</open>
+	
+	<open src="ucp.php">
+	    <edit>
+			<find><![CDATA[$user->setup('ucp');]]></find>
+	        <action type="replace-with"><![CDATA[$user->setup(array('ucp', 'invite'));]]></action>
+	    </edit>
+	</open>
+	
+	<open src="includes/functions.php">
+		<edit>
+			<find><![CDATA[define('HEADER_INC', true);]]></find>
+	        <action type="after-add"><![CDATA[$user->add_lang('invite');]]></action>
+	    </edit>
+		
+	    <edit>
+			<find><![CDATA['U_RESTORE_PERMISSIONS'	=> ($user->data['user_perm_from'] && $auth->acl_get('a_switchperm')) ? append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=restore_perm') : '',]]></find>
+	        <action type="after-add"><![CDATA['U_INVITE_A_FRIEND'		=> append_sid("{$phpbb_root_path}invite.$phpEx"),]]></action>
+	    </edit>
+	</open>
+	
+	<open src="includes/ucp/ucp_register.php">
+	    <edit>
+			<find><![CDATA[include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);]]></find>
+	        <action type="after-add"><![CDATA[include($phpbb_root_path . 'includes/functions_invite.' . $phpEx);
+		$invite			= new invite();]]></action>
+	    </edit>
+		
+		<edit>
+			<find><![CDATA['tz'				=> request_var('tz', (float) $timezone),]]></find>
+	        <action type="after-add"><![CDATA['key'				=> request_var('key', '', true),]]></action>
+	    </edit>
+		
+		<edit>
+			<find><![CDATA[// DNSBL check]]></find>
+	        <action type="before-add"><![CDATA[// Handle keys
+			if ($invite->config['enable'])
+			{
+				if ($invite->config['auth_key'])
+				{
+					if (!$invite->valid_key($data['key']) || empty($data['key']))
+					{
+						$error[] 	= $user->lang['AUTH_KEY_WRONG'];
+					}
+					else
+					{
+						$invite->delete_key($data['key']);
+					}
+				}
+			}]]></action>
+	    </edit>
+		
+		<edit>
+			<find><![CDATA['S_UCP_ACTION'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=register'),]]></find>
+	        <action type="after-add"><![CDATA['AUTH_KEY'			=> $data['key'],
+			'S_SHOW_AUTH_KEY'	=> ($invite->config['enable'] && $invite->config['auth_key']) ? true : false,]]></action>
+	    </edit>
+	</open>
+	
+	<open src="styles/prosilver/template/ucp_register.html">
+	    <edit>
+	        <find><![CDATA[<dl>
+		<dt><label for="username">{L_USERNAME}:</label><br /><span>{L_USERNAME_EXPLAIN}</span></dt>
+		<dd><input type="text" tabindex="1" name="username" id="username" size="25" value="{USERNAME}" class="inputbox autowidth" title="{L_USERNAME}" /></dd>
+	</dl>]]></find>
+	        <action type="after-add"><![CDATA[<!-- IF S_SHOW_AUTH_KEY -->
+		<dl>
+			<dt><label for="key">{L_AUTH_KEY}:</label><br /><span>{L_AUTH_KEY_EXPLAIN}</span></dt>
+			<dd><input type="text" tabindex="1" name="key" id="key" size="25" value="{AUTH_KEY}" class="inputbox autowidth" title="{L_AUTH_KEY}" /></dd>
+		</dl>
+	<!-- ENDIF -->]]></action>
+	    </edit>
+	</open>
+	
+	<open src="styles/prosilver/template/overall_header.html">
+	    <edit>
+			<find><![CDATA[<a href="{U_SEARCH_SELF}">{L_SEARCH_SELF}</a>]]></find>
+	        <action type="after-add"><![CDATA[ &bull;
+					<a href="{U_INVITE_A_FRIEND}">{L_INVITE_A_FRIEND}</a>]]></action>
+	    </edit>
+	</open>
+	
+	<open src="styles/subsilver2/template/ucp_register.html">
+	    <edit>
+	        <find><![CDATA[<tr>
+	<td class="row1" width="38%"><b class="genmed">{L_USERNAME}: </b><br /><span class="gensmall">{L_USERNAME_EXPLAIN}</span></td>
+	<td class="row2"><input class="post" type="text" name="username" size="25" value="{USERNAME}" /></td>
+</tr>]]></find>
+	        <action type="after-add"><![CDATA[<!-- IF S_SHOW_AUTH_KEY -->
+	<tr>
+		<td class="row1" width="38%"><b class="genmed">{L_AUTH_KEY}: </b><br /><span class="gensmall">{L_AUTH_KEY_EXPLAIN}</span></td>
+		<td class="row2"><input class="post" type="text" name="key" size="25" value="{AUTH_KEY}" /></td>
+	</tr>
+<!-- ENDIF -->]]></action>
+	    </edit>
+	</open>
+	
+	<open src="styles/subsilver2/template/overall_header.html">
+	    <edit>
+			<find><![CDATA[<!-- IF S_DISPLAY_PM --> &nbsp;<a href="{U_PRIVATEMSGS}"><img src="{T_THEME_PATH}/images/icon_mini_message.gif" width="12" height="13" alt="*" /> {PRIVATE_MESSAGE_INFO}<!-- IF PRIVATE_MESSAGE_INFO_UNREAD -->, {PRIVATE_MESSAGE_INFO_UNREAD}<!-- ENDIF --></a><!-- ENDIF -->]]></find>
+	        <action type="replace-with"><![CDATA[<!-- IF S_DISPLAY_PM --> &nbsp;<a href="{U_PRIVATEMSGS}"><img src="{T_THEME_PATH}/images/icon_mini_message.gif" width="12" height="13" alt="*" /> {PRIVATE_MESSAGE_INFO}<!-- IF PRIVATE_MESSAGE_INFO_UNREAD -->, {PRIVATE_MESSAGE_INFO_UNREAD}<!-- ENDIF --></a> &nbsp;<a href="{U_INVITE_A_FRIEND}"><img src="{T_THEME_PATH}/images/icon_mini_profile.gif" width="12" height="13" alt="*" /> {L_INVITE_A_FRIEND}</a><!-- ENDIF -->]]></action>
+	    </edit>
+	</open>
+	
+	<diy-instructions lang="en">Purge the cache and assign the permissions (User permissions -> Misc) to send invitations.</diy-instructions>
+	<diy-instructions lang="de">Leere den Cache und vergebe die Berechtigung (Benutzer-Berechtigungen -> Diverses) Einladungen zu senden.</diy-instructions>
+
+	<diy-instructions>
+		
+	</diy-instructions>
+</action-group>
+
+</mod>

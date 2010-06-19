@@ -1,0 +1,115 @@
+<!-- INCLUDE overall_header.html -->
+
+<script language="JavaScript" type="text/javascript">
+var onload_functions = new Array();
+</script>
+
+<style type="text/css">
+h2 {
+	margin-top:0;
+	}
+
+fieldset dt{
+	width: 35%;
+	}
+
+fieldset dd {
+	margin: 0 0 0 35%;
+	}
+
+textarea {
+	width: 99%;
+	}
+
+textarea.margin {
+	margin-bottom: 10px;
+}
+	
+td a {
+	font-size: 1.2em;
+	}
+
+td input {
+	float: right;
+	text-align: right;
+	font-size: 1em;
+	}
+</style>
+
+<!-- IF ERROR -->
+	<div class="errorbox">
+		<h3>{L_INFORMATION}</h3>
+		<p>{ERROR}</p>
+	</div>
+<!-- ENDIF -->
+
+<a name="maincontent"></a>
+
+<h1>{L_ACP_INVITE_A_FRIEND}</h1>
+<p>{L_ACP_INVITE_A_FRIEND_EXPLAIN}</p>
+
+
+<form id="acp_invite" method="post" action="{U_SETTINGS}">
+
+<fieldset>
+	<legend>{L_GENERAL_OPTIONS}</legend>
+	<dl>
+		<dt><label for="enable">{L_SETTINGS_ENABLE}:</label></dt>
+		<dd><input type="radio" class="radio" id="enable" name="enable"<!-- IF S_ENABLE --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="enable"<!-- IF not S_ENABLE --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
+	</dl>
+	<dl>
+		<dt><label for="auth_key">{L_SETTINGS_AUTH_KEY}:</label><br /><span>{L_SETTINGS_AUTH_KEY_EXPLAIN}</span></dt>
+		<dd><input type="radio" class="radio" id="auth_key" name="auth_key"<!-- IF S_AUTH_KEY --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="auth_key"<!-- IF not S_AUTH_KEY --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
+	</dl>
+	<dl>
+		<dt><label for="no_answer">{L_SETTINGS_SEND_NOW}:</label><br /><span>{L_SETTINGS_SEND_NOW_EXPLAIN}</span></dt>
+		<dd><input type="radio" class="radio" id="send_now" name="send_now"<!-- IF S_SEND_NOW --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="send_now"<!-- IF not S_SEND_NOW --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
+	</dl>
+</fieldset>
+
+<fieldset>
+	<legend>{L_GENERAL_SETTINGS}</legend>
+	<dl>
+		<dt><label for="time">{L_SETTINGS_TIME}:</label><br /><span>{L_SETTINGS_TIME_EXPLAIN}</span></dt>
+		<dd><input size="5" maxlength="5" type="text" id="time" name="time" value="{S_TIME}" /> {L_SECONDS}</dd>
+	</dl>
+	<dl>
+		<dt><label for="max_message">{L_SETTINGS_MAX_MESSAGE}:</label></dt>
+		<dd><input size="3" maxlength="4" type="text" id="max_message" name="max_message" value="{S_MAX_MESSAGE}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="max_subject">{L_SETTINGS_MAX_SUBJECT}:</label></dt>
+		<dd><input size="3" maxlength="3" type="text" id="max_subject" name="max_subject" value="{S_MAX_SUBJECT}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="key_min_chars">{L_SETTINGS_KEY_MIN_CHARS}:</label></dt>
+		<dd><input size="3" maxlength="3" type="text" id="key_min_chars" name="key_min_chars" value="{S_KEY_MIN_CHARS}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="key_max_chars">{L_SETTINGS_KEY_MAX_CHARS}:</label></dt>
+		<dd><input size="3" maxlength="3" type="text" id="key_max_chars" name="key_max_chars" value="{S_KEY_MAX_CHARS}" /></dd>
+	</dl>
+	<dl>
+		<dt><label for="charset">{L_SETTINGS_CHARSET}:</label><br /><span>{L_SETTINGS_CHARSET_EXPLAIN}</span></dt>
+		<dd><textarea style="width: 250px; height: 50px;" name="charset" id="charset" class="inputbox">{S_CHARSET}</textarea></dd>
+	</dl>
+</fieldset>
+	
+<fieldset>
+	<legend>{L_MESSAGE}</legend>
+	<p>{L_SETTINGS_IAF_MESSAGE_EXPLAIN}</p>
+
+	<br /><textarea style="width: 500px; height: 150px;" name="message" id="message" class="inputbox">{S_MESSAGE}</textarea>
+</fieldset>
+
+<p class="submit-buttons">
+	<input class="button1" name="submit" type="submit" value="{L_SUBMIT}" />
+	<input class="button2" name="reset" type="reset" value="{L_RESET}" />
+</p>
+
+{S_FORM_TOKEN}
+
+</form>
+
+
+<!-- INCLUDE overall_footer.html -->

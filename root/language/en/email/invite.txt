@@ -1,0 +1,10 @@
+Hello {RECIPIENT},
+this message has been sent by a friend of yours known as '{USERNAME}' because you might be interested in the following website:
+
+{U_BOARD}
+You can use the following key to register: {AUTH_KEY}
+
+Your friend wrote:
+-------------------------------------------
+
+{MESSAGE}
