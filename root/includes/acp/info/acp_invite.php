@@ -18,7 +18,7 @@ class acp_invite_info
 		return array(
 			'filename'	=> 'acp_invite',
 			'title'		=> 'ACP_INVITE_A_FRIEND',
-			'version'	=> '0.1.0',
+			'version'	=> '0.2.2',
 			'modes'		=> array(
 				'settings'		=> array('title' => 'ACP_INVITE_A_FRIEND', 'auth' => 'acl_a_', 'cat' => array('ACP_BOARD_CONFIGURATION')),
 				'log'			=> array('title' => 'ACP_INVITE_A_FRIEND_LOG', 'auth' => 'acl_a_', 'cat' => array('ACP_BOARD_CONFIGURATION')),

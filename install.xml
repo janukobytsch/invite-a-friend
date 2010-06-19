@@ -20,7 +20,7 @@ Also enables registration-keys which must be entered to register and can only be
 	<mod-version>
 		<major>0</major>
 		<minor>2</minor>
-		<revision>1</revision>
+		<revision>2</revision>
 	</mod-version>
 	<installation>
 		<level>easy</level>
@@ -34,6 +34,21 @@ Also enables registration-keys which must be entered to register and can only be
 	</installation>
 	
 	<history>
+		<entry>
+			<date>2008-10-10</date>
+			<rev-version>
+				<major>0</major>
+				<minor>2</minor>
+				<revision>2 [Beta]</revision>
+			</rev-version>
+			<changelog lang="en">
+				<change>[Added] Compatibility with 'Cash Mod'</change>
+				<change>[Added] Highly improved log</change>
+				<change>[Added] UCP Module</change>
+				<change>[Fixed] Report #009: [phpBB Debug] Undefined variable: new_user_row</change>
+				<change>[Fixed] Report #008: [phpBB Debug] Undefined variable: invitation_data</change>
+			</changelog>
+		</entry>
 		<entry>
 			<date>2008-10-06</date>
 			<rev-version>
@@ -76,7 +91,8 @@ Also enables registration-keys which must be entered to register and can only be
 		<file from="/root/adm/style/acp_invite.html" to="/adm/style/acp_invite.html" />
 		<file from="/root/adm/style/acp_invite_log.html" to="/adm/style/acp_invite_log.html" />
 		<file from="/root/includes/functions_invite.php" to="/includes/functions_invite.php" />
-		<file from="/root/invite.php" to="/invite.php" />
+		<file from="/root/includes/ucp/ucp_invite.php" to="/includes/ucp/ucp_invite.php" />
+		<file from="/root/includes/ucp/info/ucp_invite.php" to="/includes/ucp/info/ucp_invite.php" />
 		<file from="/root/language/de/invite.php" to="/language/de/invite.php" />
 		<file from="/root/language/en/invite.php" to="/language/en/invite.php" />
 		<file from="/root/language/de/mods/info_acp_invite.php" to="/language/de/mods/info_acp_invite.php" />
@@ -85,8 +101,8 @@ Also enables registration-keys which must be entered to register and can only be
 		<file from="/root/language/en/email/invite.txt" to="/language/en/email/invite.txt" />
 		<file from="/root/language/de/email/invite_confirm.txt" to="/language/de/email/invite_confirm.txt" />
 		<file from="/root/language/en/email/invite_confirm.txt" to="/language/en/email/invite_confirm.txt" />
-		<file from="/root/styles/prosilver/template/invite.html" to="/styles/prosilver/template/invite.html" />
-		<file from="/root/styles/subsilver2/template/invite.html" to="/styles/subsilver2/template/invite.html" />
+		<file from="/root/styles/prosilver/template/ucp_invite_invite.html" to="/styles/prosilver/template/ucp_invite_invite.html" />
+		<file from="/root/styles/subsilver2/template/ucp_invite_invite.html" to="/styles/subsilver2/template/ucp_invite_invite.html" />
 	</copy>
 
 	<sql><![CDATA[--
@@ -102,6 +118,11 @@ CREATE TABLE `phpbb_iaf_config` (
   `confirm_email` tinyint(1) unsigned NOT NULL default '0',
   `multi_email` tinyint(1) unsigned NOT NULL default '0',
   `self_invite` tinyint(1) unsigned NOT NULL default '0',
+  `cash_enable` tinyint(1) unsigned NOT NULL default '0',
+  `cash_invitation` mediumint(8) unsigned NOT NULL default '0',
+  `cash_id_invitation` mediumint(8) unsigned NOT NULL default '0',
+  `cash_registration` mediumint(8) unsigned NOT NULL default '0',
+  `cash_id_registration` mediumint(8) unsigned NOT NULL default '0',
   `min_message` mediumint(8) unsigned NOT NULL default '0',
   `max_message` mediumint(8) unsigned NOT NULL default '0',
   `min_subject` mediumint(8) unsigned NOT NULL default '0',
@@ -117,7 +138,7 @@ CREATE TABLE `phpbb_iaf_config` (
 -- Change the prefix if required!
 --
 
-INSERT INTO `phpbb_iaf_config` (`config_id`, `enable`, `auth_key`, `send_now`, `confirm_email`, `multi_email`, `self_invite`, `min_message`, `max_message`, `min_subject`, `max_subject`, `key_min_chars`, `key_max_chars`, `time`, `charset`) VALUES (1, 1, 2, 1, 2, 0, 1, 1, 1000, 1, 25, 12, 18, 300, 0x6162636465666768696a6b6d6e707172737475767778797a3132333435363738394142434445464748494a4b4c4d4e505152535455565758595a);
+INSERT INTO `phpbb_iaf_config` (`config_id`, `enable`, `auth_key`, `send_now`, `confirm_email`, `multi_email`, `self_invite`, `cash_enable`, `cash_invitation`, `cash_id_invitation`, `cash_registration`, `cash_id_registration`, `min_message`, `max_message`, `min_subject`, `max_subject`, `key_min_chars`, `key_max_chars`, `time`, `charset`) VALUES (1, 1, 2, 1, 2, 0, 1, 1, 0, 1, 0, 1, 1, 1000, 1, 25, 12, 18, 300, 0x6162636465666768696a6b6d6e707172737475767778797a3132333435363738394142434445464748494a4b4c4d4e505152535455565758595a);
 
 -- --------------------------------------------------------
 
@@ -151,7 +172,8 @@ INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) V
 	    <edit>
 	        <find><![CDATA[// Additional tables]]></find>
 	        <action type="after-add"><![CDATA[define('INVITE_KEYS_TABLE',			$table_prefix . 'iaf_keys');
-define('INVITE_CONFIG_TABLE',		$table_prefix . 'iaf_config');]]></action>
+define('INVITE_CONFIG_TABLE',		$table_prefix . 'iaf_config');
+define('LOG_INVITE', 4);]]></action>
 	    </edit>
 	</open>
 	
@@ -164,10 +186,25 @@ define('INVITE_CONFIG_TABLE',		$table_prefix . 'iaf_config');]]></action>
 	
 	<open src="includes/functions.php">
 		<edit>
-			<find><![CDATA[define('HEADER_INC', true);]]></find>
-	        <action type="after-add"><![CDATA[include_once($phpbb_root_path . 'includes/functions_invite.' . $phpEx);
-	$invite	= new invite();
-	$invite->header_template();]]></action>
+			<find><![CDATA[case 'critical':
+			$sql_ary['log_type'] = LOG_CRITICAL;
+		break;]]></find>
+	        <action type="after-add"><![CDATA[case 'invite':
+			$sql_ary['log_type'] = LOG_INVITE;
+		break;]]></action>
+	    </edit>
+	</open>
+	
+	<open src="includes/functions_admin.php">
+		<edit>
+			<find><![CDATA[case 'critical':
+			$log_type = LOG_CRITICAL;
+			$sql_forum = '';
+		break;]]></find>
+	        <action type="after-add"><![CDATA[case 'invite':
+			$log_type = LOG_INVITE;
+			$sql_forum = '';
+		break;]]></action>
 	    </edit>
 	</open>
 	
@@ -312,15 +349,6 @@ define('INVITE_CONFIG_TABLE',		$table_prefix . 'iaf_config');]]></action>
 	    </edit>
 	</open>
 	
-	<open src="styles/prosilver/template/overall_header.html">
-	    <edit>
-			<find><![CDATA[<a href="{U_SEARCH_SELF}">{L_SEARCH_SELF}</a>]]></find>
-	        <action type="after-add"><![CDATA[<!-- IF S_SHOW_IAF --> &bull;
-					<a href="{U_INVITE_A_FRIEND}">{L_INVITE_A_FRIEND}</a>
-					<!-- ENDIF -->]]></action>
-	    </edit>
-	</open>
-	
 	<open src="styles/subsilver2/template/ucp_register.html">
 	    <edit>
 	        <find><![CDATA[<tr>
@@ -341,19 +369,15 @@ define('INVITE_CONFIG_TABLE',		$table_prefix . 'iaf_config');]]></action>
 	    </edit>
 	</open>
 	
-	<open src="styles/subsilver2/template/overall_header.html">
-	    <edit>
-			<find><![CDATA[<!-- IF S_DISPLAY_PM --> &nbsp;<a href="{U_PRIVATEMSGS}"><img src="{T_THEME_PATH}/images/icon_mini_message.gif" width="12" height="13" alt="*" /> {PRIVATE_MESSAGE_INFO}<!-- IF PRIVATE_MESSAGE_INFO_UNREAD -->, {PRIVATE_MESSAGE_INFO_UNREAD}<!-- ENDIF --></a><!-- ENDIF -->]]></find>
-	        <action type="replace-with"><![CDATA[<!-- IF S_DISPLAY_PM --> &nbsp;<a href="{U_PRIVATEMSGS}"><img src="{T_THEME_PATH}/images/icon_mini_message.gif" width="12" height="13" alt="*" /> {PRIVATE_MESSAGE_INFO}<!-- IF PRIVATE_MESSAGE_INFO_UNREAD -->, {PRIVATE_MESSAGE_INFO_UNREAD}<!-- ENDIF --></a><!-- IF S_SHOW_IAF --> &nbsp;<a href="{U_INVITE_A_FRIEND}"><img src="{T_THEME_PATH}/images/icon_mini_profile.gif" width="12" height="13" alt="*" /> {L_INVITE_A_FRIEND}</a><!-- ENDIF --><!-- ENDIF -->]]></action>
-	    </edit>
-	</open>
+	<diy-instructions lang="en">Purge the cache and browse to your SYSTEM-tab -> Administration Control Panel.
+Browse to your favourite category, select 'Invite a friend' from the dropdown-menu (on the right side), add the module and enable it. (Repeat this process with 'Invitation log' from the dropdown menu).
+Browse to -> User Control Panel (menu on the left hand side), enter UCP_INVITE, press the 'Create new module'-button and enable the module.
+Browse to the category just added (UCP->Invite a friend) and add 'Compose invitation' from the dropdown menu.
+Browse to PERMISSIONS-tab, select Groups' permissions->Registered users->Misc and assign the permission to send invitations.
 	
-	<diy-instructions lang="en">Purge the cache and assign the permissions to send invitations (Permissions->Groups' permissions->Registered users->User permissions->Misc).</diy-instructions>
-	<diy-instructions lang="de">Leere den Cache und vergebe die Berechtigung Einladungen zu versenden (Berechtigungen->Gruppenrechte->Registrierte Benutzer->Benutzerberechtigungen->Diverses).</diy-instructions>
+(images can be found in /contrib/install-folder)
+</diy-instructions>
 
-	<diy-instructions>
-		
-	</diy-instructions>
 </action-group>
 
 </mod>

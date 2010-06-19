@@ -1,0 +1,36 @@
+<!-- INCLUDE ucp_header.html -->
+
+<table class="tablebg" width="100%" cellspacing="1">
+<tr>
+	<th colspan="2" valign="middle">{L_INVITE_A_FRIEND}</th>
+</tr>
+<!-- IF ERROR -->
+	<tr>
+		<td class="row2" colspan="2" align="center"><span class="gensmall error">{ERROR}</span></td>
+	</tr>
+<!-- ENDIF -->
+<tr> 
+	<td class="row1" colspan="2"><span class="gensmall">{L_INVITE_A_FRIEND_DESC}:</span></td>
+</tr>
+<tr> 
+	<td class="row1" width="25%"><b class="genmed">{L_FRIENDS_EMAIL}: </b></td>
+	<td class="row2"><input type="text" name="recipient" id="recipient" value="{RECIPIENT}" size="45" maxlength="60" tabindex="1" class="inputbox autowidth" /></td>
+</tr>
+<tr> 
+	<td class="row1" width="25%"><b class="genmed">{L_FRIENDS_NAME}: </b></td>
+	<td class="row2"><input type="text" name="name" id="name" value="{NAME}" size="45" maxlength="60" tabindex="2" class="inputbox autowidth" /></td>
+</tr>
+<tr> 
+	<td class="row1" width="25%"><b class="genmed">{L_SUBJECT}: </b></td>
+	<td class="row2"><input type="text" name="subject" id="subject" value="{SUBJECT}" size="45" maxlength="60" tabindex="3" class="inputbox autowidth" /><!-- IF S_SHOW_CONFIRM --><input style="margin-left: 10px;" type="checkbox" name="send_confirm" value="1" tabindex="4" checked="checked" /><!-- ENDIF -->&nbsp;{L_SEND_CONFIRM_EMAIL}</td>
+</tr>
+<tr> 
+	<td class="row1" width="25%"><b class="genmed">{L_MESSAGE}: </b></td>
+	<td class="row2"><textarea style="max-width: 700px;" name="message" id="message" rows="12" cols="60" tabindex="5" class="inputbox">{MESSAGE}</textarea></td>
+</tr>
+<tr>
+	<td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input class="btnmain" type="submit" name="submit" value="{L_SUBMIT}" />&nbsp;&nbsp;<input class="btnlite" type="reset" value="{L_RESET}" name="reset" /></td>
+</tr>
+</table>
+
+<!-- INCLUDE ucp_footer.html -->

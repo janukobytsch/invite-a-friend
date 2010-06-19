@@ -173,7 +173,18 @@ class invite
 		// If keys are disabled we still create an entry,
 		// so we can use INVITE_KEYS_TABLE as log
 		$this->insert_key($data);
-				
+		
+		// Cash mod
+		$this->give_cash('invitation', $data['from']);
+		
+		// Add log entry
+		add_log('invite', 'LOG_INVITE_EMAIL', $data['email']);
+		
+		if ($this->cash_installed() && $this->config['cash_enable'])
+		{
+			add_log('invite', 'LOG_CASH_INVITATION', $data['email'], $this->config['cash_invitation'], $this->get_currency_name($this->config['cash_id_invitation']));
+		}
+		
 		return true;
 	}
 	
@@ -193,6 +204,12 @@ class invite
 		// Get some information about the new user and set vars
 		$this->get_new_user($new_user_id);
 		
+		// Fix: [phpBB Debug] PHP Notice: in file /includes/functions_invite.php on line 209: Undefined variable: invitation_data
+		if ($this->config['auth_key'] == 2 && empty($key))
+		{
+			return false;
+		}
+		
 		// Which invitation do we talk about?
 		$sql 	= 'SELECT * FROM ' . INVITE_KEYS_TABLE . " WHERE auth_key = '$key' AND key_used = 1";
 		$result	= $db->sql_query($sql);
@@ -205,7 +222,7 @@ class invite
 			}
 		}
 		
-		// Don't send confirmation email if not wished
+		// Don't send confirmation e-mail if not wished
 		if (!$invitation_data['send_confirm'])
 		{
 			return false;
@@ -242,6 +259,14 @@ class invite
 		
 		$messenger->send();
 		$messenger->save_queue();
+		
+		
+		$user_id_save			= $user->data['user_id'];
+		$user->data['user_id']	= $this->from['user_id'];
+		
+		add_log('invite', 'LOG_INVITE_CONFIRM_EMAIL', $this->from['user_email'], $this->new_user['username']);
+		
+		$user->data['user_id']	= $user_id_save;
 		
 		return true;
 	}
@@ -349,7 +374,7 @@ class invite
 	*/
 	function key_used($key, $new_user_id = false)
 	{
-		global $db;
+		global $db, $user;
 		
 		$data	= array(
 			'key_used'	=> 1,
@@ -366,6 +391,36 @@ class invite
 		
 		$sql 		= 'UPDATE ' . INVITE_KEYS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $data) . " WHERE auth_key = '$key'";
 		$result 	= $db->sql_query($sql);
+		
+		// Correct user_id (log)
+		$sql 		= 'SELECT * FROM ' . INVITE_KEYS_TABLE . ' WHERE new_user = ' . $new_user_id;
+		$result		= $db->sql_query($sql);
+		
+		while ($row	= $db->sql_fetchrow($result))
+		{
+			foreach ($row as $k => $v)
+			{
+				$invitation_data[$k] = utf8_normalize_nfc($v);
+			}
+		}
+		
+		// Cash mod
+		$this->give_cash('registration', $invitation_data['user_id']);
+		
+		// Add log entry
+		$this->get_new_user($new_user_id);
+		
+		$user_id_save			= $user->data['user_id'];
+		$user->data['user_id']	= $invitation_data['user_id'];
+		
+		add_log('invite', 'LOG_INVITE_KEY_USED', $this->new_user['username']);
+		
+		if ($this->cash_installed() && $this->config['cash_enable'])
+		{
+			add_log('invite', 'LOG_CASH_REGISTRATION', $this->new_user['username'], $this->config['cash_registration'], $this->get_currency_name($this->config['cash_id_registration']));
+		}
+		
+		$user->data['user_id']	= $user_id_save;
 	}
 	
 	/**
@@ -446,7 +501,7 @@ class invite
 	* function session
 	* Register a session using a registration-key
 	*/
-	function session ($key)
+	function session($key)
 	{
 		global $user, $db;
 		
@@ -469,7 +524,7 @@ class invite
 	* function self_invite_check
 	* Check whether someone want to trick us
 	*/
-	function self_invite_check ($key)
+	function self_invite_check($key)
 	{
 		global $user, $db;
 		
@@ -494,9 +549,85 @@ class invite
 	}
 	
 	/**
+	* function get_info
+	* Get information on the invitations which belong to the user defined in $log_id
+	*/
+	function get_info($log_id)
+	{
+		global $db, $phpbb_admin_path, $phpbb_root_path, $phpEx;
+		
+		// Set up some vars
+		$profile_url 	= (defined('IN_ADMIN')) ? append_sid("{$phpbb_admin_path}index.$phpEx", 'i=users&amp;mode=overview') : append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=viewprofile');
+		$new_users		= array();
+		
+		$sql = "SELECT l.*, u.username, u.username_clean, u.user_colour
+		FROM " . LOG_TABLE . " l, " . USERS_TABLE . " u
+		WHERE l.log_id = $log_id
+			AND u.user_id = l.user_id";
+		$result = $db->sql_query($sql);
+		
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$data = array(
+				'user_id'			=> $row['user_id'],
+				'username'			=> $row['username'],
+				'username_full'		=> get_username_string('full', $row['user_id'], $row['username'], $row['user_colour'], false, $profile_url),
+			);
+		}
+		$db->sql_freeresult($result);
+		
+		// Invitations sent
+		$sql	= 'SELECT COUNT(key_id) as invitations FROM ' . INVITE_KEYS_TABLE . ' WHERE user_id = ' . $data['user_id'];
+		$result = $db->sql_query($sql);
+		
+		$data['invitations']	= $db->sql_fetchfield('invitations');
+		$db->sql_freeresult($result);
+		
+		// Total registrations
+		$sql	= 'SELECT COUNT(key_id) as registrations FROM ' . INVITE_KEYS_TABLE . ' WHERE user_id = ' . $data['user_id'] . ' AND key_used = 1';
+		$result = $db->sql_query($sql);
+		
+		$data['registrations']	= $db->sql_fetchfield('registrations');
+		$db->sql_freeresult($result);
+		
+		// Get all invitations sent by our current user
+		$sql 			= 'SELECT * FROM ' . INVITE_KEYS_TABLE . ' WHERE user_id = ' . $data['user_id'] . ' AND key_used = 1';
+		$result 		= $db->sql_query($sql);
+		
+		while ($row = $db->sql_fetchrow($result))
+		{
+			foreach ($row as $k => $v)
+			{
+				$invitations_row[$k] = utf8_normalize_nfc($v);
+			}
+			
+			// Get information on all new users, who were invited by our current user
+			$sql2			= 'SELECT * FROM ' . USERS_TABLE . ' WHERE user_id = ' . $invitations_row['new_user'];
+			$result2 		= $db->sql_query($sql2);
+				
+			while ($row2 = $db->sql_fetchrow($result2))
+			{
+				foreach ($row2 as $k2 => $v2)
+				{
+					$new_user_row[$k2] = utf8_normalize_nfc($v2);
+				}
+			}
+			$db->sql_freeresult($result2);
+			
+			// Add them to an array so we can use implode() later
+			$new_users[] = get_username_string('full', $new_user_row['user_id'], $new_user_row['username'], $new_user_row['user_colour'], false, $profile_url);
+		}
+		$db->sql_freeresult($result);
+		
+		$data['reg_users']	= implode(', ', $new_users);
+		
+		return $data;
+	}
+		
+	/**
 	* function header_template
 	* Called in functions.php so users don't have to add much code there
-	*/
+	*
 	function header_template()
 	{
 		global $user, $auth, $template, $phpbb_root_path, $phpEx;
@@ -508,6 +639,76 @@ class invite
 			
 			'S_SHOW_IAF'			=> (!$this->config['enable']) ? false : (($auth->acl_get('u_send_iaf')) ? true : false),
 		));
+	}
+	*/
+	
+	/**
+	* function cash_installed
+	* Check whether cash mod is installed
+	*/
+	function cash_installed()
+	{
+		global $phpbb_root_path, $phpEx;
+		
+		$check_file = $phpbb_root_path . 'includes/mods/cash/cash_class.' . $phpEx;
+		
+		if (file_exists($check_file))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	/**
+	* function give_cash
+	* Add the cash defined in config
+	*/
+	function give_cash($mode, $user_id)
+	{
+		global $config, $user, $phpbb_root_path, $phpEx;
+		
+		if ($this->cash_installed() && $this->config['cash_enable'])
+		{
+			global $cash;
+			
+			if ($mode = 'invitation')
+			{
+				$cash->give_cash($user_id, $this->config['cash_invitation'], $this->config['cash_id_invitation']);
+			}
+			else
+			{
+				// $mode = 'registration'
+				$cash->give_cash($user_id, $this->config['cash_registration'], $this->config['cash_id_registration']);
+			}
+		}
+	}
+	
+	/**
+	* function get_currency_name
+	* Return currency name from given id
+	*/
+	function get_currency_name($cash_id)
+	{
+		global $db;
+		
+		if ($this->cash_installed())
+		{
+			global $cash;
+			
+			$sql	= 'SELECT * FROM ' . CASH_TABLE . ' WHERE cash_id = ' . $cash_id;
+			$result = $db->sql_query($sql);
+				
+			while ($row = $db->sql_fetchrow($result))
+			{
+				$return	= $row['cash_name'];
+			}
+			$db->sql_freeresult($result);
+			
+			return $return;
+		}
 	}
 }
 ?>

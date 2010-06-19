@@ -38,6 +38,8 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	// General
 	'INVITE_A_FRIEND'			=> 'Invite a friend',
+	'UCP_INVITE'				=> 'Invite a friend',
+	'UCP_INVITE_INVITE'			=> 'Compose invitation',
 	'INVITE_A_FRIEND_DESC'		=> 'Send an e-mail to a friend of yours and advise him of this board',
 	'INVITE_CONFIRM_EMAIL'		=> 'Confirmation - Invite a friend',
 	'OPTIONAL'					=> 'Optional',

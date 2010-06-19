@@ -35,19 +35,26 @@ $lang = array_merge($lang, array(
 
 $lang = array_merge($lang, array(
 	// General
+	'UCP_INVITE'						=> 'Invite a friend',
+	'UCP_INVITE_INVITE'					=> 'Compose invitation',
 	'ACP_INVITE_A_FRIEND'				=> 'Invite a friend',
 	'ACP_INVITE_A_FRIEND_EXPLAIN'		=> 'Here you can set all default settings for the e-mails which users can send to their friends.',
-	'ACP_INVITE_A_FRIEND_LOG'			=> 'Invite a friend - Log',
+	'ACP_INVITE_A_FRIEND_LOG'			=> 'Invitation log',
 	'ACP_INVITE_A_FRIEND_LOG_EXPLAIN'	=> 'Here you can see information on all invitations sent to friends of your members.',
 	
 	// Errors
 	'ERROR_SETTINGS'					=> 'You have to fill in all fields correctly.',
 	
 	// Log
-	'LOG_IAF_SETTINGS_UPDATED'			=> '<strong>Altered \'Invite a friend\' settings</strong>',
+	'LOG_IAF_SETTINGS_UPDATED'			=> '<strong>Altered ’Invite a friend’ settings</strong>',
+	'LOG_INVITE_EMAIL'					=> '<strong>Invitation sent</strong><br/>» to „%1$s“',
+	'LOG_INVITE_CONFIRM_EMAIL'			=> '<strong>Confirmation e-mail sent</strong><br/>» to „%1$s“ to confirm the registration of „%2$s“',
+	'LOG_INVITE_KEY_USED'				=> '<strong>Registration-key used</strong><br/>» to register username „%1$s“',
+	'LOG_CASH_INVITATION'				=> '<strong>%2$s „%3$s“ allocated</strong><br/>» due to the invitation sent to „%1$s“',
+	'LOG_CASH_REGISTRATION'				=> '<strong>%2$s „%3$s“ allocated</strong><br/>» due to the registration of „%1$s“',
 	
-	'DATE'								=> 'Date',
-	'INVITATIONS'						=> 'Invitations',
+	'INVITE_INFO'						=> 'Details',
+	'INVITATIONS'						=> 'Invitations sent',
 	'REGISTRATIONS'						=> 'Registered friends',
 	
 	// Settings
@@ -75,5 +82,12 @@ $lang = array_merge($lang, array(
 	
 	'SETTINGS_IAF_MESSAGE_EXPLAIN'		=> 'The e-mails users send to their friends will be embed into the following message:',
 	'SETTINGS_CONFIRM_MESSAGE_EXPLAIN'	=> 'The following message will be send to a user if the invited friend registers:',
+
+	// Cash settings
+	'CASH_ENABLE'						=> 'Enable cash',
+	'CASH_INVITATION'					=> 'Cash per invitation',
+	'CASH_INVITATION_EXPLAIN'			=> 'The amount of cash allocated per invitation.',
+	'CASH_REGISTRATION'					=> 'Cash per registration',
+	'CASH_REGISTRATION_EXPLAIN'			=> 'The amount of cash allocated per invited friend, who registers a new account.',
 ));
 ?>

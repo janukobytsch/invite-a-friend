@@ -1,0 +1,42 @@
+<!-- INCLUDE ucp_header.html -->
+
+<form id="iaf" action="{S_INVITE_ACTION}" method="post">
+
+<h2>{L_INVITE_A_FRIEND}</h2>
+
+<div class="panel">
+	<div class="inner"><span class="corners-top"><span></span></span>
+	<p>{L_INVITE_A_FRIEND_DESC}:</p><br />
+	
+	<fieldset class="fields1">
+		<!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
+		<dl>
+			<dt><label for="recipient">{L_FRIENDS_EMAIL}:</label></dt>
+			<dd><input type="text" name="recipient" id="recipient" value="{RECIPIENT}" size="45" maxlength="60" tabindex="1" class="inputbox autowidth" /></dd>
+		</dl>
+		<dl>
+			<dt><label for="name">{L_FRIENDS_NAME}:</label></dt>
+			<dd><input type="text" name="name" id="name" value="{NAME}" size="45" maxlength="60" tabindex="2" class="inputbox autowidth" /></dd>
+		</dl>
+		<dl>
+			<dt><label for="subject">{L_SUBJECT}:</label></dt>
+			<dd><input type="text" name="subject" id="subject" value="{SUBJECT}" size="45" maxlength="60" tabindex="3" class="inputbox autowidth" /><!-- IF S_SHOW_CONFIRM --><input style="margin-left: 10px;" type="checkbox" name="send_confirm" value="1" tabindex="4" checked="checked" />&nbsp;{L_SEND_CONFIRM_EMAIL}<!-- ENDIF --></dd>
+		</dl>
+		<dl>
+			<dt><label for="message">{L_MESSAGE}:</label></dt>
+			<dd><textarea style="max-width: 700px;" name="message" id="message" rows="12" cols="60" tabindex="5" class="inputbox">{MESSAGE}</textarea></dd>
+		</dl>
+	</fieldset>
+	
+	<span class="corners-bottom"><span></span></span></div>
+</div>
+	
+<fieldset class="submit-buttons">
+	{S_HIDDEN_FIELDS}<input type="reset" name="reset" value="{L_RESET}" tabindex="7" class="button2" <!-- IF S_DISABLE -->disabled="disabled"<!-- ENDIF --> />
+	<input type="submit" name="submit" value="{L_SUBMIT}" tabindex="6" class="button1" <!-- IF S_DISABLE -->disabled="disabled"<!-- ENDIF --> />&nbsp;
+	{S_FORM_TOKEN}
+</fieldset>
+
+</form>
+
+<!-- INCLUDE ucp_footer.html -->

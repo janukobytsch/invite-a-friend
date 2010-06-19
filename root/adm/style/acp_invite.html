@@ -1,9 +1,5 @@
 <!-- INCLUDE overall_header.html -->
 
-<script language="JavaScript" type="text/javascript">
-var onload_functions = new Array();
-</script>
-
 <style type="text/css">
 h2 {
 	margin-top:0;
@@ -102,6 +98,24 @@ td input {
 		<dd><textarea style="width: 400px; height: 50px;" name="charset" id="charset" class="inputbox">{S_CHARSET}</textarea></dd>
 	</dl>
 </fieldset>
+
+<!-- IF S_CASH_INSTALLED -->
+	<fieldset>
+		<legend>{L_CASH_SETTINGS}</legend>
+		<dl>
+			<dt><label for="cash_enable">{L_CASH_ENABLE}:</label></dt>
+			<dd><input type="radio" class="radio" id="cash_enable" name="cash_enable"<!-- IF S_CASH_ENABLE --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="cash_enable"<!-- IF not S_CASH_ENABLE --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
+		</dl>
+		<dl>
+			<dt><label for="cash_invitation">{L_CASH_INVITATION}:</label><br /><span>{L_CASH_INVITATION_EXPLAIN}</span></dt>
+			<dd><input size="5" maxlength="5" type="text" id="cash_invitation" name="cash_invitation" value="{S_CASH_INVITATION}" />&nbsp;&nbsp;<select name="cash_id_invitation" id="cash_id_invitation">{S_CASH_INVITATION_CURRENCY}</select></dd>
+		</dl>
+		<dl>
+			<dt><label for="cash_registration">{L_CASH_REGISTRATION}:</label><br /><span>{L_CASH_REGISTRATION_EXPLAIN}</span></dt>
+			<dd><input size="5" maxlength="5" type="text" id="cash_registration" name="cash_registration" value="{S_CASH_REGISTRATION}" />&nbsp;&nbsp;<select name="cash_id_registration" id="cash_id_registration">{S_CASH_REGISTRATION_CURRENCY}</select></dd>
+		</dl>
+	</fieldset>
+<!-- ENDIF -->
 	
 <fieldset>
 	<legend>{L_MESSAGE}</legend>

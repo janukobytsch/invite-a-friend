@@ -35,9 +35,11 @@ $lang = array_merge($lang, array(
 
 $lang = array_merge($lang, array(
 	// General
+	'UCP_INVITE'						=> 'Freunde einladen',
+	'UCP_INVITE_INVITE'					=> 'Einladung schreiben',
 	'ACP_INVITE_A_FRIEND'				=> 'Freunde einladen',
 	'ACP_INVITE_A_FRIEND_EXPLAIN'		=> 'Hier kannst du die Einstellungen bezüglich der E-Mails, die Benutzer an Freunde verschicken können, vornehmen.',
-	'ACP_INVITE_A_FRIEND_LOG'			=> 'Freunde einladen - Protokoll',
+	'ACP_INVITE_A_FRIEND_LOG'			=> 'Einladungs-Protokoll',
 	'ACP_INVITE_A_FRIEND_LOG_EXPLAIN'	=> 'Hier kannst du Information zu allen Einladungen, die von Benutzern versendet wurden, finden.',
 	
 	// Errors
@@ -45,9 +47,14 @@ $lang = array_merge($lang, array(
 	
 	// Log
 	'LOG_IAF_SETTINGS_UPDATED'			=> '<strong>Einstellungen zum Einladen von Freunden geändert</strong>',
+	'LOG_INVITE_EMAIL'					=> '<strong>Einladung versendet</strong><br/>» an „%1$s“',
+	'LOG_INVITE_CONFIRM_EMAIL'			=> '<strong>E-Mail-Bestätigung versendet</strong><br/>» an „%1$s“ zur Bestätigung der Registrierung von „%2$s“',
+	'LOG_INVITE_KEY_USED'				=> '<strong>Registrierungs-Schlüssel verwendet</strong><br/>» zur Registrierung des Benutzers „%1$s“',
+	'LOG_CASH_INVITATION'				=> '<strong>%2$s „%3$s“ vergeben</strong><br/>» aufgrund der an „%1$s“ gesendeten Einladung',
+	'LOG_CASH_REGISTRATION'				=> '<strong>%2$s „%3$s“ vergeben</strong><br/>» aufgrund der Registrierung des Benutzers „%1$s“',
 	
-	'DATE'								=> 'Datum',
-	'INVITATIONS'						=> 'Einladungen',
+	'INVITE_INFO'						=> 'Details',
+	'INVITATIONS'						=> 'Versendete Einladungen',
 	'REGISTRATIONS'						=> 'Geworbene Benutzer',
 	
 	// Settings
@@ -75,5 +82,12 @@ $lang = array_merge($lang, array(
 	
 	'SETTINGS_IAF_MESSAGE_EXPLAIN'		=> 'Die Nachricht, die Benutzer an Freunde versenden, wird in folgende Nachricht eingebettet. Als Platzhalter wird {MESSAGE} verwendet.',
 	'SETTINGS_CONFIRM_MESSAGE_EXPLAIN'	=> 'Die Nachricht, die an einen Benutzer versendet wird, wenn sich der geworbene Freund registriert.',
+
+	// Cash settings
+	'CASH_ENABLE'						=> 'Cash aktivieren',
+	'CASH_INVITATION'					=> 'Cash pro Einladung',
+	'CASH_INVITATION_EXPLAIN'			=> 'Die Menge Cash, die für Einladungen vergeben wird.',
+	'CASH_REGISTRATION'					=> 'Cash pro Registrierung',
+	'CASH_REGISTRATION_EXPLAIN'			=> 'Die Menge Cash, die für Registrierungen eingeladener Freunde vergeben wird.',
 ));
 ?>

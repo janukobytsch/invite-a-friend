@@ -21,7 +21,7 @@ class acp_invite
 
 	function main($id, $mode)
 	{
-		global $db, $user, $template, $cache, $phpEx;
+		global $db, $user, $auth, $template, $cache, $phpEx;
 		global $config, $phpbb_root_path, $phpbb_admin_path;
 		
 		$user->add_lang(array('invite', 'ucp', 'mods/info_acp_invite', 'acp/board'));
@@ -117,92 +117,144 @@ class acp_invite
 					// We only display the first error in array so eveything is clearly arranged
 					'ERROR'				=> (sizeof($error)) ? $user->lang['ERROR_SETTINGS'] : '',
 					
+					'S_CASH_INSTALLED'	=> $invite->cash_installed(),
 					'S_MESSAGE'			=> $message,
 					'S_CONFIRM_MESSAGE'	=> $confirm_message,
 					'U_ACTION'			=> $this->u_action,
 				));
+				
+				if ($invite->cash_installed())
+				{
+					global $cash;
+					$user->add_lang('mods/cash_mod');
+					
+					$template->assign_vars(array(
+						'S_CASH_INSTALLED'				=> true,
+						
+						'S_CASH_INVITATION_CURRENCY'	=> $cash->get_currencies($iaf_config['cash_id_invitation'], true),
+						'S_CASH_REGISTRATION_CURRENCY'	=> $cash->get_currencies($iaf_config['cash_id_registration'], true),
+					));
+				}
 			break;
 			
 			case 'log':
 				// Set up general vars
-				$profile_url		= (defined('IN_ADMIN')) ? append_sid("{$phpbb_admin_path}index.$phpEx", 'i=users&amp;mode=overview') : append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=viewprofile');
+				$this->log_type		= LOG_INVITE;
+				
 				$start				= request_var('start', 0);
+				$show_info			= request_var('info', 0);
+				$deletemark 		= (!empty($_POST['delmarked'])) ? true : false;
+				$deleteall			= (!empty($_POST['delall'])) ? true : false;
+				$marked				= request_var('mark', array(0));
 				$entries_per_page	= LOG_ENTRIES_PER_PAGE;
 				
-				// Get number of total entries in INVITE_KEYS_TABLE
-				$sql 			= 'SELECT COUNT(key_id) as total_entries FROM ' . INVITE_KEYS_TABLE;
-				$result 		= $db->sql_query($sql);
-				$total_entries	= $db->sql_fetchfield('total_entries');
+				// Sort keys
+				$sort_days	= request_var('st', 0);
+				$sort_key	= request_var('sk', 't');
+				$sort_dir	= request_var('sd', 'd');
 				
-				// Get all values from INVITE_KEYS_TABLE
-				$sql 	= 'SELECT * FROM ' . INVITE_KEYS_TABLE;
-				$result = $db->sql_query_limit($sql, $entries_per_page, $start);
-				
-				while ($row = $db->sql_fetchrow($result))
+				// Delete entries if requested and able
+				if (($deletemark || $deleteall) && $auth->acl_get('a_clearlogs'))
 				{
-					$new_users	= array();
-					
-					// Get all information about the user who sent the invitation
-					$user_sql 		= 'SELECT * FROM ' . USERS_TABLE . ' WHERE user_id = ' . $row['user_id'];
-					$user_result 	= $db->sql_query($user_sql);
-					
-					while ($user_row = $db->sql_fetchrow($user_result))
+					if (confirm_box(true))
 					{
-						foreach ($user_row as $k => $v)
+						$where_sql = '';
+
+						if ($deletemark && sizeof($marked))
 						{
-							$row_user[$k] = utf8_normalize_nfc($v);
-						}
-					}
-					$db->sql_freeresult($user_result);
-					
-					// Count all invitations sent by our current user
-					$sql2 			= 'SELECT COUNT(key_id) as invitations FROM ' . INVITE_KEYS_TABLE . ' WHERE user_id = ' . $row_user['user_id'];
-					$result2 		= $db->sql_query($sql2);
-					$invitations	= $db->sql_fetchfield('invitations');
-					
-					// Get all invitations sent by our current user
-					$sql2 			= 'SELECT * FROM ' . INVITE_KEYS_TABLE . ' WHERE user_id = ' . $row['user_id'] . ' AND key_used = 1';
-					$result2 		= $db->sql_query($sql2);
-					
-					while ($row2 = $db->sql_fetchrow($result2))
-					{
-						foreach ($row2 as $k => $v)
-						{
-							$invitations_row[$k] = utf8_normalize_nfc($v);
-						}
-						
-						// Get information about all new users, who were invited by our current user
-						$sql3			= 'SELECT * FROM ' . USERS_TABLE . ' WHERE user_id = ' . $invitations_row['new_user'];
-						$result3 		= $db->sql_query($sql3);
-							
-						while ($row3 = $db->sql_fetchrow($result3))
-						{
-							foreach ($row3 as $k2 => $v2)
+							$sql_in = array();
+							foreach ($marked as $mark)
 							{
-								$new_user_row[$k2] = utf8_normalize_nfc($v2);
+								$sql_in[] = $mark;
 							}
+							$where_sql = ' AND ' . $db->sql_in_set('log_id', $sql_in);
+							unset($sql_in);
 						}
-						
-						// Add them to an array so we can use implode() later
-						$new_users[] = get_username_string('full', $new_user_row['user_id'], $new_user_row['username'], $new_user_row['user_colour'], false, $profile_url);
+
+						if ($where_sql || $deleteall)
+						{
+							$sql = 'DELETE FROM ' . LOG_TABLE . "
+								WHERE log_type = {$this->log_type}
+								$where_sql";
+							$db->sql_query($sql);
+						}
 					}
+					else
+					{
+						confirm_box(false, $user->lang['CONFIRM_OPERATION'], build_hidden_fields(array(
+							'start'		=> $start,
+							'delmarked'	=> $deletemark,
+							'delall'	=> $deleteall,
+							'mark'		=> $marked,
+							'st'		=> $sort_days,
+							'sk'		=> $sort_key,
+							'sd'		=> $sort_dir,
+							'i'			=> $id,
+							'mode'		=> $mode,
+							'action'	=> $action))
+						);
+					}
+				}
+				
+				// Sorting
+				$limit_days = array(0 => $user->lang['ALL_ENTRIES'], 1 => $user->lang['1_DAY'], 7 => $user->lang['7_DAYS'], 14 => $user->lang['2_WEEKS'], 30 => $user->lang['1_MONTH'], 90 => $user->lang['3_MONTHS'], 180 => $user->lang['6_MONTHS'], 365 => $user->lang['1_YEAR']);
+				$sort_by_text = array('u' => $user->lang['SORT_USERNAME'], 't' => $user->lang['SORT_DATE'], 'i' => $user->lang['SORT_IP'], 'o' => $user->lang['SORT_ACTION']);
+				$sort_by_sql = array('u' => 'u.username_clean', 't' => 'l.log_time', 'i' => 'l.log_ip', 'o' => 'l.log_operation');
+
+				$s_limit_days = $s_sort_key = $s_sort_dir = $u_sort_param = '';
+				gen_sort_selects($limit_days, $sort_by_text, $sort_days, $sort_key, $sort_dir, $s_limit_days, $s_sort_key, $s_sort_dir, $u_sort_param);
+
+				// Define where and sort sql for use in displaying logs
+				$sql_where = ($sort_days) ? (time() - ($sort_days * 86400)) : 0;
+				$sql_sort = $sort_by_sql[$sort_key] . ' ' . (($sort_dir == 'd') ? 'DESC' : 'ASC');
+		
+				// Grab log data
+				$log_data = array();
+				$log_count = 0;
+				view_log('invite', $log_data, $log_count, $entries_per_page, $start, 0, 0, 0, $sql_where, $sql_sort);
+				
+				$template->assign_vars(array(
+					'U_ACTION'		=> $this->u_action,
 					
-					// Assign row
+					'S_ON_PAGE'		=> on_page($log_count, $entries_per_page, $start),
+					'PAGINATION'	=> generate_pagination($this->u_action, $log_count, $entries_per_page, $start, true),
+					
+					'S_LIMIT_DAYS'	=> $s_limit_days,
+					'S_SORT_KEY'	=> $s_sort_key,
+					'S_SORT_DIR'	=> $s_sort_dir,
+					'S_CLEARLOGS'	=> $auth->acl_get('a_clearlogs'),
+					'S_SHOW_INFO'	=> ($show_info) ? true : false,
+				));
+				
+				if ($show_info)
+				{
+					$info	= $invite->get_info($show_info);
+					
+					$template->assign_vars(array(
+						'INFO_USERNAME'			=> $info['username_full'],
+						'INFO_INVITATIONS'		=> $info['invitations'],
+						'INFO_REGISTRATIONS'	=> $info['registrations'],
+						'INFO_REG_USERS'			=> $info['reg_users'],
+					));
+				}
+				
+				foreach ($log_data as $row)
+				{
+					$data = array();
+					
 					$template->assign_block_vars('log', array(
-						'USERNAME'				=> get_username_string('full', $row_user['user_id'], $row_user['username'], $row_user['user_colour'], false, $profile_url),
-						'DATE'					=> $user->format_date($row['key_time']),
-						'INVITATIONS'			=> $invitations,
-						'REGISTRATIONS_USER'	=> implode($new_users, ', '),
-						'EMAIL'					=> $row['to_email'],
+						'USERNAME'			=> $row['username_full'],
+						'REPORTEE_USERNAME'	=> ($row['reportee_username'] && $row['user_id'] != $row['reportee_id']) ? $row['reportee_username_full'] : '',
+
+						'IP'				=> $row['ip'],
+						'DATE'				=> $user->format_date($row['time']),
+						'ACTION'			=> $row['action'],
+						'DATA'				=> (sizeof($data)) ? implode(' | ', $data) : '',
+						'ID'				=> $row['id'],
+						'INFO'				=> append_sid("{$phpbb_admin_path}index.$phpEx", 'i=invite&amp;mode=log&amp;info=' . $row['id']),
 						)
 					);
 				}
-				
-				// Pagination
-				$template->assign_vars(array(
-					'S_ON_PAGE'		=> on_page($total_entries, $entries_per_page, $start),
-					'PAGINATION'	=> generate_pagination($this->u_action, $total_entries, $entries_per_page, $start, true),
-				));
 			break;
 		}
 	}

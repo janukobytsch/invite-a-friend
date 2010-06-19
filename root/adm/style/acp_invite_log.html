@@ -6,13 +6,34 @@
 
 <p>{L_ACP_INVITE_A_FRIEND_LOG_EXPLAIN}</p>
 
+<!-- IF S_SHOW_INFO -->
+	<table cellspacing="1">
+	<thead>
+	<tr>
+		<th>{L_USERNAME}</th>
+		<th>{L_INVITATIONS}</th>
+		<th>{L_REGISTRATIONS}</th>
+		<th>{L_REGISTRATIONS}</th>
+	</tr>
+	</thead>
+	<tbody>
+	<tr class="row1">
+		<td style="text-align: center;">{INFO_USERNAME}</td>
+		<td style="text-align: center;">{INFO_INVITATIONS}</td>
+		<td style="text-align: center;">{INFO_REGISTRATIONS}</td>
+		<td style="text-align: center;">{INFO_REG_USERS}</td>
+	</tr>
+	</tbody>
+	</table>
+	<br />
+<!-- ENDIF -->
 
-<form id="acp_invite" method="post" action="{U_SETTINGS}">
+<form id="acp_invite" method="post" action="{U_ACTION}">
 
 <!-- IF PAGINATION -->
-<div class="pagination">
-	<a href="#" onclick="jumpto(); return false;" title="{L_JUMP_TO_PAGE}">{S_ON_PAGE}</a> &bull; <span>{PAGINATION}</span>
-</div>
+	<div class="pagination">
+		<a href="#" onclick="jumpto(); return false;" title="{L_JUMP_TO_PAGE}">{S_ON_PAGE}</a> &bull; <span>{PAGINATION}</span>
+	</div>
 <!-- ENDIF -->
 
 <!-- IF .log -->
@@ -20,20 +41,26 @@
 	<thead>
 	<tr>
 		<th>{L_USERNAME}</th>
-		<th>{L_DATE}</th>
-		<th>{L_INVITATIONS}</th>
-		<th>{L_REGISTRATIONS}</th>
-		<th>{L_EMAIL}</th>
+		<th>{L_IP}</th>
+		<th>{L_TIME}</th>
+		<th>{L_ACTION}</th>
+		<th>{L_MARK}</th>
 	</tr>
 	</thead>
 	<tbody>
 	<!-- BEGIN log -->
 		<!-- IF log.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
-			<td style="text-align: center;">{log.USERNAME}</td>
+
+			<td>
+				{log.USERNAME}&nbsp;<a href="{log.INFO}">[{L_INVITE_INFO}]</a>
+				<!-- IF log.REPORTEE_USERNAME -->
+				<br />&raquo; {log.REPORTEE_USERNAME}
+				<!-- ENDIF -->
+			</td>
+			<td style="text-align: center;">{log.IP}</td>
 			<td style="text-align: center;">{log.DATE}</td>
-			<td style="text-align: center;">{log.INVITATIONS}</td>
-			<td style="text-align: center;">{log.REGISTRATIONS_USER}</td>
-			<td style="text-align: center;">{log.EMAIL}</td>
+			<td>{log.ACTION}<!-- IF log.DATA --><br /><span>{log.DATA}</span><!-- ENDIF --></td>
+			<td style="text-align: center;"><input type="checkbox" class="radio" name="mark[]" value="{log.ID}" /></td>
 		</tr>
 	<!-- END log -->
 	</tbody>
@@ -47,10 +74,24 @@
 
 <!-- ENDIF -->
 
+<fieldset class="display-options">
+	{L_DISPLAY_LOG}: &nbsp;{S_LIMIT_DAYS}&nbsp;{L_SORT_BY}: {S_SORT_KEY} {S_SORT_DIR}
+	<input class="button2" type="submit" value="{L_GO}" name="sort" />
+	{S_FORM_TOKEN}
+</fieldset>
+<hr />
 <!-- IF PAGINATION -->
-<div class="pagination">
-	<a href="#" onclick="jumpto(); return false;" title="{L_JUMP_TO_PAGE}">{S_ON_PAGE}</a> &bull; <span>{PAGINATION}</span>
-</div>
+	<div class="pagination">
+		<a href="#" onclick="jumpto(); return false;" title="{L_JUMP_TO_PAGE}">{S_ON_PAGE}</a> &bull; <span>{PAGINATION}</span>
+	</div>
+<!-- ENDIF -->
+
+<!-- IF S_CLEARLOGS -->
+	<fieldset class="quick">
+		<input class="button2" type="submit" name="delall" value="{L_DELETE_ALL}" />&nbsp;
+		<input class="button2" type="submit" name="delmarked" value="{L_DELETE_MARKED}" /><br />
+		<p class="small"><a href="#" onclick="marklist('acp_invite', 'mark', true); return false;">{L_MARK_ALL}</a> &bull; <a href="#" onclick="marklist('acp_invite', 'mark', false); return false;">{L_UNMARK_ALL}</a></p>
+	</fieldset>
 <!-- ENDIF -->
 
 {S_FORM_TOKEN}
