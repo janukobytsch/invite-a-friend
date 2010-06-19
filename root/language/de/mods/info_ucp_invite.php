@@ -5,7 +5,7 @@
 *
 * @author Bycoja bycoja@web.de
 * @package language
-* @version $Id info_ucp_invite 0.6.0 2010-04-02 01:37:02GMT Bycoja $
+* @version $Id info_ucp_invite.php 0.6.1 2010-04-05 15:14:09GMT Bycoja $
 * @copyright (c) 2010 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *

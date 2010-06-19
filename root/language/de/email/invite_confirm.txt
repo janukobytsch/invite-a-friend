@@ -1,6 +1,0 @@
-Hallo {INVITE_USERNAME},
-diese Nachricht wird dir zur Bestätigung der Registrierung des Benutzers "{REGISTER_USERNAME}" auf
-{U_BOARD}
-geschickt, den du zuvor eingeladen hast.
-
-Du kannst sein Profil hier ansehen, wenn du möchtest: {REGISTER_USER_PROFILE}

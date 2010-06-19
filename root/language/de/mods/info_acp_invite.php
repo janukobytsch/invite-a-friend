@@ -5,7 +5,7 @@
 *
 * @author Bycoja bycoja@web.de
 * @package language
-* @version $Id info_acp_invite 0.6.0 2010-04-02 01:37:02GMT Bycoja $
+* @version $Id info_acp_invite.php 0.6.1 2010-04-05 15:14:09GMT Bycoja $
 * @copyright (c) 2010 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -183,6 +183,9 @@ $lang = array_merge($lang, array(
 	'SETTINGS_LIMIT_MEMBERDAYS'					=> 'Zusätzliche Einladungen pro Tag der Mitgliedschaft',
 	'SETTINGS_LIMIT_REGISTRATIONS'				=> 'Zusätzliche Einladungen pro erfolgreiche Einladung',
 
+	// UMIL
+	'TRANSFER_INVITATION_DATA'					=> 'Alte Daten übertragen',
+	'TRANSFER_INVITATION_DATA_EXPLAIN'			=> 'Überträgt alte Statistiken wie die Anzahl der versendeten Einladungen von Version 0.5.4 und früher. Es dürfen keine manuellen Eingriffe in die Datenbank stattgefunden haben.',
 ));
 
 ?>

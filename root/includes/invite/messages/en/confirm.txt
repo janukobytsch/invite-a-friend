@@ -1,4 +1,0 @@
-Hello {INVITE_USERNAME},
-this message was sent to you, because a friend of yours registered on {U_BOARD} and chose the nickname &quot;{REGISTER_USERNAME}&quot;.
-
-You can view his profile here: {REGISTER_USER_PROFILE}

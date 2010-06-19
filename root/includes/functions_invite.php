@@ -3,7 +3,7 @@
 *
 * @author Bycoja bycoja@web.de
 * @package phpBB3
-* @version $Id functions_invite 0.6.0 2010-04-02 01:37:02GMT Bycoja $
+* @version $Id functions_invite.php 0.6.1 2010-04-16 01:37:02GMT Bycoja $
 * @copyright (c) 2010 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -32,7 +32,7 @@ $INVITE_MESSAGE_TYPE = array(
 */      
 class invite
 {
-	var $version = '0.6.0';
+	var $version = '0.6.1';
 	var $INVITE_MESSAGE_TYPE = array('invite' => 0, 'confirm' => 1,);
 
 	var $config;
@@ -48,7 +48,7 @@ class invite
 		global $db, $config;
 
 		// Make sure the mod is actually installed
-		if (!isset($config['invite_version']))
+		if (!isset($config['invite_version']) || defined('IN_INSTALL'))
 		{
 			return;
 		}

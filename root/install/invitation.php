@@ -3,7 +3,7 @@
 *
 * @author Bycoja bycoja@web.de
 * @package umil
-* @version $Id index.php 0.6.0 2010-04-02 01:37:02GMT Bycoja $
+* @version $Id invitation.php 0.6.1 2010-04-16 01:37:02GMT Bycoja $
 * @copyright (c) 2010 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -29,7 +29,11 @@ if (!file_exists($phpbb_root_path . 'umil/umil_auto.' . $phpEx))
 	trigger_error('Please download the latest UMIL (Unified MOD Install Library) from: <a href="http://www.phpbb.com/mods/umil/">phpBB.com/mods/umil</a>', E_USER_ERROR);
 }
 
-include($phpbb_root_path . 'includes/functions_mods.'.$phpEx);
+// Additional options
+$options = array(
+	'transfer_invitation_data'	=> array('lang' => 'TRANSFER_INVITATION_DATA', 'type' => 'radio:yes_no', 'function' => 'transfer_invitation_data', 'explain' => true),
+);
+$transfer_invitation_data = request_var('transfer_invitation_data', '', true);
 
 // The name of the mod to be displayed during installation.
 $mod_name = 'ACP_INVITE';
@@ -60,7 +64,6 @@ $language_file = 'mods/info_acp_invite';
 * You must use correct version numbering.  Unless you know exactly what you can use, only use X.X.X (replacing X with an integer).
 * The version numbering must otherwise be compatible with the version_compare function - http://php.net/manual/en/function.version-compare.php
 */
-
 $versions = array(
 	// Version 0.6.0 - First beta version using UMIL
 	'0.6.0'	=> array(
@@ -211,6 +214,22 @@ $versions = array(
 		*/
 		'custom'	=> 'insert_data_060',
 	),
+
+	// Version 0.6.1
+	'0.6.1'	=> array(
+		// Change existing fields
+		'table_column_update' => array(
+			array($table_prefix . 'users', 'user_inviter_id', array('UINT', 0)),
+			// NULL doesn't work for some reason, so we have to handle this in our custom function
+			//array($table_prefix . 'users', 'user_inviter_name', array('VCHAR_UNI', NULL)),
+		),
+
+		/*
+		* Now we need to insert some data. The easiest way to do that is through a custom function.
+		* Enter 'custom' for the array key and the name of the function for the value.
+		*/
+		'custom'	=> 'insert_data_061',
+	),
 );
 
 // As version 0.5.4 doesn't support UMIL we have to make updating work correctly...
@@ -219,8 +238,7 @@ if (isset($config[$version_config_name]))
 	if (version_compare($config[$version_config_name], '0.5.4', '=='))
 	{
 		// Set up version array containing update instructions
-		$versions = array(
-			'0.6.0'	=> array(
+		$versions['0.6.0'] = array(
 				// Add permission settings
 				'permission_add' => array(
 					array('a_invite_settings', true),
@@ -260,7 +278,6 @@ if (isset($config[$version_config_name]))
 				* Enter 'custom' for the array key and the name of the function for the value.
 				*/
 				'custom'	=> 'insert_data_060',
-			),
 		);
 	}
 }
@@ -268,6 +285,99 @@ if (isset($config[$version_config_name]))
 // Include the UMIF Auto file and everything else will be handled automatically.
 include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);
 
+/*
+* Here is our custom function that will be called in order to transfer existing invitation data and make it work with the new release
+* Requires the invitation related database fields in the users table to be set
+*
+* Depending on the amount of existing data calling this function will run a lot of queries... be warned!
+* Will only work correctly if no entries in the invitatin log table have been deleted manually.
+*/
+function transfer_invitation_data()
+{
+	global $db, $umil;
+
+	// Array to be filled with the existing invitation data
+	$invitation_data = array();
+
+	// Array to be filled with the number of existing invitations for each user
+	$invitation_count = array();
+
+	// Grab data within the invitation table from previous versions
+	$sql 	= 'SELECT *
+		FROM ' . INVITE_LOG_TABLE;
+	$result	= $db->sql_query($sql);
+	$invitation_data = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+
+	// Requires the invitation related database fields in the users table to be set
+	for ($i = 0, $size = sizeof($invitation_data); $i < $size; $i++)
+	{
+		// Initialise the invitation count when running for the first time
+		if (!isset($invitation_count[$invitation_data[$i]['invite_user_id']]['user_invitations']))
+		{
+			$invitation_count[$invitation_data[$i]['invite_user_id']]['user_invitations'] = 0;
+			$invitation_count[$invitation_data[$i]['invite_user_id']]['user_registrations'] = 0;
+		}
+
+		// Add referral data and associate the invited user with the one who invited him
+		if ($invitation_data[$i]['register_user_id'] && $invitation_data[$i]['register_key_used'])
+		{
+			$sql 	= 'SELECT username_clean
+				FROM ' . USERS_TABLE . '
+				WHERE user_id = ' . $invitation_data[$i]['invite_user_id'];
+			$result = $db->sql_query($sql);
+			$invite_username = $db->sql_fetchfield('username_clean');
+			$db->sql_freeresult($result);
+
+			$sql_ary	= array(
+				'user_inviter_id'	=> (int) $invitation_data[$i]['invite_user_id'],
+				'user_inviter_name'	=> $invite_username,
+			);
+
+			$sql = 'UPDATE ' . USERS_TABLE . '
+				SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
+				WHERE user_id = ' . (int) $invitation_data[$i]['register_user_id'];
+			$result = $db->sql_query($sql);
+
+			$invitation_count[$invitation_data[$i]['invite_user_id']]['user_registrations']++;
+		}
+		$invitation_count[$invitation_data[$i]['invite_user_id']]['user_invitations']++;
+	}
+
+	// Add the number of invitations sent
+	foreach ($invitation_count as $user_id => $user_count_ary)
+	{
+		// Check whether the database fields in users table are already filled
+		$sql = 'SELECT user_invitations, user_registrations
+			FROM ' . USERS_TABLE . "
+			WHERE user_id = $user_id";
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$existing['user_invitations'] = $row['user_invitations'];
+			$existing['user_registrations'] = $row['user_registrations'];
+		}
+		$db->sql_freeresult($result);
+
+		// Go on with next user if the invitation log table had been edited manually
+		if ((($user_count_ary['user_invitations'] - $existing['user_invitations']) < 0) || $increase['user_registrations'] < 0)
+		{
+			continue;
+		}
+		else
+		{
+			$sql_ary	= array(
+				'user_invitations'		=> $user_count_ary['user_invitations'],
+				'user_registrations'	=> $user_count_ary['user_registrations'],
+			);
+
+			$sql = 'UPDATE ' . USERS_TABLE . '
+				SET ' . $db->sql_build_array('UPDATE', $sql_ary) . "
+				WHERE user_id = $user_id";
+			$result = $db->sql_query($sql);
+		}
+	}
+}
 
 /*
 * Here is our custom function that will be called for version 0.6.0
@@ -277,7 +387,7 @@ include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);
 */
 function insert_data_060($action, $version)
 {
-	global $db, $table_prefix, $umil, $config, $version_config_name;
+	global $db, $table_prefix, $umil, $config, $version_config_name, $transfer_invitation_data;
 
 	switch ($action)
 	{
@@ -376,59 +486,74 @@ function insert_data_060($action, $version)
 							$umil = new umil();
 						}
 					}
+
 					// Remove old modules with categories first to not cause any error
-					$umil->module_remove('acp', 'ACP_INVITE', 'ACP_INVITE');
-					$umil->module_remove('acp', false, 'ACP_INVITE_LOG');
-					$umil->module_remove('acp', false, 'ACP_INVITE');
-					$umil->module_remove('ucp', false, 'UCP_INVITE_INVITE');
-					$umil->module_remove('ucp', false, 'UCP_INVITE');
-
-					// Add a new category to ACP_CAT_DOT_MODS
-					$umil->module_add('acp', 'ACP_CAT_DOT_MODS', array(
-						'module_langname'	=> 'ACP_INVITE',
+					$umil->module_remove(array(
+						array('acp', 'ACP_INVITE', 'ACP_INVITE'),
+						array('acp', false, 'ACP_INVITE_LOG'),
+						array('acp', false, 'ACP_INVITE'),
+						array('ucp', false, 'UCP_INVITE_INVITE'),
+						array('ucp', false, 'UCP_INVITE'),
 					));
 
-					// Add settings module to the added category
-					$umil->module_add('acp', 'ACP_INVITE', array(
-						'module_basename'	=> 'invite',
-						'module_langname'	=> 'ACP_INVITE_SETTINGS',
-						'module_mode'		=> 'settings',
-						'module_auth'		=> 'acl_a_invite_settings',
-					));
+					// Add the new modules
+					$umil->module_add(array(
+						// Add a new category to ACP_CAT_DOT_MODS
+						array('acp', 'ACP_CAT_DOT_MODS', 'ACP_INVITE'),
 
-					// Add templates module to the added category
-					$umil->module_add('acp', 'ACP_INVITE', array(
-						'module_basename'	=> 'invite',
-						'module_langname'	=> 'ACP_INVITE_TEMPLATES',
-						'module_mode'		=> 'templates',
-						'module_auth'		=> 'acl_a_invite_settings',
-					));
+						// Add settings module to the added category
+						array('acp', 'ACP_INVITE', array(
+								'module_basename'	=> 'invite',
+								'module_langname'	=> 'ACP_INVITE_SETTINGS',
+								'module_mode'		=> 'settings',
+								'module_auth'		=> 'acl_a_invite_settings',
+							),
+						),
 
-					// Add log module to the added category
-					$umil->module_add('acp', 'ACP_INVITE', array(
-						'module_basename'	=> 'invite',
-						'module_langname'	=> 'ACP_INVITE_LOG',
-						'module_mode'		=> 'log',
-						'module_auth'		=> 'acl_a_invite_log',
-					));
+						// Add templates module to the added category
+						array('acp', 'ACP_INVITE', array(
+								'module_basename'	=> 'invite',
+								'module_langname'	=> 'ACP_INVITE_TEMPLATES',
+								'module_mode'		=> 'templates',
+								'module_auth'		=> 'acl_a_invite_settings',
+							),
+						),
 
-					// Add a new category to UCP
-					$umil->module_add('ucp', 0, array(
-						'module_langname'	=> 'UCP_INVITE',
-					));
+						// Add log module to the added category
+						array('acp', 'ACP_INVITE', array(
+								'module_basename'	=> 'invite',
+								'module_langname'	=> 'ACP_INVITE_LOG',
+								'module_mode'		=> 'log',
+								'module_auth'		=> 'acl_a_invite_log',
+							),
+						),
 
-					// Add invitation module to the added category
-					$umil->module_add('ucp', 'UCP_INVITE', array(
-						'module_basename'	=> 'invite',
-						'module_langname'	=> 'UCP_INVITE_INVITE',
-						'module_mode'		=> 'invite',
-						'module_auth'		=> 'acl_u_send_invite',
+						// Add a new category to UCP
+						array('ucp', '', 'UCP_INVITE'),
+
+						// Add invitation module to the added category
+						array('ucp', 'UCP_INVITE', array(
+								'module_basename'	=> 'invite',
+								'module_langname'	=> 'UCP_INVITE_INVITE',
+								'module_mode'		=> 'invite',
+								'module_auth'		=> 'acl_u_send_invite',
+							),
+						),
 					));
 				}
 			}
 
+			// Transfer existing invitation data if wished
+			if ($transfer_invitation_data)
+			{
+				transfer_invitation_data();
+
+				// Send a message that the command was successful
+				return 'Transferring invitation data';
+			}
+
 			// Send a message that the command was successful
-			return 'Populated database tables';
+			return 'Populating database tables';
 		break;
 
  		case 'uninstall' :
@@ -436,4 +561,38 @@ function insert_data_060($action, $version)
 	}
 }
 
+/*
+* Here is our custom function that will be called for version 0.6.1
+*
+* @param string $action The action (install|update|uninstall) will be sent through this.
+* @param string $version The version this is being run for will be sent through this.
+*/
+function insert_data_061($action, $version)
+{
+	global $db, $table_prefix, $transfer_invitation_data;
+
+	switch ($action)
+	{
+		case 'install' :
+		case 'update' :
+			// Allow NULL
+			$db->sql_query('ALTER TABLE ' . $table_prefix . 'users CHANGE user_inviter_name user_inviter_name VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_bin NULL');
+
+			// Transfer existing invitation data if wished
+			if ($transfer_invitation_data)
+			{
+				transfer_invitation_data();
+
+				// Send a message that the command was successful
+				return 'Transferring invitation data';
+			}
+
+			// Send a message that the command was successful
+			return 'Altering database tables';
+		break;
+
+ 		case 'uninstall' :
+		break;
+	}
+}
 ?>

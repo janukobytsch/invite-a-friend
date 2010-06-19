@@ -1,5 +1,5 @@
 Hello {RECIPIENT_NAME},
-this message has been sent by a friend of yours known as '{INVITER_USERNAME}',
+this message has been sent by a friend of yours known as {INVITER_USERNAME},
 because he thinks that you may be interested in the following website:
 {BOARD_URL}
 

@@ -7,7 +7,7 @@
 		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
 
 		<title lang="en">Invite A Friend</title>
-		<description lang="en">Installing the templates of Invite A Friend for subsilver2 style.</description>
+		<description lang="en">Updating the templates of Invite A Friend for subsilver2 style from 0.6.0 to 0.6.1.</description>
 		<author-notes lang="en">For further information and bug reports please visit <![CDATA[http://www.phpbb.com/community/viewtopic.php?f=70&t=1224005]]></author-notes>
 
 		<author-group>
@@ -178,7 +178,8 @@
 		</history>
 
 		<link-group>
-			<link type="parent" href="../../install.xml" lang="en">install.xml</link>
+			<link type="parent" href="../update.xml" lang="en">update.xml</link>
+			<link type="parent" href="../../../../install.xml" lang="en">install.xml</link>
 		</link-group>
 	</header>
 
@@ -189,10 +190,8 @@
 
 		<open src="styles/subsilver2/template/memberlist_body.html">
 			<edit>
-				<find><![CDATA[<!-- IF S_SHOW_GROUP --><!-- INCLUDE memberlist_group.html --><!-- ENDIF -->]]></find>
-				<action type="after-add"><![CDATA[<!-- IF S_ENABLE_INVITE_FILTER and S_INVITE_FILTER --><h2 class="solo">{PAGE_TITLE_INVITE_SEARCH}</h2><!-- ENDIF -->
-
-<!-- Calculate correct colspan -->
+				<find><![CDATA[<!-- IF S_ENABLE_INVITE_FILTER and S_INVITE_FILTER --><h2 class="solo">{PAGE_TITLE_INVITE_SEARCH}</h2><!-- ENDIF -->]]></find>
+				<action type="after-add"><![CDATA[<!-- Calculate correct colspan -->
 <!-- IF S_IN_SEARCH_POPUP -->
 <!-- DEFINE $COLSPAN = 9 -->
 <!-- ELSE -->
@@ -203,139 +202,20 @@
 <!-- IF U_SORT_REGISTER --><!-- DEFINE $COLSPAN = $COLSPAN + 1 --><!-- ENDIF -->]]></action>
 			</edit>
 			<edit>
-				<find><![CDATA[	<th nowrap="nowrap" width="15%"><a href="{U_SORT_JOINED}">{L_JOINED}</a></th>]]></find>
-				<action type="after-add"><![CDATA[	<!-- IF U_SORT_INVITER --><th nowrap="nowrap" width="<!-- IF not U_SORT_INVITE and not U_SORT_REGISTER -->15<!-- ELSE -->10<!-- ENDIF -->%"><a href="{U_SORT_INVITER}">{L_DISPLAY_INVITER}</a></th><!-- ENDIF -->
-	<!-- IF U_SORT_INVITE --><th nowrap="nowrap" width="5%"><a href="{U_SORT_INVITE}">{L_DISPLAY_INVITE}</a></th><!-- ENDIF -->
-	<!-- IF U_SORT_REGISTER --><th nowrap="nowrap" width="5%"><a href="{U_SORT_REGISTER}">{L_DISPLAY_REGISTER}</a></th><!-- ENDIF -->]]></action>
-			</edit>
-			<edit>
-				<find><![CDATA[				<td colspan="8"><b class="gensmall">{L_GROUP_LEADER}</b></td>]]></find>
+				<find><![CDATA[				<td colspan="{S_TABLE_COLSPAN_SUBSILVER}"><b class="gensmall">{L_GROUP_LEADER}</b></td>]]></find>
 				<action type="replace-with"><![CDATA[				<td colspan="{$COLSPAN}"><b class="gensmall">{L_GROUP_LEADER}</b></td>]]></action>
 			</edit>
 			<edit>
-				<find><![CDATA[				<td colspan="8"><b class="gensmall">{L_GROUP_MEMBERS}</b></td>]]></find>
+				<find><![CDATA[				<td colspan="{S_TABLE_COLSPAN_SUBSILVER}"><b class="gensmall">{L_GROUP_MEMBERS}</b></td>]]></find>
 				<action type="replace-with"><![CDATA[				<td colspan="{$COLSPAN}"><b class="gensmall">{L_GROUP_MEMBERS}</b></td>]]></action>
 			</edit>
 			<edit>
-				<find><![CDATA[		<td class="genmed" align="center" nowrap="nowrap">&nbsp;{memberrow.JOINED}&nbsp;</td>]]></find>
-				<action type="after-add"><![CDATA[		<!-- IF U_SORT_INVITER --><td class="gen" align="center"><!-- IF memberrow.POSTER_INVITE_INVITER -->{memberrow.POSTER_INVITE_INVITER}<!-- ENDIF --></td><!-- ENDIF -->
-		<!-- IF U_SORT_INVITE --><td class="gen" align="center">{memberrow.POSTER_INVITE_INVITE}</td><!-- ENDIF -->
-		<!-- IF U_SORT_REGISTER --><td class="gen" align="center">{memberrow.POSTER_INVITE_REGISTER}</td><!-- ENDIF -->]]></action>
-			</edit>
-			<edit>
-				<find><![CDATA[		<td class="row1" colspan="<!-- IF S_IN_SEARCH_POPUP -->9<!-- ELSE -->8<!-- ENDIF -->" align="center">]]></find>
+				<find><![CDATA[		<td class="row1" colspan="{S_TABLE_COLSPAN_SUBSILVER}" align="center">]]></find>
 				<action type="replace-with"><![CDATA[		<td class="row1" colspan="{$COLSPAN}" align="center">]]></action>
 			</edit>
 			<edit>
-				<find><![CDATA[	<td class="cat" colspan="<!-- IF S_IN_SEARCH_POPUP -->9<!-- ELSE -->8<!-- ENDIF -->" align="center"><!-- IF S_IN_SEARCH_POPUP and not S_SELECT_SINGLE --><input class="btnlite" type="submit" value="{L_SELECT_MARKED}" /><!-- ELSE --><span class="gensmall">{L_SELECT_SORT_METHOD}:</span>&nbsp;<select name="sk">{S_MODE_SELECT}</select>&nbsp; <span class="gensmall">{L_ORDER}</span>&nbsp;<select name="sd">{S_ORDER_SELECT}</select>&nbsp; <input type="submit" name="submit" value="{L_SUBMIT}" class="btnlite" /><!-- ENDIF --></td>]]></find>
+				<find><![CDATA[	<td class="cat" colspan="{S_TABLE_COLSPAN_SUBSILVER}" align="center"><!-- IF S_IN_SEARCH_POPUP and not S_SELECT_SINGLE --><input class="btnlite" type="submit" value="{L_SELECT_MARKED}" /><!-- ELSE --><span class="gensmall">{L_SELECT_SORT_METHOD}:</span>&nbsp;<select name="sk">{S_MODE_SELECT}</select>&nbsp; <span class="gensmall">{L_ORDER}</span>&nbsp;<select name="sd">{S_ORDER_SELECT}</select>&nbsp; <input type="submit" name="submit" value="{L_SUBMIT}" class="btnlite" /><!-- ENDIF --></td>]]></find>
 				<action type="replace-with"><![CDATA[	<td class="cat" colspan="{$COLSPAN}" align="center"><!-- IF S_IN_SEARCH_POPUP and not S_SELECT_SINGLE --><input class="btnlite" type="submit" value="{L_SELECT_MARKED}" /><!-- ELSE --><span class="gensmall">{L_SELECT_SORT_METHOD}:</span>&nbsp;<select name="sk">{S_MODE_SELECT}</select>&nbsp; <span class="gensmall">{L_ORDER}</span>&nbsp;<select name="sd">{S_ORDER_SELECT}</select>&nbsp; <input type="submit" name="submit" value="{L_SUBMIT}" class="btnlite" /><!-- ENDIF --></td>]]></action>
-			</edit>
-		</open>
-
-		<open src="styles/subsilver2/template/memberlist_search.html">
-			<edit>
-				<find><![CDATA[	<td class="row1"><b class="genmed">{L_AIM}:</b></td>
-	<td class="row2"><input class="post" type="text" name="aim" value="{AIM}" /></td>
-</tr>]]></find>
-				<action type="after-add"><![CDATA[<!-- IF S_INVITE_SEARCH_ALLOWED -->
-<!-- IF U_SORT_INVITER or U_SORT_INVITE or U_SORT_REGISTER -->
-<tr>
-	<!-- IF U_SORT_INVITER -->
-	<td class="row1"><b class="genmed">{L_DISPLAY_INVITER}:</b></td>
-	<td class="row2"><input class="post" type="text" name="ui" id="ui" value="{INVITER}" /></td>
-	<!-- ENDIF -->
-	<!-- IF U_SORT_INVITE -->
-	<td class="row1"><b class="genmed">{L_DISPLAY_INVITE}:</b></td>
-	<td class="row2"><select name="invite_select">{S_INVITE_OPTIONS}</select> <input class="post" type="text" name="invite" id="invite" value="{INVITE}" /></td>
-	<!-- ENDIF -->
-	<!-- IF U_SORT_INVITER and U_SORT_INVITE and U_SORT_REGISTER --></tr><tr><!-- ENDIF -->
-	<!-- IF U_SORT_REGISTER -->
-	<td class="row1"><b class="genmed">{L_DISPLAY_REGISTER}:</b></td>
-	<td class="row2"><select name="register_select">{S_REGISTER_OPTIONS}</select> <input class="post" type="text" name="register" id="register" value="{REGISTER}" /></td>
-	<!-- ENDIF -->
-	<!-- IF U_SORT_INVITER and U_SORT_INVITE and U_SORT_REGISTER --><td colspan="2" class="row1">&nbsp;</td><!-- ENDIF -->
-	<!-- IF U_SORT_INVITER and not U_SORT_INVITE and not U_SORT_REGISTER --><td colspan="2" class="row1">&nbsp;</td><!-- ENDIF -->
-	<!-- IF not U_SORT_INVITER and not U_SORT_INVITE and U_SORT_REGISTER --><td colspan="2" class="row1">&nbsp;</td><!-- ENDIF -->
-	<!-- IF not U_SORT_INVITER and U_SORT_INVITE and not U_SORT_REGISTER --><td colspan="2" class="row1">&nbsp;</td><!-- ENDIF -->
-</tr>
-<!-- ENDIF -->
-<!-- ENDIF -->]]></action>
-			</edit>
-		</open>
-
-		<open src="styles/subsilver2/template/memberlist_view.html">
-			<edit>
-				<find><![CDATA[			<tr>
-				<td class="gen" align="{S_CONTENT_FLOW_END}" nowrap="nowrap">{L_VISITED}: </td>
-				<td width="100%"><b class="gen">{VISITED}</b></td>
-			</tr>]]></find>
-				<action type="after-add"><![CDATA[			<!-- IF POSTER_INVITE_INVITER and S_P_DISPLAY_INVITER -->
-				<tr>
-					<td class="gen" align="{S_CONTENT_FLOW_END}" nowrap="nowrap">{L_DISPLAY_INVITER}: </td>
-					<td width="100%"><b class="gen">{POSTER_INVITE_INVITER}</b></td>
-				</tr>
-			<!-- ENDIF -->]]></action>
-			</edit>
-			<edit>
-				<find><![CDATA[			<!-- IF S_SHOW_ACTIVITY -->
-				<tr>
-					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_ACTIVE_IN_FORUM}: </td>
-					<td><!-- IF ACTIVE_FORUM --><b><a class="gen" href="{U_ACTIVE_FORUM}">{ACTIVE_FORUM}</a></b><br /><span class="genmed">[ {ACTIVE_FORUM_POSTS} / {ACTIVE_FORUM_PCT} ]</span><!-- ELSE --><span class="gen">-</span><!-- ENDIF --></td>
-				</tr>
-				<tr>
-					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_ACTIVE_IN_TOPIC}: </td>
-					<td><!-- IF ACTIVE_TOPIC --><b><a class="gen" href="{U_ACTIVE_TOPIC}">{ACTIVE_TOPIC}</a></b><br /><span class="genmed">[ {ACTIVE_TOPIC_POSTS} / {ACTIVE_TOPIC_PCT} ]</span><!-- ELSE --><span class="gen">-</span><!-- ENDIF --></td>
-				</tr>
-			<!-- ENDIF -->]]></find>
-				<action type="after-add"><![CDATA[			<!-- IF S_P_DISPLAY_INVITE -->
-				<tr>
-					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_DISPLAY_INVITE}: </td>
-					<td width="100%"><b class="gen">{POSTER_INVITE_INVITE}</b><!-- IF U_USER_ADMIN --><br /><span class="genmed">[ <a href="{U_USER_ADMIN_INVITATIONS}">{L_USER_ADMIN_INVITATIONS}</a> ]</span><!-- ENDIF --><!-- IF INVITATIONS_PCT --><br /><span class="genmed">[{INVITATIONS_PCT} / {INVITATIONS_DAY}]</span><!-- ENDIF --></td>
-				</tr>
-			<!-- ENDIF -->
-			<!-- IF S_P_DISPLAY_REGISTER -->
-				<tr>
-					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_DISPLAY_REGISTER}: </td>
-					<td width="100%"><b class="gen">{POSTER_INVITE_REGISTER}</b><!-- IF U_USER_ADMIN --><br /><span class="genmed">[ <a href="{U_USER_ADMIN_REGISTRATIONS}">{L_USER_ADMIN_REGISTRATIONS}</a> ]</span><!-- ENDIF -->
-					<!-- IF REGISTRATIONS_PCT --><br />[{REGISTRATIONS_PCT} / {REGISTRATIONS_DAY}/<br />{REGISTRATIONS_SUCCESS_RATE}]<!-- ENDIF --><!-- IF S_DISPLAY_REGISTRATION_SEARCH --><br /><span class="genmed"><a href="{U_SEARCH_REGISTRATIONS}">{L_SEARCH_USER_REGISTRATIONS}</a></span><!-- ENDIF --></td>
-				</tr>
-			<!-- ENDIF -->]]></action>
-			</edit>
-		</open>
-
-		<open src="styles/subsilver2/template/overall_header.html">
-			<edit>
-				<find><![CDATA[					<!-- ELSEIF S_REGISTER_ENABLED and not (S_SHOW_COPPA or S_REGISTRATION) --> &nbsp;<a href="{U_REGISTER}"><img src="{T_THEME_PATH}/images/icon_mini_register.gif" width="12" height="13" alt="*" /> {L_REGISTER}</a>
-					<!-- ENDIF -->]]></find>
-				<action type="after-add"><![CDATA[					<!-- IF S_DISPLAY_INVITE --> &nbsp;<a href="{U_INVITE_A_FRIEND}"><img src="{T_THEME_PATH}/images/icon_mini_message.gif" width="12" height="13" alt="*" /> {L_ACP_INVITE}</a><!-- ENDIF -->]]></action>
-			</edit>
-		</open>
-
-		<open src="styles/subsilver2/template/viewtopic_body.html">
-			<edit>
-				<find><![CDATA[					<!-- IF postrow.POSTER_FROM --><br /><b>{L_LOCATION}:</b> {postrow.POSTER_FROM}<!-- ENDIF -->]]></find>
-				<action type="after-add"><![CDATA[					<!-- IF postrow.POSTER_INVITE_INVITER and S_T_DISPLAY_INVITER --><br /><b>{L_DISPLAY_INVITER}:</b> {postrow.POSTER_INVITE_INVITER}<!-- ENDIF -->
-					<!-- IF S_T_DISPLAY_INVITE --><br /><b>{L_DISPLAY_INVITE}:</b> {postrow.POSTER_INVITE_INVITE}<!-- ENDIF -->
-					<!-- IF S_T_DISPLAY_REGISTER --><br /><b>{L_DISPLAY_REGISTER}:</b> {postrow.POSTER_INVITE_REGISTER}<!-- ENDIF -->]]></action>
-			</edit>
-		</open>
-
-		<open src="styles/subsilver2/template/ucp_register.html">
-			<edit>
-				<find><![CDATA[<tr>
-	<td class="row1" width="38%"><b class="genmed">{L_USERNAME}: </b><br /><span class="gensmall">{L_USERNAME_EXPLAIN}</span></td>
-	<td class="row2"><input class="post" type="text" name="username" size="25" value="{USERNAME}" /></td>
-</tr>]]></find>
-				<action type="after-add"><![CDATA[<!-- IF S_DISPLAY_REGISTER_KEY -->
-	<tr>
-		<td class="row1"><b class="genmed">{L_REGISTER_KEY}<!-- IF S_ENABLE_KEY_OPTIONAL -->&nbsp; ({L_OPTIONAL})<!-- ENDIF -->: </b><br /><span class="gensmall">{L_REGISTER_KEY_EXPLAIN}</span></td>
-		<td class="row2"><input class="post" type="text" name="key" size="25" value="{REGISTER_KEY}" /></td>
-	</tr>
-<!-- ENDIF -->]]></action>
-			</edit>
-			<edit>
-				<find><![CDATA[</table>]]></find>
-				<action type="after-add"><![CDATA[<!-- IF not S_REGISTER_KEY_EMPTY --><input type="hidden" value="{REGISTER_KEY}" name="key" class="button2" /><!-- ENDIF -->]]></action>
 			</edit>
 		</open>
 

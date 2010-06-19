@@ -12,10 +12,13 @@
 
 		<author-group>
 			<author>
-				<realname></realname>
+				<realname>J. Jacoby</realname>
 				<email>bycoja@web.de</email>
 				<username>Bycoja</username>
 				<homepage>http://bycoja.bplaced.net</homepage>
+				<contributions-group>
+					<contributions status="current" position="Developer" />
+				</contributions-group>		
 			</author>
 		</author-group>
 
@@ -326,7 +329,7 @@
 			</edit>
 		</open>
 
-		<open src="includes/ucp_register.php">
+		<open src="includes/ucp/ucp_register.php">
 			<edit>
 				<find><![CDATA[		if (!empty($register_key) && $invite->valid_key($register_key) && $invite->config['set_cookie'])
 		{
@@ -467,7 +470,7 @@
 			}]]></action>
 			</edit>
 			<edit>
-				<find><![CDATA[				if (!empty($register_key) && $invite->valid_key($register_key, false))
+				<remove><![CDATA[				if (!empty($register_key) && $invite->valid_key($register_key, false))
 				{
 					if ($invite->config['invite_require_activation'] == USER_ACTIVATION_NONE)
 					{
@@ -489,8 +492,7 @@
 						$user_inactive_reason = INACTIVE_REGISTER;
 						$user_inactive_time = time();
 					}
-				}]]></find>
-				<action type="replace-with"><![CDATA[]]></action>
+				}]]></remove>
 			</edit>
 			<edit>
 				<find><![CDATA[				$user_id = user_add($user_row, $cp_data);]]></find>
@@ -625,8 +627,7 @@
 
 		<open src="styles/prosilver/template/viewtopic_body.html">
 			<edit>
-				<find><![CDATA[		<!-- IF postrow.POSTER_INVITE_NAME and S_T_DISPLAY_NAME --><dd><strong>{L_DISPLAY_NAME}:</strong> {postrow.POSTER_INVITE_NAME}</dd><!-- ENDIF -->]]></find>
-				<action type="replace-with"><![CDATA[]]></action>
+				<remove><![CDATA[		<!-- IF postrow.POSTER_INVITE_NAME and S_T_DISPLAY_NAME --><dd><strong>{L_DISPLAY_NAME}:</strong> {postrow.POSTER_INVITE_NAME}</dd><!-- ENDIF -->]]></remove>
 			</edit>
 		</open>
 

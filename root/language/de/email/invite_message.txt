@@ -1,5 +1,5 @@
 Hallo {RECIPIENT_NAME},
-diese Nachricht wird dir von deinem Freund "{INVITER_USERNAME}" gesendet,
+diese Nachricht wird dir von deinem Freund {INVITER_USERNAME} gesendet,
 um dich auf folgende Webseite aufmerksam zu machen:
 {BOARD_URL}
 

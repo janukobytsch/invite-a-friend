@@ -7,7 +7,7 @@
 		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
 
 		<title lang="en">Invite A Friend</title>
-		<description lang="en">Installing the German language package for Invite A Friend.</description>
+		<description lang="en">Installing the Turkish language package for Invite A Friend.</description>
 		<author-notes lang="en">For further information and bug reports please visit <![CDATA[http://www.phpbb.com/community/viewtopic.php?f=70&t=1224005]]></author-notes>
 
 		<author-group>
@@ -184,12 +184,12 @@
 
 	<action-group>
 		<copy>
-			<file from="root/language/de/mods/info_acp_invite.php" to="language/de/mods/info_acp_invite.php" />
-			<file from="root/language/de/mods/info_ucp_invite.php" to="language/de/mods/info_ucp_invite.php" />
-			<file from="root/language/de/email/confirm_subject.txt" to="language/de/email/confirm_subject.txt" />
-			<file from="root/language/de/email/confirm_message.txt" to="language/de/email/confirm_message.txt" />
-			<file from="root/language/de/email/invite_subject.txt" to="language/de/email/invite_subject.txt" />
-			<file from="root/language/de/email/invite_message.txt" to="language/de/email/invite_message.txt" />
+			<file from="root/language/tr/mods/info_acp_invite.php" to="language/tr/mods/info_acp_invite.php" />
+			<file from="root/language/tr/mods/info_ucp_invite.php" to="language/tr/mods/info_ucp_invite.php" />
+			<file from="root/language/tr/email/confirm_subject.txt" to="language/tr/email/confirm_subject.txt" />
+			<file from="root/language/tr/email/confirm_message.txt" to="language/tr/email/confirm_message.txt" />
+			<file from="root/language/tr/email/invite_subject.txt" to="language/tr/email/invite_subject.txt" />
+			<file from="root/language/tr/email/invite_message.txt" to="language/tr/email/invite_message.txt" />
 		</copy>
 
 		<diy-instructions lang="en">Just copy the language files to the corresponding folder of your phpBB installation.</diy-instructions>

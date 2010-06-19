@@ -5,7 +5,7 @@
 *
 * @author Bycoja bycoja@web.de
 * @package language
-* @version $Id info_acp_invite 0.6.0 2010-04-02 01:37:02GMT Bycoja $
+* @version $Id info_acp_invite.php 0.6.1 2010-04-05 15:14:09GMT Bycoja $
 * @copyright (c) 2010 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -183,6 +183,9 @@ $lang = array_merge($lang, array(
 	'SETTINGS_LIMIT_MEMBERDAYS'					=> 'Additional invitations per days of membership',
 	'SETTINGS_LIMIT_REGISTRATIONS'				=> 'Additional invitations per successful invitations',
 
+	// UMIL
+	'TRANSFER_INVITATION_DATA'					=> 'Transfer old data',
+	'TRANSFER_INVITATION_DATA_EXPLAIN'			=> 'Select yes to transfer statistics like the amount of invitations sent from version 0.5.4 and previous ones. The database table must not have been edited manually since that time.',
 ));
 
 ?>
