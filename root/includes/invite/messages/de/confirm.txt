@@ -1,0 +1,4 @@
+Hallo {INVITE_USERNAME},
+diese Nachricht wurde dir gesendet, weil einer deiner Freunde sich auf {U_BOARD} unter dem Benutzernamen "{REGISTER_USERNAME}" registriert hat.
+
+Du kannst sein Profil hier ansehen: {REGISTER_USER_PROFILE}

@@ -3,7 +3,7 @@
 * @author Bycoja bycoja@web.de
 *
 * @package acp
-* @version $Id: acp_invite.php 5.0.1 2009-04-12 22:35:59GMT Bycoja $
+* @version $Id: acp_invite.php 5.0.2 2009-04-15 22:35:59GMT Bycoja $
 * @copyright (c) 2008-2009 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -22,7 +22,7 @@ if (!defined('IN_PHPBB'))
 */
 class acp_invite_info
 {
-	var $version 	= '0.5.1';
+	var $version 	= '0.5.2';
 	var $module		= array(
 		'acp_settings'	=> 'ACP_INVITE',
 		'acp_log'		=> 'ACP_INVITE_LOG',
@@ -53,19 +53,12 @@ class acp_invite_info
 	function install()
 	{
 		global $phpbb_admin_path, $phpEx, $config, $cache, $user;
-
-		// Make sure we don't already have this version installed
+		
+		// Make sure we don't already have this mod installed
+		// Update function may be added later
 		if (isset($config['invite_version']))
 		{
-			if (!version_compare($config['invite_version'], $this->version, '<'))
-			{
-				return;
-			}
-			else
-			{
-				$this->upgrade();
-				return;
-			}
+			return;
 		}
 		
 		$this->create_tables();
@@ -73,7 +66,7 @@ class acp_invite_info
 		$this->add_permissions();
 		$this->add_config();
 		$this->add_modules();
-		$this->unlink_files();
+		//$this->delete_folder();
 		$cache->purge();
 		
 		$invite_url = append_sid("{$phpbb_admin_path}index.$phpEx", 'i=invite&amp;mode=settings');
@@ -120,12 +113,13 @@ class acp_invite_info
 	
 	function populate_tables()
 	{
-		global $db;
+		global $db, $phpbb_root_path;
 		
 		// INVITE_CONFIG_TABLE
 		$config_ary = array(
 			'enable'					=> 1,
 			'enable_key'				=> 1,
+			'key_group'					=> 2,
 			'confirm'					=> 2,
 			'confirm_method'			=> 2,
 			'invite_require_activation'	=> 3,
@@ -175,32 +169,35 @@ class acp_invite_info
 		}
 		
 		// INVITE_MESSAGE_TABLE
-		$message_ary = array();
+		$message_ary 	= array();
+		$message_langs	= array('en', 'de',);
 		
-		$message_ary[] = 'Hello {RECIPIENT},
-				this message has been sent by a friend of yours known as "{INVITE_USERNAME}", because you might be interested in the following website:
-				{U_BOARD}
-
-				You can use the following URL to register: {URL_REGISTER_KEY}
-
-				Your friend wrote:
-				-------------------------------------------
-				{MESSAGE}';
-
-		$message_ary[] = 'Hello {INVITE_USERNAME},
-				this message was sent to you, because a friend of yours registered on {U_BOARD} and chose the nickname &quot;{REGISTER_USERNAME}&quot;.
-
-				You can view his profile here: {REGISTER_USER_PROFILE}';
-
-		foreach ($message_ary as $k => $v)
+		foreach ($message_langs as $k => $iso)  
 		{
-			$sql_ary = array(
-			   'message_type'	=> $k,
-			   'message'		=> preg_replace("/[\x09\x20]{2}/", ' ', $v),
-			);
+			$message_ary[$iso][] = @file_get_contents("{$phpbb_root_path}includes/invite/messages/$iso/invite.txt");
+			$message_ary[$iso][] = @file_get_contents("{$phpbb_root_path}includes/invite/messages/$iso/confirm.txt");
+		}
 		
-			$sql = 'INSERT INTO ' . INVITE_MESSAGE_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
-			$db->sql_query($sql);
+		foreach ($message_ary as $iso => $message_type_ary)
+		{
+			$sql = 'SELECT lang_id FROM ' . LANG_TABLE . "
+				WHERE lang_iso = '" . $iso . "'";
+			$result = $db->sql_query($sql);
+		
+			if ($db->sql_fetchrow($result))
+			{
+				foreach ($message_type_ary as $message_type => $text)
+				{
+					$sql_ary = array(
+						'language_iso'	=> $iso,
+						'message_type'	=> $message_type,
+						'message'		=> $text,
+					);
+					
+					$sql_mtype = 'INSERT INTO ' . INVITE_MESSAGE_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+					$db->sql_query($sql_mtype);
+				}
+			}
 		}
 	}
 	
@@ -211,41 +208,48 @@ class acp_invite_info
 		
 		$auth_admin = new auth_admin();
 		
-		$permission_ary = array(
-			'u_send_invite'		=> array('ROLE_USER_FULL', 'ROLE_USER_STANDARD'),
+		$permissions = array(
+			'ROLE_USER_FULL'		=> array('u_send_invite'),
+			'ROLE_USER_STANDARD'	=> array('u_send_invite'),
+			'ROLE_USER_LIMITED'		=> array('u_send_invite'),
+			'ROLE_USER_NOPM'		=> array('u_send_invite'),
+			'ROLE_USER_NOAVATAR'	=> array('u_send_invite'),
 		);
 		
-		foreach ($permission_ary as $permission => $role_ary)
+		foreach ($permissions as $role => $permission_ary)
 		{
-			$auth_admin->acl_add_option(array(
-				    'local'		=> array(),
-				    'global'  	=> array($permission),
-				));
-			
-			// Option
-			$sql = 'SELECT auth_option_id FROM ' . ACL_OPTIONS_TABLE . "
-					WHERE auth_option = '{$permission}'";
-			$result 		= $db->sql_query($sql);
-			$auth_option_id = (int) $db->sql_fetchfield('auth_option_id');
-			$db->sql_freeresult($result);
-			
-			// Role
-			$sql = 'SELECT role_id FROM ' . ACL_ROLES_TABLE . '
-				WHERE ' . $db->sql_in_set('role_name', $role_ary);
-			$result 	= $db->sql_query($sql);
-			$sql_ary	= array();
-			
-			while ($row = $db->sql_fetchrow($result))
+			for($i = 0, $size = sizeof($permission_ary); $i < $size; $i++)
 			{
-				// Give the wanted role its option
-				$sql_ary[] = array(
-					'role_id'			=> $row['role_id'],
-					'auth_option_id'	=> $auth_option_id,
-					'auth_setting'		=> 1,
-				);
+				$auth_admin->acl_add_option(array(
+				    'local'		=> array(),
+				    'global'  	=> array($permission_ary[$i]),
+				));
+				
+				// Option
+				$sql = 'SELECT auth_option_id FROM ' . ACL_OPTIONS_TABLE . "
+						WHERE auth_option = '" . $permission_ary[$i] . "'";
+				$result 		= $db->sql_query($sql);
+				$auth_option_id = (int) $db->sql_fetchfield('auth_option_id');
+				$db->sql_freeresult($result);
+				
+				// Role
+				$sql = 'SELECT role_id FROM ' . ACL_ROLES_TABLE . "
+					WHERE role_name = '" . $role . "'";
+				$result 	= $db->sql_query($sql);
+				$sql_ary	= array();
+				
+				while ($row = $db->sql_fetchrow($result))
+				{
+					// Give the wanted role its option
+					$sql_ary[] = array(
+						'role_id'			=> $row['role_id'],
+						'auth_option_id'	=> $auth_option_id,
+						'auth_setting'		=> 1,
+					);
+				}
+				$db->sql_freeresult($result);
+				$db->sql_multi_insert(ACL_ROLES_DATA_TABLE, $sql_ary);
 			}
-			$db->sql_freeresult($result);
-			$db->sql_multi_insert(ACL_ROLES_DATA_TABLE, $sql_ary);
 		}
 	}
 	
@@ -349,24 +353,54 @@ class acp_invite_info
 			$module->update_module_data($ucp_invite_module_data, true);
 		}
 	}
-	
-	function unlink_files()
+	/*
+	function delete_folder()
 	{
 		global $phpbb_root_path;
 		
-		$sql_file		= array();
-		$sql_file[] 	= $phpbb_root_path . 'includes/invite/schemas/mysql_40_schema.sql';
-		$sql_file[] 	= $phpbb_root_path . 'includes/invite/schemas/mysql_41_schema.sql';
+		$error 			= array();
+		$install_folder = $phpbb_root_path . 'includes/invite/';
+		$path			= $install_folder;
 		
-		foreach ($sql_file as $k => $v)
+	    if (!is_dir($path))
 		{
-			if (file_exists($v))
+	        $error[] = 'INVALID_PATH';
+	    }
+		
+		if (!sizeof($error))
+		{
+			$dir = @opendir($path);
+			
+			while (($entry = @readdir($dir)) !== false)
 			{
-				unlink($v);
+		        if ($entry == '.' || $entry == '..')
+				{
+					continue;
+				}
+			
+				if (is_dir($path . '/' . $entry))
+				{
+					$this->delete_folder($path . '/' . $entry);
+				}
+				else if (is_file($path . '/' . $entry) || is_link($path . '/'. $entry))
+				{
+		            if (file_exists($path . '/' . $entry))
+					{
+						@unlink($path . '/' . $entry);
+					}
+				}
+				else
+				{
+					@closedir($dir);
+					$error[] = 'TYPE_NOT_SUPPORTED';
+				}
 			}
+			
+			@closedir($dir);
+			@rmdir($path);
 		}
 	}
-	
+	*/
 	function upgrade()
 	{
 	}
@@ -374,6 +408,18 @@ class acp_invite_info
 	function uninstall()
 	{
 	}
+	
+	/*
+	* UNINSTALL SQL
+	*
+	DROP TABLE `phpbb_invite_config` ,`phpbb_invite_log` ,`phpbb_invite_message` ;
+	DELETE FROM `phpbb_acl_options` WHERE `auth_option` ='u_send_invite' LIMIT 1 ;
+	DELETE FROM `phpbb_config` WHERE CONVERT( `config_name` USING utf8 ) = 'invite_version' LIMIT 1 ;
+	DELETE FROM `phpbb_modules` WHERE `module_langname` = 'ACP_INVITE';
+	DELETE FROM `phpbb_modules` WHERE `module_langname` = 'ACP_INVITE_LOG';
+	DELETE FROM `phpbb_modules` WHERE `module_langname` = 'UCP_INVITE';
+	DELETE FROM `phpbb_modules` WHERE `module_langname` = 'UCP_INVITE_INVITE';
+	*/
 }
 
 

@@ -3,7 +3,7 @@
 * @author Bycoja bycoja@web.de
 *
 * @package phpBB3
-* @version $Id: functions_invite.php 5.0.1 2009-04-12 22:35:59GMT Bycoja $
+* @version $Id: functions_invite.php 5.0.2 2009-04-15 22:35:59GMT Bycoja $
 * @copyright (c) 2008-2009 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -17,7 +17,7 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-define('REGISTER_KEY_DISABLED',		'key_disabled');
+//define('REGISTER_KEY_DISABLED',		'key_disabled');
 define('REGISTER_KEY_CHARSET',		'abcdefghijkmnpqrstuvwxyz123456789ABCDEFGHIJKLMNPQRSTUVWXYZ');
 define('REGISTER_KEY_MIN_CHARS',	12);
 define('REGISTER_KEY_MAX_CHARS',	18);
@@ -36,33 +36,28 @@ $INVITE_MESSAGE_TYPE = array(
 */              
 class invite
 {
-	var $config;
-	var $message;
-	var $invite_user;
-	var $register_user;
+	var $version = '0.5.2';
 	
 	var $INVITE_MESSAGE_TYPE = array(
 			'invite'	=> 0,
 			'confirm'	=> 1,
 		);
+		
+	var $config;
+	var $message;
+	var $invite_user;
+	var $register_user;
+
 
 	/**
 	* function invite
 	 */
 	function invite()
 	{
-		global $db;
+		global $db, $config;
 		
-		// If the module hasn't been added yet, the database tables don't exist
-		$sql = 'SELECT *
-			FROM ' . MODULES_TABLE . "
-			WHERE module_langname = 'ACP_INVITE'
-				AND module_class = 'acp'";
-		$result = $db->sql_query($sql);
-		$row 	= $db->sql_fetchrow($result);
-		$db->sql_freeresult($result);
-
-		if (!$row)
+		// Make sure we have the current version installed
+		if (!isset($config['invite_version']))
 		{
 			return;
 		}
@@ -187,11 +182,18 @@ class invite
 		}
 		
 		// Additional vars
-		$register_key_url				= ($this->config['enable_key']) ? '&key=' . $data['register_key'] : '';
+		//$register_key_url				= ($this->config['enable_key']) ? '&key=' . $data['register_key'] : '';
+		$register_key_url				= '&key=' . $data['register_key'];
+		
+		// Even if these vars is already defined in messenger, we have to define it here, too.
+		// Otherwise it won't be parsed in confirmation PM.
+		$this->vars['U_BOARD']			= generate_board_url();
+		$this->vars['SITENAME']			= htmlspecialchars_decode($config['sitename']);
 		
 		$this->vars['RECIPIENT'] 		= (isset($data['register_real_name'])) ? $data['register_real_name'] : '';
-		$this->vars['REGISTER_KEY'] 	= ($this->config['enable_key']) ? $data['register_key'] : $user->lang['REGISTER_KEY_DISABLED'];
-		$this->vars['URL_REGISTER_KEY']	= generate_board_url() . '/ucp.' . $phpEx . '?mode=register' . $register_key_url;
+		//$this->vars['REGISTER_KEY'] 	= ($this->config['enable_key']) ? $data['register_key'] : $user->lang['REGISTER_KEY_DISABLED'];
+		$this->vars['REGISTER_KEY'] 	= $data['register_key'];
+		$this->vars['URL_REGISTER_KEY']	= generate_board_url() . '/ucp.' . $phpEx . '?mode=register&referral=' . $user->data['username'] . $register_key_url;
 		$this->vars['URL_REGISTER']		= $this->vars['URL_REGISTER_KEY'];
 	}
 	
@@ -281,8 +283,7 @@ class invite
 		switch($method)
 		{
 			case EMAIL:
-				// Use false so send the email immediately
-				$messenger		= new messenger(false);
+				$messenger		= new messenger(false); // Use false so send the e-mail immediately
 				$username		= (isset($data['register_real_name'])) ? $data['register_real_name'] : $this->register_user['username'];
 				
 				// Assign vars
@@ -409,7 +410,7 @@ class invite
 	{
 		mt_srand(crc32(microtime()));
 		$charset 	= REGISTER_KEY_CHARSET;
-		$disabled	= REGISTER_KEY_DISABLED;
+		//$disabled	= REGISTER_KEY_DISABLED;
 		$lenght		= rand(REGISTER_KEY_MIN_CHARS, REGISTER_KEY_MAX_CHARS);
 		
 		$str_lng 	= strlen($charset) - 1;
@@ -421,7 +422,7 @@ class invite
 		}
 		
 		// It is highly unlikely this will happen, but still possible
-		if ($rand == $disabled)
+		/*if ($rand == $disabled)
 		{
 			$rand		= '';
 			$charset	= str_replace($disabled{0}, '', $charset);
@@ -430,13 +431,13 @@ class invite
 			{
 				$rand .= $charset{mt_rand(0, $str_lng)};
 			}
-		}
+		}*/
 		
-		// If keys are disabled we still create a key
+		/* If keys are disabled we still create a key
 		if (!$this->config['enable_key'])
 		{
 			$rand = $disabled;
-		}
+		}*/
 		
 		return $rand; 
 	}
@@ -475,12 +476,12 @@ class invite
 	{
 		global $db;
 		
-		// $key == AUTH_KEY_DISABLED is important to check!
+		// $key == REGISTER_KEY_DISABLED is important to check!
 		// Otherwise someone could enter 'key_disabled', which is default value for REGISTER_KEY_DISABLED!
-		if ($key == REGISTER_KEY_DISABLED)
+		/*if ($key == REGISTER_KEY_DISABLED)
 		{
 			return false;
-		}
+		}*/
 		
 		// Optional registration-key?
 		if (empty($key) && $this->config['enable_key'] == 1)
@@ -508,16 +509,16 @@ class invite
 	{
 		global $db, $user;
 		
+		if (empty($key) && $this->config['enable_key'] == 2)
+		{
+			return;
+		}
+		
 		// Update the referring log entry
 		$sql_ary	= array(
 			'register_key_used'	=> 1,
 			'register_user_id'	=> (int) $register_user_id,
 		);
-		
-		if (empty($key) && $this->config['enable_key'] == 2)
-		{
-			return;
-		}
 		
 		$sql 		= 'UPDATE ' . INVITE_LOG_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . " WHERE register_key = '" . $db->sql_escape($key) . "'";
 		$result 	= $db->sql_query($sql);
@@ -534,6 +535,18 @@ class invite
 			}
 		}
 		$db->sql_freeresult($result);
+		
+		// Add user to group
+		if ($this->config['enable_key'] == 2)
+		{
+			$sql_ary = array(
+				'user_id'		=> (int) $register_user_id,
+				'group_id'		=> (int) $this->config['key_group'],
+				'group_leader'	=> 0,
+				'user_pending'	=> 0,
+			);
+			$db->sql_query('INSERT INTO ' . USER_GROUP_TABLE . $db->sql_build_array('INSERT', $sql_ary));
+		}
 		
 		// Send confirmation
 		if ($invitation_data['invite_confirm'])

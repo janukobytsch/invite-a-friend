@@ -103,88 +103,36 @@
 </header>
 
 <action-group>
+	<sql><![CDATA[--
+-- Change the prefix if required!
+--
+
+INSERT INTO `phpbb_invite_config` ( `config_name` , `config_value` ) VALUES ('key_group', '2');
+
+--
+-- Change the prefix if required!
+--
+
+UPDATE `phpbb_config` SET `config_value` = '0.5.2' WHERE `config_name` = 'invite_version';]]></sql>
+
 	<copy>
-		<file from="/root/styles/subsilver2/template/ucp_invite_invite.html" to="/styles/subsilver2/template/ucp_invite_invite.html" />
+		<file from="/root/includes/acp/info/acp_invite.php" to="/includes/acp/info/acp_invite.php" />
+		<file from="/root/includes/acp/acp_invite.php" to="/includes/acp/acp_invite.php" />
+		<file from="/root/adm/style/acp_invite.html" to="/adm/style/acp_invite.html" />
+		<file from="/root/adm/style/acp_invite_log.html" to="/adm/style/acp_invite_log.html" />
+		<file from="/root/includes/functions_invite.php" to="/includes/functions_invite.php" />
+		<file from="/root/includes/ucp/ucp_invite.php" to="/includes/ucp/ucp_invite.php" />
+		<file from="/root/includes/ucp/info/ucp_invite.php" to="/includes/ucp/info/ucp_invite.php" />
+		<file from="/root/language/de/mods/info_acp_invite.php" to="/language/de/mods/info_acp_invite.php" />
+		<file from="/root/language/en/mods/info_acp_invite.php" to="/language/en/mods/info_acp_invite.php" />
+		<file from="/root/language/de/mods/info_ucp_invite.php" to="/language/de/mods/info_ucp_invite.php" />
+		<file from="/root/language/en/mods/info_ucp_invite.php" to="/language/en/mods/info_ucp_invite.php" />
+		<file from="/root/styles/prosilver/template/ucp_invite_invite.html" to="/styles/prosilver/template/ucp_invite_invite.html" />
 	</copy>
 	
-	<open src="styles/subsilver2/template/overall_header.html">
-		<edit>
-			<find><![CDATA[<!-- ELSEIF S_REGISTER_ENABLED --> &nbsp;<a href="{U_REGISTER}"><img src="{T_THEME_PATH}/images/icon_mini_register.gif" width="12" height="13" alt="*" /> {L_REGISTER}</a>
-					<!-- ENDIF -->]]></find>
-	        <action type="after-add"><![CDATA[<!-- IF S_DISPLAY_INVITE --> &nbsp;<a href="{U_INVITE_A_FRIEND}"><img src="{T_THEME_PATH}/images/icon_mini_message.gif" width="12" height="13" alt="*" /> {L_ACP_INVITE}</a><!-- ENDIF -->]]></action>
-	    </edit>
-	</open>
-	
-	<open src="styles/subsilver2/template/viewtopic_body.html">
-		<edit>
-			<find><![CDATA[<!-- END custom_fields -->]]></find>
-	        <action type="after-add"><![CDATA[<!-- IF S_T_DISPLAY_INVITE --><br /><b>{L_DISPLAY_INVITE}:</b> {postrow.POSTER_INVITE_INVITE}<!-- ENDIF -->
-					<!-- IF S_T_DISPLAY_REGISTER --><br /><b>{L_DISPLAY_REGISTER}:</b> {postrow.POSTER_INVITE_REGISTER}<!-- ENDIF -->
-					<!-- IF postrow.POSTER_INVITE_NAME and S_T_DISPLAY_NAME --><br /><b>{L_DISPLAY_NAME}:</b> {postrow.POSTER_INVITE_NAME}<!-- ENDIF -->]]></action>
-	    </edit>
-	</open>
-	
-	<open src="styles/subsilver2/template/memberlist_view.html">
-		<edit>
-			<find><![CDATA[<!-- IF S_SHOW_ACTIVITY -->
-				<tr>
-					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_ACTIVE_IN_FORUM}: </td>
-					<td><!-- IF ACTIVE_FORUM --><b><a class="gen" href="{U_ACTIVE_FORUM}">{ACTIVE_FORUM}</a></b><br /><span class="genmed">[ {ACTIVE_FORUM_POSTS} / {ACTIVE_FORUM_PCT} ]</span><!-- ELSE --><span class="gen">-</span><!-- ENDIF --></td>
-				</tr>
-				<tr>
-					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_ACTIVE_IN_TOPIC}: </td>
-					<td><!-- IF ACTIVE_TOPIC --><b><a class="gen" href="{U_ACTIVE_TOPIC}">{ACTIVE_TOPIC}</a></b><br /><span class="genmed">[ {ACTIVE_TOPIC_POSTS} / {ACTIVE_TOPIC_PCT} ]</span><!-- ELSE --><span class="gen">-</span><!-- ENDIF --></td>
-				</tr>
-			<!-- ENDIF -->]]></find>
-	        <action type="after-add"><![CDATA[<!-- IF S_P_DISPLAY_INVITE -->
-				<tr>
-					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_DISPLAY_INVITE}: </td>
-					<td width="100%"><b class="gen">{POSTER_INVITE_INVITE}</b></td>
-				</tr>
-			<!-- ENDIF -->
-			<!-- IF S_P_DISPLAY_REGISTER -->
-				<tr>
-					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_DISPLAY_REGISTER}: </td>
-					<td width="100%"><b class="gen">{POSTER_INVITE_REGISTER}</b></td>
-				</tr>
-			<!-- ENDIF -->
-			<!-- IF POSTER_INVITE_NAME and S_P_DISPLAY_NAME -->
-				<tr>
-					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_DISPLAY_NAME}: </td>
-					<td width="100%"><b class="gen">{POSTER_INVITE_NAME}</b></td>
-				</tr>
-			<!-- ENDIF -->]]></action>
-	    </edit>
-	</open>
-	
-	<open src="styles/subsilver2/template/ucp_register.html">
-	    <edit>
-	        <find><![CDATA[<tr>
-		<td class="row1" width="38%"><b class="genmed">{L_USERNAME}: </b><br /><span class="gensmall">{L_USERNAME_EXPLAIN}</span></td>
-		<td class="row2"><input class="post" type="text" name="username" size="25" value="{USERNAME}" /></td>
-	</tr>]]></find>
-	        <action type="after-add"><![CDATA[<!-- IF S_DISPLAY_REGISTER_KEY -->
-	<tr>
-		<td class="row1"><b class="genmed">{L_REGISTER_KEY}<!-- IF S_ENABLE_KEY_OPTIONAL -->&nbsp; ({L_OPTIONAL})<!-- ENDIF -->: </b><br /><span class="gensmall">{L_REGISTER_KEY_EXPLAIN}</span></td>
-		<td class="row2"><input class="post" type="text" name="key" size="25" value="{REGISTER_KEY}" /></td>
-	</tr>
-<!-- ENDIF -->]]></action>
-	    </edit>
-		
-		<edit>
-	        <find><![CDATA[</table>]]></find>
-	        <action type="after-add"><![CDATA[<!-- IF S_COPPA --><input type="hidden" value="{REGISTER_KEY}" name="key" class="button2" />&nbsp;<!-- ENDIF -->]]></action>
-	    </edit>
-	</open>
-	
-	<open src="styles/subsilver2/template/ucp_agreement.html">
-	    <edit>
-			<find><![CDATA[{S_HIDDEN_FIELDS}]]></find>
-	        <action type="before-add"><![CDATA[<input type="hidden" value="{REGISTER_KEY}" name="key" class="button2" />]]></action>
-		</edit>
-	</open>
-	
-	<diy-instructions lang="en">Follow the diy-instructions in install.xml!</diy-instructions>
+	<diy-instructions lang="en">
+		1. No changes in original phpbb files this version!
+		2. Purge the cache!</diy-instructions>
 
 </action-group>
 

@@ -4,7 +4,7 @@
 * info_acp_invite [Deutsch — Du]
 *
 * @package language
-* @version $Id: info_acp_invite.php 5.0.1 2009-04-12 22:35:59GMT Bycoja $
+* @version $Id: info_acp_invite.php 5.0.2 2009-04-15 22:35:59GMT Bycoja $
 * @copyright (c) 2008-2009 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -46,6 +46,7 @@ $lang = array_merge($lang, array(
 	'ACP_INVITE_EXPLAIN'				=> 'Hier kannst du die Einstellungen bezüglich der E-Mails, mit denen Benutzer Freunde werben können, vornehmen.',
 	'ACP_INVITE_LOG'					=> 'Einladungs-Protokoll',
 	'ACP_INVITE_LOG_EXPLAIN'			=> 'Diese Liste zeigt alle Vorgänge, die mit den von Benutzern versendeten Einladungen in Verbindung stehen. Du kannst dir auch detaillierte Informationen zu einzelnen Benutzern anzeigen lassen.',
+	'JAVASCRIPT_NOTICE'					=> 'Du musst <b>JavaScript</b> aktivieren, um alle Einstellungsmöglichkeiten nutzen zu können.',
 	
 	'ACC_TRANSFER'						=> 'Übernehmen',
 	'OPTIONAL'							=> 'Optional',
@@ -58,8 +59,9 @@ $lang = array_merge($lang, array(
 	'SETTINGS_ENABLE'							=> '»Freunde einladen« aktivieren',
 	'SETTINGS_ENABLE_KEY'						=> 'Registrierungs-Schlüssel anfordern',
 	'SETTINGS_ENABLE_KEY_EXPLAIN'				=> 'Einen Registrierungs-Schlüssel, der zuvor von einem Freund versendet wurde, zur Registrierung neuer Benutzer anfordern.',
+	'SETTINGS_KEY_GROUP_EXPLAIN'				=> 'Benutzer, die einen Registrierungs-Schlüssel angeben, werden automatisch zu der hier ausgewählten Benutzergruppe hinzugefügt.',
 	'SETTINGS_CONFIRM'							=> 'Bestätigung versenden',
-	'SETTINGS_CONFIRM_EXPLAIN'					=> 'Sendet eine E-Mail zur Bestätigung an einen Benutzer, wenn sich der eingeladene Freund registriert.',
+	'SETTINGS_CONFIRM_EXPLAIN'					=> 'Diese Einstellung legt fest, ob eine Bestätigung an Benutzer, deren eingeladene Freunde sich registrieren, versendet wird.',
 	'SETTINGS_ZEBRA'							=> 'Freundesliste',
 	'SETTINGS_ZEBRA_EXPLAIN'					=> 'Eingeladene Freunde automatisch zur Freundesliste hinzufügen.',
 	'SETTINGS_INVITE_ACC_ACTIVATION_EXPLAIN'	=> 'Diese Einstellung legt fest, ob Benutzer, die bei der Registrierung einen Registrierungs-Schlüssel angeben, sofortigen Zugang zum Board haben. Du kannst auch die Registrierungs-Einstellung übernehmen.',

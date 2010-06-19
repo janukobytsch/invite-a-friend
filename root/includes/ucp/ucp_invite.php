@@ -3,7 +3,7 @@
 * @author Bycoja bycoja@web.de
 *
 * @package ucp
-* @version $Id: ucp_invite.php 5.0.1 2009-04-12 22:35:59GMT Bycoja $
+* @version $Id: ucp_invite.php 5.0.2 2009-04-15 22:35:59GMT Bycoja $
 * @copyright (c) 2008-2009 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -181,8 +181,11 @@ class ucp_invite
 		// Do the job ...
 		if ($submit && !$queue)
 		{
+			// Fix language vars defined in ucp.php
+			$email_data['email'] = $email_data['register_email'];
+			
 			$check_ary = array(
-				'register_email' => array(
+				'email' => array(
 					array('string', false, 0, 60),
 					array('email')),
 				'register_real_name'	=> array('string', false, 1, 60),
@@ -192,7 +195,10 @@ class ucp_invite
 			
 			$error = validate_data($email_data, $check_ary);
 			
-			if($email_data['register_email'] == $user->data['user_email'])
+			// Fix language vars defined in ucp.php
+			unset($email_data['email']);
+			
+			if ($email_data['register_email'] == $user->data['user_email'])
 			{
 				$error[] = $user->lang['INVITE_TO_YOUR_EMAIL'];
 			}
@@ -279,8 +285,7 @@ class ucp_invite
 			'S_VALUE_PM'			=> PM,
 			'S_CONFIRM_CODE'		=> ($queue) ? false : $invite->config['invite_confirm_code'],
 			'S_DISABLE'				=> ($queue) ? true : false,
-			//'S_CASH_INSTALLED'		=> $invite->config['cash_enable'],
-			//'S_POINTS_INSTALLED'	=> $invite->config['points_enable'],
+			
 			'S_DISPLAY_ZEBRA'		=> ($invite->config['zebra'] == OPTIONAL) ? true : false,
 			'S_DISPLAY_LANGUAGE'	=> ($invite->config['invite_language_select']) ? true : false,
 			'S_HIDDEN_FIELDS'		=> array_pop($s_hidden_fields),

@@ -20,7 +20,7 @@
 			</author>
 		</author-group>
 		
-		<mod-version>0.5.1</mod-version>
+		<mod-version>0.5.2</mod-version>
 		
 		<installation>
 			<level>easy</level>
@@ -29,6 +29,21 @@
 		</installation>
 
 	<history>
+		<entry>
+			<date>2009-05-20</date>
+			<rev-version>0.5.2 [Beta]</rev-version>
+			<changelog lang="en">
+				<change>[Added] Add users, who enter a registration key, to the selected group</change>
+				<change>[Changed] Create registration keys (even if keys are disabled) to identify friends</change>
+				<change>[Changed] Removed constant 'REGISTER_KEY_DISABLED'</change>
+				<change>[Fixed] Report #020: Messenger vars not parsed in PM</change>
+				<change>[Fixed] Report #019: Missing language vars</change>
+				<change>[Fixed] Report #018: E-mail already taken</change>
+				<change>[Fixed] Report #016: CAPTCHA</change>
+				<change>[Fixed] Report #016: function install(), messages</change>
+				<change>[Fixed] Report #015: function install(), permissions</change>
+			</changelog>
+		</entry>
 		<entry>
 			<date>2009-04-12</date>
 			<rev-version>0.5.1 [Beta]</rev-version>
@@ -93,6 +108,13 @@
 
 <action-group>
 	<copy>
+		<file from="/root/includes/invite/schemas/mysql_40_schema.sql" to="includes/invite/schemas/mysql_40_schema.sql" />
+		<file from="/root/includes/invite/schemas/mysql_41_schema.sql" to="includes/invite/schemas/mysql_41_schema.sql" />
+		<file from="/root/includes/invite/messages/de/invite.txt" to="includes/invite/messages/de/invite.txt" />
+		<file from="/root/includes/invite/messages/de/confirm.txt" to="includes/invite/messages/de/confirm.txt" />
+		<file from="/root/includes/invite/messages/en/invite.txt" to="includes/invite/messages/en/invite.txt" />
+		<file from="/root/includes/invite/messages/en/confirm.txt" to="includes/invite/messages/en/confirm.txt" />
+		<file from="/root/includes/acp/acp_invite.php" to="/includes/acp/acp_invite.php" />
 		<file from="/root/includes/acp/info/acp_invite.php" to="/includes/acp/info/acp_invite.php" />
 		<file from="/root/includes/acp/acp_invite.php" to="/includes/acp/acp_invite.php" />
 		<file from="/root/adm/style/acp_invite.html" to="/adm/style/acp_invite.html" />
@@ -429,10 +451,13 @@ define('LOG_INVITE', 					4);]]></action>
 		</edit>
 	</open>
 	
-	<diy-instructions lang="en">Browse to your SYSTEM-tab -> Administration Control Panel, select "Invite A Friend" from the dropdown menu and click "Add Module".
-A notice saying that "Invite A Friend" was successfully installed and can be found by clicking GENERAL-tab should appear.
-
-Have fun with Invite A Friend.</diy-instructions>
+	<diy-instructions lang="en">
+		1. Browse to your SYSTEM-tab -> Administration Control Panel
+		2. Select "Invite A Friend" from the dropdown menu and click "Add Module".
+		   A notice saying that "Invite A Friend" was successfully installed and can be found by clicking GENERAL-tab should appear.
+		3. Delete /includes/invite folder from your server.
+		
+		Have fun with Invite A Friend.</diy-instructions>
 
 </action-group>
 

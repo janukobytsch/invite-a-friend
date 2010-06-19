@@ -4,7 +4,7 @@
 * info_acp_invite [British English]
 *
 * @package language
-* @version $Id: info_ucp_invite.php 5.0.1 2009-04-12 22:35:59GMT Bycoja $
+* @version $Id: info_ucp_invite.php 5.0.2 2009-04-15 22:35:59GMT Bycoja $
 * @copyright (c) 2008-2009 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -65,7 +65,6 @@ $lang = array_merge($lang, array(
 	
 	'EMAIL_SENT_FAILURE'			=> 'An error occured while sending the e-mail.',
 	'EMAIL_SENT_SUCCESS'			=> 'The e-mail was successfully sent to your friend.',
-	'EMAIL_INVALID'					=> 'The entered e-mail address is invalid.',
 	'INVITE_MULTIPLE'				=> 'The entered e-mail address already obtained an invitation.',
 	'REGISTER_KEY_INVALID'			=> 'The registration key is invalid.',
 	'REGISTER_KEY_INVALID_OPTIONAL'	=> 'The registration key is invalid. You can leave it out.',

@@ -3,7 +3,7 @@
 * @author Bycoja bycoja@web.de
 *
 * @package acp
-* @version $Id: acp_invite.php 5.0.1 2009-04-12 22:35:59GMT Bycoja $
+* @version $Id: acp_invite.php 5.0.2 2009-04-15 22:35:59GMT Bycoja $
 * @copyright (c) 2008-2009 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -19,6 +19,9 @@ if (!defined('IN_PHPBB'))
 
 /**
 * @package acp
+* @todo		- No register key entered: identify invited friends by e-mail
+			- http://bycoja.by.funpic.de/viewtopic.php?f=13&t=53#p463
+			- OpenInviter
 */
 class acp_invite
 {
@@ -234,6 +237,7 @@ class acp_invite
 					'S_VALUE_PM'				=> PM,
 					'S_VALUE_OPTIONAL'			=> OPTIONAL,
 					
+					'S_GROUP_SELECT'			=> group_select_options($new_config['key_group'], false, 0), // Show groups not managed by founders
 					'S_EMAIL_ENABLE'			=> ($config['email_enable']) ? true : false,
 					'S_SELECT_LANGUAGE'			=> language_select($user->data['user_lang']),
 					'S_SELECT_MESSAGE'			=> $this->build_select('message', $INVITE_MESSAGE_TYPE),
