@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<!--For security purposes, please check: http
+://www.phpbb.com/mods/ for the latest version of this MOD. Although MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD. No support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.2.xsd">
+	<header>
+		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+	
+		<title lang="en">Invite A Friend</title>
+		<description lang="en">This mods enables your users to send e-mails to their friends and advice them of your board. Also enables registration-keys which have to/can be entered to register and are obtained by 'Invite a friend' e-mails.</description>
+		<author-notes lang="en">Report bugs to http://bycoja.by.funpic.de/bugtracker/viewcat.php?c=2]</author-notes>
+		
+		<author-group>
+			<author>
+				<realname></realname>
+				<email>bycoja@web.de</email>
+				<username>Bycoja</username>
+				<homepage>http://bycoja.by.funpic.de/</homepage>
+				<contributions-group></contributions-group>
+			</author>
+		</author-group>
+		
+		<mod-version>0.5.0</mod-version>
+		
+		<installation>
+			<level>easy</level>
+			<time>600</time>
+			<target-version>3.0.4</target-version>
+		</installation>
+
+	<history>
+		<entry>
+			<date>2009-04-08</date>
+			<rev-version>0.5.0 [Beta]</rev-version>
+			<changelog lang="en">
+				<change>[Added] Compatibility with 'Advanced Points System'</change>
+				<change>[Added] Many options (CAPTCHA, Limitation, ..)</change>
+				<change>[Improved] Rewrote some code</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-10-10</date>
+			<rev-version>0.2.2 [Beta]</rev-version>
+			<changelog lang="en">
+				<change>[Added] Compatibility with 'Cash Mod'</change>
+				<change>[Added] Highly improved log</change>
+				<change>[Added] UCP Module</change>
+				<change>[Fixed] Report #009: [phpBB Debug] Undefined variable: new_user_row</change>
+				<change>[Fixed] Report #008: [phpBB Debug] Undefined variable: invitation_data</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-10-06</date>
+			<rev-version>0.2.1 [Beta]</rev-version>
+			<changelog lang="en">
+				<change>[Added] Optional registration-key</change>
+				<change>[Added] Prohibit multiple registrations</change>
+				<change>[Fixed] Report #007: Empty {USERNAME}</change>
+				<change>[Fixed] Report #006: Missing var</change>
+			</changelog>
+		</entry>
+		<entry>
+			<date>2008-10-05</date>
+			<rev-version>0.2.0 [Beta]</rev-version>
+			<changelog lang="en">
+				<change>[Added] Confirmation e-mail</change>
+				<change>[Added] New settings</change>
+				<change>[Added] Log</change>
+				<change>[Fixed] Report #005: Invite yourself</change>
+				<change>[Fixed] Report #004: phpBB Debug</change>
+				<change>[Fixed] Report #003: ACP: Edit Mail</change>
+				<change>[Fixed] Report #002: 'Invite a friend' shown in navigation</change>
+				<change>[Fixed] Report #001: Registration-keys</change>
+			</changelog>
+		</entry>
+	</history>
+</header>
+
+<action-group>
+	<copy>
+		<file from="/root/styles/subsilver2/template/ucp_invite_invite.html" to="/styles/subsilver2/template/ucp_invite_invite.html" />
+	</copy>
+	
+	<open src="styles/subsilver2/template/overall_header.html">
+		<edit>
+			<find><![CDATA[<!-- ELSEIF S_REGISTER_ENABLED --> &nbsp;<a href="{U_REGISTER}"><img src="{T_THEME_PATH}/images/icon_mini_register.gif" width="12" height="13" alt="*" /> {L_REGISTER}</a>
+					<!-- ENDIF -->]]></find>
+	        <action type="after-add"><![CDATA[<!-- IF S_DISPLAY_INVITE --> &nbsp;<a href="{U_INVITE_A_FRIEND}"><img src="{T_THEME_PATH}/images/icon_mini_message.gif" width="12" height="13" alt="*" /> {L_ACP_INVITE}</a><!-- ENDIF -->]]></action>
+	    </edit>
+	</open>
+	
+	<open src="styles/subsilver2/template/viewtopic_body.html">
+		<edit>
+			<find><![CDATA[<!-- END custom_fields -->]]></find>
+	        <action type="after-add"><![CDATA[<!-- IF S_T_DISPLAY_INVITE --><br /><b>{L_DISPLAY_INVITE}:</b> {postrow.POSTER_INVITE_INVITE}<!-- ENDIF -->
+					<!-- IF S_T_DISPLAY_REGISTER --><br /><b>{L_DISPLAY_REGISTER}:</b> {postrow.POSTER_INVITE_REGISTER}<!-- ENDIF -->
+					<!-- IF postrow.POSTER_INVITE_NAME and S_T_DISPLAY_NAME --><br /><b>{L_DISPLAY_NAME}:</b> {postrow.POSTER_INVITE_NAME}<!-- ENDIF -->]]></action>
+	    </edit>
+	</open>
+	
+	<open src="styles/subsilver2/template/memberlist_view.html">
+		<edit>
+			<find><![CDATA[<!-- IF S_SHOW_ACTIVITY -->
+				<tr>
+					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_ACTIVE_IN_FORUM}: </td>
+					<td><!-- IF ACTIVE_FORUM --><b><a class="gen" href="{U_ACTIVE_FORUM}">{ACTIVE_FORUM}</a></b><br /><span class="genmed">[ {ACTIVE_FORUM_POSTS} / {ACTIVE_FORUM_PCT} ]</span><!-- ELSE --><span class="gen">-</span><!-- ENDIF --></td>
+				</tr>
+				<tr>
+					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_ACTIVE_IN_TOPIC}: </td>
+					<td><!-- IF ACTIVE_TOPIC --><b><a class="gen" href="{U_ACTIVE_TOPIC}">{ACTIVE_TOPIC}</a></b><br /><span class="genmed">[ {ACTIVE_TOPIC_POSTS} / {ACTIVE_TOPIC_PCT} ]</span><!-- ELSE --><span class="gen">-</span><!-- ENDIF --></td>
+				</tr>
+			<!-- ENDIF -->]]></find>
+	        <action type="after-add"><![CDATA[<!-- IF S_P_DISPLAY_INVITE -->
+				<tr>
+					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_DISPLAY_INVITE}: </td>
+					<td width="100%"><b class="gen">{POSTER_INVITE_INVITE}</b></td>
+				</tr>
+			<!-- ENDIF -->
+			<!-- IF S_P_DISPLAY_REGISTER -->
+				<tr>
+					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_DISPLAY_REGISTER}: </td>
+					<td width="100%"><b class="gen">{POSTER_INVITE_REGISTER}</b></td>
+				</tr>
+			<!-- ENDIF -->
+			<!-- IF POSTER_INVITE_NAME and S_P_DISPLAY_NAME -->
+				<tr>
+					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_DISPLAY_NAME}: </td>
+					<td width="100%"><b class="gen">{POSTER_INVITE_NAME}</b></td>
+				</tr>
+			<!-- ENDIF -->]]></action>
+	    </edit>
+	</open>
+	
+	<open src="styles/subsilver2/template/ucp_register.html">
+	    <edit>
+	        <find><![CDATA[<tr>
+		<td class="row1" width="38%"><b class="genmed">{L_USERNAME}: </b><br /><span class="gensmall">{L_USERNAME_EXPLAIN}</span></td>
+		<td class="row2"><input class="post" type="text" name="username" size="25" value="{USERNAME}" /></td>
+	</tr>]]></find>
+	        <action type="after-add"><![CDATA[<!-- IF S_DISPLAY_REGISTER_KEY -->
+	<tr>
+		<td class="row1"><b class="genmed">{L_REGISTER_KEY}<!-- IF S_ENABLE_KEY_OPTIONAL -->&nbsp; ({L_OPTIONAL})<!-- ENDIF -->: </b><br /><span class="gensmall">{L_REGISTER_KEY_EXPLAIN}</span></td>
+		<td class="row2"><input class="post" type="text" name="key" size="25" value="{REGISTER_KEY}" /></td>
+	</tr>
+<!-- ENDIF -->]]></action>
+	    </edit>
+		
+		<edit>
+	        <find><![CDATA[</table>]]></find>
+	        <action type="after-add"><![CDATA[<!-- IF S_COPPA --><input type="hidden" value="{REGISTER_KEY}" name="key" class="button2" />&nbsp;<!-- ENDIF -->]]></action>
+	    </edit>
+	</open>
+	
+	<diy-instructions lang="en">Follow the diy-instructions in install.xml!</diy-instructions>
+
+</action-group>
+
+</mod>

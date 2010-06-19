@@ -1,9 +1,10 @@
 <?php
 /**
+* @author Bycoja bycoja@web.de
 *
 * @package ucp
-* @version $Id: ucp_profile.php 8479 2008-03-29 00:22:48Z naderman $
-* @copyright (c) 2005 phpBB Group
+* @version $Id: ucp_profile.php 9016 2009-02-28 19:29:57Z Bycoja $
+* @copyright (c) 2008 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
@@ -31,92 +32,242 @@ class ucp_invite
 		global $config, $db, $user, $auth, $template, $phpbb_root_path, $phpEx;
 		
 		include($phpbb_root_path . 'includes/functions_invite.' . $phpEx);
-
-		// Set some vars
-		$invite		= new invite();
-
-		$submit		= (!empty($_POST['submit'])) ? true : false;
-		$error 		= array();
-		$send_iaf	= true;
-
+		
+		// General vars
+		$invite				= new invite();
+		$submit				= (isset($_POST['submit'])) ? true : false;
+		$error 				= array();
+		$queue				= false;
+		
+		$confirm_id			= request_var('confirm_id', '');
+		$s_hidden_fields	= ($confirm_id) ? array('confirm_id' => $confirm_id) : array();
+		
+		
 		// Authorised?
 		if (!$invite->config['enable'])
 		{
-			trigger_error('IAF_DISABLED');
+			trigger_error('INVITE_DISABLED');
 		}
-		if (!$auth->acl_get('u_send_iaf'))
+		if (!$auth->acl_get('u_send_invite'))
 		{
 		    trigger_error('NOT_AUTHORISED');
 		}
-
-		// Get data
-		$data	= array(
-			'email'			=> utf8_normalize_nfc(request_var('recipient', '', true)),
-			'name'			=> utf8_normalize_nfc(request_var('name', '', true)),
-			'subject'		=> utf8_normalize_nfc(request_var('subject', '', true)),
-			'message'		=> utf8_normalize_nfc(request_var('message', '', true)),
-			'confirm_email'	=> request_var('send_confirm', 0, true),
-			'from'			=> $user->data['user_id'],
-			'lang'			=> $user->data['user_lang'],
-			'method'		=> NOTIFY_EMAIL,
-			'key'			=> $invite->create_key(),
-		);
-
-		// Wait until we can send another email?
-		$sql 		= 'SELECT COUNT(key_id) AS iaf_num FROM ' . INVITE_KEYS_TABLE . ' WHERE user_id = ' . $data['from'];
-		$result 	= $db->sql_query($sql);
-		$iaf_num	= (int) $db->sql_fetchfield('iaf_num');
-
-		if ($iaf_num)
+		
+		// [+] Development
+		$cache_file		= array();
+		
+		$cache_file[] 	= $phpbb_root_path . 'cache/tpl_prosilver_ucp_invite_invite.html.' . $phpEx;
+		$cache_file[] 	= $phpbb_root_path . 'cache/tpl_subsilver2_ucp_invite_invite.html.' . $phpEx;
+		
+		foreach ($cache_file as $k => $v)
 		{
-			$sql 		= 'SELECT MAX(key_time) AS max_time FROM ' . INVITE_KEYS_TABLE . ' WHERE user_id = ' . $data['from'];
-			$result 	= $db->sql_query($sql);
-			$last_iaf	= (int) $db->sql_fetchfield('max_time');
-			
-			if ((time() - $last_iaf) < $invite->config['time'])
+			if (file_exists($v))
 			{
-				$error[] 	= $user->lang['WAIT_NEXT_IAF'];
-				$send_iaf	= false;
+				unlink($v);
 			}
 		}
-
-		// Do the job ...
-		if ($submit && $send_iaf)
-		{
-			$check_ary = array(
-				'email'		=> array(
-					array('string', false, 6, 60),
-					array('email')),
-				'name'		=> array('string', false, 1, 60),
-				'subject'	=> array('string', false, $invite->config['min_subject'], $invite->config['max_subject']),
-				'message'	=> array('string', false, $invite->config['min_message'], $invite->config['max_message']),
-			);
-
-			$error = validate_data($data, $check_ary);
+		// [-] Development
+		
+		$email_data	= array(
+			'message_type'			=> $INVITE_MESSAGE_TYPE['invite'],
+			'method'				=> EMAIL,
+			'method_user_id'		=> $user->data['user_id'],
+			'invite_language'		=> ($invite->config['invite_language_select']) ? utf8_normalize_nfc(request_var('form_invite_language_select', $user->data['user_lang'], true)) : $user->data['user_lang'],
 			
-			if($data['email'] == $user->data['user_email'])
+			'subject'				=> utf8_normalize_nfc(request_var('form_subject', '', true)),
+			'message'				=> utf8_normalize_nfc(request_var('form_message', '', true)),
+			'register_email'		=> utf8_normalize_nfc(request_var('form_register_email', '', true)),
+			'register_real_name'	=> utf8_normalize_nfc(request_var('form_register_real_name', '', true)),
+			'register_key'			=> $invite->create_key(),
+			'register_key_used'		=> 0,
+			'register_user_id'		=> 0,
+			'invite_user_id'		=> $user->data['user_id'],
+			'invite_session_ip'		=> $user->data['session_ip'],
+			'invite_time'			=> time(),
+			'invite_zebra'			=> request_var('form_invite_zebra', 0, true),
+			
+			// CAPTCHA
+			'confirm_code'			=> request_var('form_confirm_code', ''),
+			'confirm_id'			=> request_var('confirm_id', ''),
+		);
+		
+		// Other message types
+		foreach ($INVITE_MESSAGE_TYPE as $string => $int)
+		{
+			$email_data['invite_' . $string] = request_var('form_invite_' . $string, 0, true);
+			$email_data['invite_' . $string . '_method'] = request_var('form_invite_' . $string . '_method', 0, true);
+		}
+		
+		// Wait until we can send another email?
+		$sql 			= 'SELECT COUNT(log_id) AS invite_num FROM ' . INVITE_LOG_TABLE . ' WHERE invite_user_id = ' . $user->data['user_id'];
+		$result 		= $db->sql_query($sql);
+		$invite_total	= (int) $db->sql_fetchfield('invite_num');
+		$db->sql_freeresult();
+		
+		if ($invite_total)
+		{
+			$last_day		= time() - 86400;
+			
+			// Queue
+			$sql 			= 'SELECT MAX(invite_time) AS max_time FROM ' . INVITE_LOG_TABLE . ' WHERE invite_user_id = ' . $user->data['user_id'];
+			$result 		= $db->sql_query($sql);
+			$last_invite	= (int) $db->sql_fetchfield('max_time');
+			$db->sql_freeresult();
+			
+			if ((time() - $last_invite) < $invite->config['queue_time'])
 			{
-				$error[]	= $user->lang['EMAIL_EQ_EMAIL'];
+				$queue		= true;
+				$error[] 	= $user->lang['QUEUE_QUEUE'];
 			}
 			
-			// Already got invitation?
-			$sql 		= 'SELECT COUNT(key_id) AS multi_num FROM ' . INVITE_KEYS_TABLE . ' WHERE to_email = "' . $data['email'] . '"';
-			$result 	= $db->sql_query($sql);
-			$multi_num	= (int) $db->sql_fetchfield('multi_num');
+			// Other limits
+			$sql 			= 'SELECT COUNT(log_id) AS invite_num FROM ' . INVITE_LOG_TABLE . ' WHERE invite_user_id = ' . $user->data['user_id'] . ' AND invite_time >= ' . $last_day;
+			$result 		= $db->sql_query($sql);
+			$invite_day		= (int) $db->sql_fetchfield('invite_num');
+			$db->sql_freeresult();
 			
-			if ($multi_num && !$invite->config['multi_email'])
+			$limit_ary		= array(
+				'limit_invite_user'	=> $invite_total,
+				'limit_invite_day'	=> $invite_day,
+			);
+			
+			foreach ($limit_ary as $k => $v)
 			{
-				$error[]	= $user->lang['ALREADY_INVITED'];
+				// Don't divide by zero
+				$additional_invite = ($invite->config[$k . '_posts'] == 0) ? 0 : floor($user->data['user_posts'] / $invite->config[$k . '_posts']);
+				
+				if ($invite->config[$k] == 0 && $invite->config[$k . '_posts'] == 0)
+				{
+					continue;
+				}
+				
+				if ($v >= $invite->config[$k] + $additional_invite)
+				{
+					$queue		= true;
+					$error[]	= $user->lang['QUEUE_' . strtoupper($k)];
+				}
+			}
+		}
+		
+		// Visual Confirmation - Show images
+		$confirm_image = '';
+		
+		if ($invite->config['invite_confirm_code'])
+		{
+			if (!$confirm_id)
+			{
+				$user->confirm_gc(CONFIRM_REG);
+				
+				$sql = 'SELECT COUNT(session_id) AS attempts
+					FROM ' . CONFIRM_TABLE . "
+					WHERE session_id = '" . $db->sql_escape($user->session_id) . "'
+						AND confirm_type = " . CONFIRM_REG;
+				$result = $db->sql_query($sql);
+				$attempts = (int) $db->sql_fetchfield('attempts');
+				$db->sql_freeresult($result);
+				
+				$code = gen_rand_string(mt_rand(5, 8));
+				$confirm_id = md5(unique_id($user->ip));
+				$seed = hexdec(substr(unique_id(), 4, 10));
+				
+				// compute $seed % 0x7fffffff
+				$seed -= 0x7fffffff * floor($seed / 0x7fffffff);
+				
+				$sql = 'INSERT INTO ' . CONFIRM_TABLE . ' ' . $db->sql_build_array('INSERT', array(
+					'confirm_id'	=> (string) $confirm_id,
+					'session_id'	=> (string) $user->session_id,
+					'confirm_type'	=> (int) CONFIRM_REG,
+					'code'			=> (string) $code,
+					'seed'			=> (int) $seed)
+				);
+				$db->sql_query($sql);
+			}
+			$confirm_image 		= '<img src="' . append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=confirm&amp;id=' . $confirm_id . '&amp;type=' . CONFIRM_REG) . '" alt="" title="" />';
+			$s_hidden_fields[] 	= '<input type="hidden" name="confirm_id" value="' . $confirm_id . '" />';
+		}
+		
+		// Do the job ...
+		if ($submit && !$queue)
+		{
+			$check_ary = array(
+				'register_email' => array(
+					array('string', false, 0, 60),
+					array('email')),
+				'register_real_name'	=> array('string', false, 1, 60),
+				'subject'				=> array('string', false, $invite->config['subject_min_chars'], $invite->config['subject_max_chars']),
+				'message'				=> array('string', false, $invite->config['message_min_chars'], $invite->config['message_max_chars']),
+			);
+			
+			$error = validate_data($email_data, $check_ary);
+			
+			if($email_data['register_email'] == $user->data['user_email'])
+			{
+				$error[] = $user->lang['INVITE_TO_YOUR_EMAIL'];
+			}
+			
+			// Multiple invite?
+			$sql 		= 'SELECT COUNT(log_id) AS multiple_invite FROM ' . INVITE_LOG_TABLE . ' WHERE register_email = "' . $email_data['register_email'] . '"';
+			$result 	= $db->sql_query($sql);
+			$multiple	= (int) $db->sql_fetchfield('multiple_invite');
+			
+			if ($multiple && !$invite->config['invite_multiple'])
+			{
+				$error[] = $user->lang['INVITE_MULTIPLE'];
+			}
+			
+			// Visual Confirmation handling
+			if ($invite->config['invite_confirm_code'])
+			{
+				if (!$confirm_id)
+				{
+					$error[] = $user->lang['CONFIRM_CODE_WRONG'];
+				}
+				// If we don't check this, the image won't be displayed
+				elseif ($confirm_id && sizeof($error))
+				{
+					$error[] = $user->lang['CONFIRM_CODE_WRONG'];
+				}
+				else
+				{
+					$sql = 'SELECT code
+						FROM ' . CONFIRM_TABLE . "
+						WHERE confirm_id = '" . $db->sql_escape($confirm_id) . "'
+							AND session_id = '" . $db->sql_escape($user->session_id) . "'
+							AND confirm_type = " . CONFIRM_REG;
+					$result = $db->sql_query($sql);
+					$row = $db->sql_fetchrow($result);
+					$db->sql_freeresult($result);
+					
+					if ($row)
+					{
+						if (strcasecmp($row['code'], $email_data['confirm_code']) === 0)
+						{
+							$sql = 'DELETE FROM ' . CONFIRM_TABLE . "
+								WHERE confirm_id = '" . $db->sql_escape($confirm_id) . "'
+									AND session_id = '" . $db->sql_escape($user->session_id) . "'
+									AND confirm_type = " . CONFIRM_REG;
+							$db->sql_query($sql);
+						}
+						else
+						{
+							$error[] = $user->lang['CONFIRM_CODE_WRONG'];
+						}
+					}
+					else
+					{
+						$error[] = $user->lang['CONFIRM_CODE_WRONG'];
+					}
+				}
 			}
 			
 			if (!sizeof($error))
 			{
-				$email_sent	= $invite->send_email($data);
+				$send_message	= $invite->message_handle($email_data, true, false);
 				
 				// Email successfully sent to friend?
 				meta_refresh(1, append_sid("{$phpbb_root_path}index.$phpEx"));
-
-				$message = ($email_sent) ? $user->lang['EMAIL_SENT_SUCCESS'] : $user->lang['EMAIL_SENT_FAILURE'];
+				
+				$message = ($send_message) ? $user->lang['EMAIL_SENT_SUCCESS'] : $user->lang['EMAIL_SENT_FAILURE'];
 				$message .=  '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb_root_path}index.$phpEx") . '">', '</a>');
 				trigger_error($message);
 			}
@@ -124,25 +275,51 @@ class ucp_invite
 			// Replace "error" strings with their real, localised form
 			$error = preg_replace('#^([A-Z_]+)$#e', "(!empty(\$user->lang['\\1'])) ? \$user->lang['\\1'] : '\\1'", $error);
 		}
-
+		
 		$template->assign_vars(array(
 			// Display all errors: 'ERROR'		=> (sizeof($error)) ? implode('<br />', $error) : '',
-			// We only display the first error in array so eveything is clearly arranged
-			'ERROR'				=> (sizeof($error)) ? $error[0] : '',
+			'ERROR'					=> (sizeof($error)) ? $error[0] : '',
 			
-			'RECIPIENT'			=> (isset($data['email'])) ? $data['email'] : '',
-			'NAME'				=> (isset($data['name'])) ? $data['name'] : '',
-			'SUBJECT'			=> (isset($data['subject'])) ? $data['subject'] : '',
-			'MESSAGE'			=> (isset($data['message'])) ? $data['message'] : '',
+			'FORM_LANGUAGE_SELECT'	=> language_select($email_data['invite_language']),
+			'FORM_CONFIRM_IMG'		=> $confirm_image,
 			
-			'S_DISABLE'			=> ($send_iaf) ? false : true,
-			'S_SHOW_CONFIRM'	=> ($invite->config['confirm_email'] == 2) ? true : false,
+			'S_VALUE_EMAIL'			=> EMAIL,
+			'S_VALUE_PM'			=> PM,
+			'S_CONFIRM_CODE'		=> ($queue) ? false : $invite->config['invite_confirm_code'],
+			'S_DISABLE'				=> ($queue) ? true : false,
+			//'S_CASH_INSTALLED'		=> $invite->config['cash_enable'],
+			//'S_POINTS_INSTALLED'	=> $invite->config['points_enable'],
+			'S_DISPLAY_ZEBRA'		=> ($invite->config['zebra'] == OPTIONAL) ? true : false,
+			'S_DISPLAY_LANGUAGE'	=> ($invite->config['invite_language_select']) ? true : false,
+			'S_HIDDEN_FIELDS'		=> array_pop($s_hidden_fields),
 		));
-
-		// Set desired template
+		
+		foreach ($email_data as $k => $v)
+		{
+			$template->assign_vars(array(
+				'FORM_' . strtoupper($k)	=> (isset($email_data[$k])) ? utf8_normalize_nfc(request_var($k, $v, true)) : '',
+			));
+		}
+		
+		// Display other message options
+		foreach ($INVITE_MESSAGE_TYPE as $string => $int)
+		{
+			// Undefined index: invite
+			if ($string == 'invite')
+			{
+				continue;
+			}
+			
+			$template->assign_vars(array(
+				'S_DISPLAY_' . strtoupper($string)				=> ($invite->config[$string] == OPTIONAL) ? true : false,
+				'S_DISPLAY_' . strtoupper($string) . '_METHOD'	=> ($invite->config[$string . '_method'] == OPTIONAL) ? true : false,
+			));
+		}
+		
+		// Template
 		$this->tpl_name = 'ucp_invite_' . $mode;
 		$this->page_title = 'UCP_INVITE_' . strtoupper($mode);
-	}   
+	}
 } 
 
 ?>

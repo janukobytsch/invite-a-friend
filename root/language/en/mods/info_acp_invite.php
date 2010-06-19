@@ -1,10 +1,10 @@
 <?php
 /**
-*
-* info_acp_invite [English]
+* @author Bycoja bycoja@web.de
+* info_acp_invite [Deutsch]
 *
 * @package language
-* @version $Id: info_acp_invite.php 8645 2008-10-03 10:40:17Z Bycoja $
+* @version $Id: info_acp_invite.php 9017 2009-02-28 12:24:11Z Bycoja $
 * @copyright (c) 2008 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -13,6 +13,11 @@
 /**
 * DO NOT CHANGE
 */
+if (!defined('IN_PHPBB'))
+{
+	exit;
+}
+
 if (empty($lang) || !is_array($lang))
 {
 	$lang = array();
@@ -30,64 +35,89 @@ if (empty($lang) || !is_array($lang))
 
 // Permissions
 $lang = array_merge($lang, array(
-    'acl_u_send_iaf'	=> array('lang' => 'Can send invitations to friends', 'cat' => 'misc'),
+    'acl_u_send_invite'	=> array('lang' => 'Can send invitations to friends', 'cat' => 'misc'),
 ));
 
 $lang = array_merge($lang, array(
-	// General
-	'UCP_INVITE'						=> 'Invite a friend',
-	'UCP_INVITE_INVITE'					=> 'Compose invitation',
-	'ACP_INVITE_A_FRIEND'				=> 'Invite a friend',
-	'ACP_INVITE_A_FRIEND_EXPLAIN'		=> 'Here you can set all default settings for the e-mails which users can send to their friends.',
-	'ACP_INVITE_A_FRIEND_LOG'			=> 'Invitation log',
-	'ACP_INVITE_A_FRIEND_LOG_EXPLAIN'	=> 'Here you can see information on all invitations sent to friends of your members.',
+	'ACP_INVITE'						=> 'Invite a friend',
+	'ACP_INVITE_EXPLAIN'				=> 'Here you can set all default settings for the e-mails which users can send to their friends.',
+	'ACP_INVITE_LOG'					=> 'Invitation log',
+	'ACP_INVITE_LOG_EXPLAIN'			=> 'This lists all actions relating to the invitations which users can send to their friends.',
 	
-	// Errors
-	'ERROR_SETTINGS'					=> 'You have to fill in all fields correctly.',
-	
-	// Log
-	'LOG_IAF_SETTINGS_UPDATED'			=> '<strong>Altered ’Invite a friend’ settings</strong>',
-	'LOG_INVITE_EMAIL'					=> '<strong>Invitation sent</strong><br/>» to „%1$s“',
-	'LOG_INVITE_CONFIRM_EMAIL'			=> '<strong>Confirmation e-mail sent</strong><br/>» to „%1$s“ to confirm the registration of „%2$s“',
-	'LOG_INVITE_KEY_USED'				=> '<strong>Registration-key used</strong><br/>» to register username „%1$s“',
-	'LOG_CASH_INVITATION'				=> '<strong>%2$s „%3$s“ allocated</strong><br/>» due to the invitation sent to „%1$s“',
-	'LOG_CASH_REGISTRATION'				=> '<strong>%2$s „%3$s“ allocated</strong><br/>» due to the registration of „%1$s“',
-	
+	'OPTIONAL'							=> 'Optional',
+	'INVITE_INVITE'						=> 'Invitation',
+	'INVITE_CONFIRM'					=> 'Confirmation',
+	'VIEWTOPIC'							=> 'Topic',
+	'MEMBERLIST_VIEW'					=> 'Profile',
 	'INVITE_INFO'						=> 'Details',
-	'INVITATIONS'						=> 'Invitations sent',
-	'REGISTRATIONS'						=> 'Registered friends',
 	
-	// Settings
-	'SETTINGS_ENABLE'					=> 'Enable invitations',
-	'SETTINGS_AUTH_KEY'					=> 'Enable registration-keys',
-	'SETTINGS_AUTH_KEY_EXPLAIN'			=> 'New users will need a registration-key, which is obtained by e-mail, to register.',
-	'SETTINGS_SELF_INVITE'				=> 'Limit invitations',
-	'SETTINGS_SELF_INVITE_EXPLAIN'		=> 'Prohibit sending invitations to yourself all the time. You must not use more than one registration-key each IP if enabled.',
-	'SETTINGS_MULTI_EMAIL'				=> 'Allow multiple invitations',
-	'SETTINGS_MULTI_EMAIL_EXPLAIN'		=> 'Multiple invitations can be send to the same e-mail address.',
-	'SETTINGS_CONFIRM_EMAIL'			=> 'Confirmation e-mail',
-	'SETTINGS_CONFIRM_EMAIL_EXPLAIN'	=> 'If a invited friend registers, a confirmation e-mail will be send to the appropriate user.',
-	'SETTINGS_SEND_NOW'					=> 'Send e-mails immediately',
-	'SETTINGS_SEND_NOW_EXPLAIN'			=> 'Send e-mails without any delay to friends.',
-	'SETTINGS_MESSAGE_CHARS'			=> 'Message length',
-	'SETTINGS_MESSAGE_CHARS_EXPLAIN'	=> 'Minimum and maximum number of characters in messages.',
-	'SETTINGS_SUBJECT_CHARS'			=> 'Subject length',
-	'SETTINGS_SUBJECT_CHARS_EXPLAIN'	=> 'Minimum and maximum number of characters in subjects.',
-	'SETTINGS_KEY_CHARS'				=> 'Registration-key length',
-	'SETTINGS_KEY_CHARS_EXPLAIN'		=> 'Minimum and maximum number of characters in registration-keys.',
-	'SETTINGS_CHARSET'					=> 'Characters used in registration-keys',
-	'SETTINGS_CHARSET_EXPLAIN'			=> 'Possible characters registration-keys may consist of.',
-	'SETTINGS_TIME'						=> 'Elapsed time',
-	'SETTINGS_TIME_EXPLAIN'				=> 'Users have to wait the here entered period of time to send a new message.',
+	'SETTINGS_ENABLE'							=> 'Enable »Invite A Friend«',
+	'SETTINGS_ENABLE_KEY'						=> 'Enable registration keys',
+	'SETTINGS_ENABLE_KEY_EXPLAIN'				=> 'A registration key, which is obtained by a user of this board, is required in order to register.',
+	'SETTINGS_CONFIRM'							=> 'Confirmation',
+	'SETTINGS_CONFIRM_EXPLAIN'					=> 'If an invited friend registers, a confirmation e-mail will be send to the appropriate user.',
+	'SETTINGS_ZEBRA'							=> 'Add friend',
+	'SETTINGS_ZEBRA_EXPLAIN'					=> 'If an invited friend registers, he will be added to the friendlist of the user who sent the invitation.',
+	'SETTINGS_INVITE_CONFIRM_CODE'				=> 'Use CAPTCHA',
+	'SETTINGS_INVITE_CONFIRM_CODE_EXPLAIN'		=> 'In order to prohibit sending invitations automatically a confirmation code has to be entered.',
+	'SETTINGS_INVITE_MULTIPLE'					=> 'Allow multiple invitations',
+	'SETTINGS_INVITE_MULTIPLE_EXPLAIN'			=> 'Multiple invitations can be send to the same e-mail address.',
+	'SETTINGS_INVITE_YOURSELF'					=> 'Allow inviting yourself',
+	'SETTINGS_INVITE_YOURSELF_EXPLAIN'			=> 'Users can register with registration keys they sent to themselves.',
+	'SETTINGS_INVITE_LANGUAGE_SELECT'			=> 'Select language',
+	'SETTINGS_INVITE_LANGUAGE_SELECT_EXPLAIN'	=> 'The sender can select the invitation’s language',
 	
-	'SETTINGS_IAF_MESSAGE_EXPLAIN'		=> 'The e-mails users send to their friends will be embed into the following message:',
-	'SETTINGS_CONFIRM_MESSAGE_EXPLAIN'	=> 'The following message will be send to a user if the invited friend registers:',
+	'SETTINGS_QUEUE_TIME'						=> 'Queue',
+	'SETTINGS_QUEUE_TIME_EXPLAIN'				=> 'Users have to wait the here entered period of time in order to send another invitation.',
+	'SETTINGS_MESSAGE_CHARS'					=> 'Message length',
+	'SETTINGS_MESSAGE_CHARS_EXPLAIN'			=> 'Minimum and maximum number of characters in messages.',
+	'SETTINGS_SUBJECT_CHARS'					=> 'Subject length',
+	'SETTINGS_SUBJECT_CHARS_EXPLAIN'			=> 'Minimum and maximum number of characters in subjects.',
+	'SETTINGS_MESSAGE_INVITE_EXPLAIN'			=> 'The invitations users send to their friends will be embed into the following message.',
+	'SETTINGS_MESSAGE_CONFIRM_EXPLAIN'			=> 'The following message will be send to the user if an invited friend registers.',
+	
+	'SETTINGS_LIMIT_INVITE'						=> 'Limit invitations',
+	
+	'SETTINGS_LIMIT_INVITE_EXPLAIN'				=> 'The maximum number of invitations per user is entered in the first input field. The number of maximum invitations increases every x (second input field) posts by one invitation; 0 = no limitation',
+	'INVITE_DAILY'								=> 'Daily',
+	'INVITE_TOTAL'								=> 'Total',
+	'INVITATIONS'								=> 'Invitations',
+	
+	'DISPLAY_OPTIONS'							=> 'Display options',
+	'SETTINGS_DISPLAY_NAVIGATION'				=> 'Display link in navigation',
+	'SETTINGS_DISPLAY_NAVIGATION_EXPLAIN'		=> 'A link to the User Control Panel (Compose invitation) is displayed in the navigation.',
+	'SETTINGS_DISPLAY_REGISTRATION'				=> 'Display registration keys',
+	'SETTINGS_DISPLAY_REGISTRATION_EXPLAIN'		=> 'The input field for registration keys is displayed while registering.',
+	'SETTINGS_PROFILE_FIELDS'					=> 'Display profile information',
+	'SETTINGS_PROFILE_FIELDS_EXPLAIN'			=> 'The profile information is displayed at the here chosen locations.',	
+	'DISPLAY_INVITE'							=> 'Invitations sent',
+	'DISPLAY_REGISTER'							=> 'Registered friends',
+	'DISPLAY_NAME'								=> 'Registered friends (names)',
+	
+	'ERROR_INVITE_SETTINGS'						=> 'You have to fill in all fields correctly.',
+	'ERROR_MESSAGE_INVITE'						=> 'You have to fill in all invitations.',
+	'ERROR_MESSAGE_CONFIRM'						=> 'You have to fill in all confirmations.',
+	
+	'LOG_INVITE_SETTINGS_UPDATED'				=> '<strong>Altered ’Invite a friend’ settings</strong>',
+	'LOG_INVITE_INVITE'							=> '<strong>Invitation sent</strong><br/>» to „%1$s“',
+	'LOG_INVITE_CONFIRM'						=> '<strong>Confirmation sent</strong><br/>» to „%1$s“ in order to confirm the registration of „%2$s“',
+	'LOG_INVITE_REGISTER'						=> '<strong>Registration key used</strong><br/>» to register user „%1$s“',
+	'LOG_INVITE_ZEBRA'							=> '<strong>User „%2$s“ added as friend</strong><br/>» of „%1$s“',
+	
+	//Plugins
+	'CASH_SETTINGS'					=> 'Cash settings',
+	'CASH_ENABLE'					=> 'Enable cash',
+	'CASH_INVITE'					=> 'Cash per invitation',
+	'CASH_INVITE_EXPLAIN'			=> 'The amount of cash allocated per invitation.',
+	'CASH_REGISTER'					=> 'Cash per registration',
+	'CASH_REGISTER_EXPLAIN'			=> 'The amount of cash allocated per invited friend, who registers a new account.',
 
-	// Cash settings
-	'CASH_ENABLE'						=> 'Enable cash',
-	'CASH_INVITATION'					=> 'Cash per invitation',
-	'CASH_INVITATION_EXPLAIN'			=> 'The amount of cash allocated per invitation.',
-	'CASH_REGISTRATION'					=> 'Cash per registration',
-	'CASH_REGISTRATION_EXPLAIN'			=> 'The amount of cash allocated per invited friend, who registers a new account.',
+	'POINTS_SETTINGS'				=> 'Points settings',
+	'POINTS_ENABLE'					=> 'Enable points',
+	'POINTS_INVITE'					=> 'Points per invitation',
+	'POINTS_INVITE_EXPLAIN'			=> 'The amount of points allocated per invitation.',
+	'POINTS_REGISTER'				=> 'Points per registration',
+	'POINTS_REGISTER_EXPLAIN'		=> 'The amount of points allocated per invited friend, who registers a new account.',
+
 ));
 ?>

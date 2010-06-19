@@ -1,8 +1,9 @@
 <?php
 /**
+* @author Bycoja bycoja@web.de
 *
 * @package phpBB3
-* @version $Id: functions_invite.php 8645 2008-10-03 10:40:17Z Bycoja $
+* @version $Id: functions_invite.php 9166 2009-02-20 16:43:22Z Bycoja $
 * @copyright (c) 2008 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -16,352 +17,468 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-/**
-* Default constants
-*/
-define('AUTH_KEY_DISABLED',		'key_disabled');
-define('LOG_ENTRIES_PER_PAGE',	20);
+define('LOG_ENTRIES_PER_PAGE', 	20);
+
+define('EMAIL', 	0);
+define('PM', 		1);
+define('OPTIONAL', 	2);
+
+define('REGISTER_KEY_DISABLED',		'key_disabled');
+define('REGISTER_KEY_CHARSET',		'abcdefghijkmnpqrstuvwxyz123456789ABCDEFGHIJKLMNPQRSTUVWXYZ');
+define('REGISTER_KEY_MIN_CHARS',	12);
+define('REGISTER_KEY_MAX_CHARS',	18);
+
+$INVITE_MESSAGE_TYPE = array(
+	'invite'	=> 0,
+	'confirm'	=> 1,
+);
 
 /**
 * Class invite
-* Send emails, create keys ...
 */              
 class invite
 {
 	var $config;
-	var $from;
-	var $new_user;
-	var $vars;
-	
-	// Contains the message stored in ./language/.../email/invite.txt
 	var $message;
+	var $invite_user;
+	var $register_user;
 	
-	// Contains the message stored in ./language/.../email/invite_confirm.txt
-	var $confirm_message;
-	
+	var $INVITE_MESSAGE_TYPE = array(
+			'invite'	=> 0,
+			'confirm'	=> 1,
+		);
+
 	/**
-	* Constructor
+	* function invite
 	 */
 	function invite()
 	{
-		global $db, $user;
-		
-		// $this->config
-		
-		$sql 	= 'SELECT * FROM ' . INVITE_CONFIG_TABLE . ' WHERE config_id = 1';
-		$result	= $db->sql_query($sql);
-		
-		while ($row	= $db->sql_fetchrow($result))
-		{
-			foreach ($row as $k => $v)
-			{
-				$this->config[$k] = utf8_normalize_nfc(request_var($k, $v, true));
-			}
-		}
-		
-		$db->sql_freeresult($result);
-	
-		// $this->message
-		
-		$this->message_file($user->data['user_lang'], 'invite');
-		
-		// $this->confirm_message
-		
-		$this->message_file($user->data['user_lang'], 'invite_confirm');
+		$this->get_config();
 	}
 	
 	/**
-	* function message_file
-	* Read and update the messages stored in ./language/.../email/...
-	*/
-	function message_file($template_lang, $template_file, $mode = 'read', $new_message = '')
+	* function get_config
+	 */
+	function get_config()
 	{
-		global $phpEx, $phpbb_root_path, $user;
+		global $db;
 		
-		if ($template_file == 'invite')
-		{
-			$tpl_file = "{$phpbb_root_path}language/$template_lang/email/invite.txt";
-		}
-		else
-		{
-			$tpl_file = "{$phpbb_root_path}language/$template_lang/email/invite_confirm.txt";
-		}
+		//$sql 	= '(SELECT config_name, config_value FROM ' . INVITE_CONFIG_TABLE . ') UNION (SELECT config_name, config_value FROM ' . INVITE_CONFIG_PLUGINS_TABLE . ')';
+		$sql 	= 'SELECT config_name, config_value FROM ' . INVITE_CONFIG_TABLE;
+		$result	= $db->sql_query($sql);
 		
-		if ($mode == 'read')
+		while ($row = $db->sql_fetchrow($result))
 		{
-			if (($data = @file_get_contents($tpl_file)) === false)
-			{
-				trigger_error("Failed opening template file [ $tpl_file ]", E_USER_ERROR);
-			}
-			
-			if ($template_file == 'invite')
-			{
-				$this->message = $data;
-			}
-			else
-			{
-				$this->confirm_message = $data;
-			}
+			$this->config[$row['config_name']] = $row['config_value'];
 		}
-		
-		if ($mode == 'update')
-		{
-			$file = fopen($tpl_file, "w+");
-			
-			rewind($file);
-			fwrite($file, $new_message);
-			fclose($file);
-		}
+		$db->sql_freeresult($result);
 	}
 	
 	/**
 	* function set_config
-	* Update the iaf_config-table
 	*/
-	function set_config($key, $value)
+	function set_config($key, $value, $message = false)
 	{
 		global $db;
-
-		$sql = 'UPDATE ' . INVITE_CONFIG_TABLE . "
-				SET " . $key . " = '" . $db->sql_escape($value) . "'
-				WHERE config_id = 1";
+		
+		if ($message)
+		{
+			foreach ($value as $message_type => $message)
+			{
+				$sql = 'UPDATE ' . INVITE_MESSAGE_TABLE . '
+						SET message = "' . $db->sql_escape($message) . '"
+						WHERE language_iso = "' . $db->sql_escape($key) . '" AND message_type = ' . (int) $message_type;
+				$db->sql_query($sql);
+			}
+		}
+		else
+		{
+			$sql = 'UPDATE ' . INVITE_CONFIG_TABLE . '
+					SET config_value = "' . $db->sql_escape($value) . '"
+					WHERE config_name = "' . $db->sql_escape($key) . '"';
+			$db->sql_query($sql);
+		}
+	}
+	
+	/**
+	* function get_languages
+	*/
+	function get_languages()
+	{
+		global $db;
+		
+		$langs	= array();
+		
+		$sql 	= 'SELECT lang_iso, lang_dir FROM ' . LANG_TABLE . ' ORDER BY lang_english_name';
+		$result = $db->sql_query($sql);
+		
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$langs[$row['lang_iso']] = $row['lang_dir'];
+		}
+		$db->sql_freeresult($result);
+		
+		return $langs;
+	}
+	
+	/**
+	* function load_message
+	*/
+	function load_message($iso, $message_type, $return = false)
+	{
+		global $db;
+		
+		$sql 	= 'SELECT * FROM ' . INVITE_MESSAGE_TABLE . ' WHERE language_iso = "' . $db->sql_escape($iso) . '" AND message_type = ' . (int) $message_type;
+		$result = $db->sql_query($sql);
+		
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$this->message = $row['message'];
+		}
+		$db->sql_freeresult($result);
+		
+		if ($return)
+		{
+			return $this->message;
+		}
+	}
+	
+	/**
+	* function set_vars
+	*/
+	function set_vars($data)
+	{
+		global $config, $phpEx, $user;
+		
+		// User vars
+		foreach ($this->invite_user as $k => $v)
+		{
+			$this->vars['INVITE_' . strtoupper($k)] = $v;
+		}
+		
+		if (sizeof($this->register_user))
+		{
+			foreach ($this->register_user as $k => $v)
+			{
+				$this->vars['REGISTER_' . strtoupper($k)] = $v;
+			}
+			
+			$this->vars['REGISTER_USER_PROFILE'] = generate_board_url() . '/memberlist.' . $phpEx . '?mode=viewprofile&u=' . $this->register_user['user_id'];
+		}
+		
+		// Config vars
+		foreach ($this->config as $k => $v)
+		{
+			$this->vars['INVITE_CONFIG_' . strtoupper($k)] = $v;
+		}
+		
+		// Additional vars
+		$register_key_url				= ($this->config['enable_key']) ? '&key=' . $data['register_key'] : '';
+		
+		$this->vars['RECIPIENT'] 		= (isset($data['register_real_name'])) ? $data['register_real_name'] : '';
+		$this->vars['REGISTER_KEY'] 	= ($this->config['enable_key']) ? $data['register_key'] : $user->lang['REGISTER_KEY_DISABLED'];
+		$this->vars['URL_REGISTER_KEY']	= generate_board_url() . '/ucp.' . $phpEx . '?mode=register' . $register_key_url;
+		$this->vars['URL_REGISTER']		= $this->vars['URL_REGISTER_KEY'];
+	}
+	
+	/**
+	* function message_handle
+	*/
+	function message_handle($data, $invite_user = false, $register_user = false)
+	{
+		global $db, $user;
+		
+		// Set user data
+		$user_ary = array(
+			'invite'	=> $invite_user,
+			'register'	=> $register_user,
+		);
+		
+		foreach ($user_ary as $name => $var)
+		{
+			if ($var)
+			{
+				$user_id = $data[$name . '_user_id'];
+				
+				$sql 	= 'SELECT * FROM ' . USERS_TABLE . ' WHERE user_id = ' . (int) $user_id;
+				$result	= $db->sql_query($sql);
+				
+				while ($row	= $db->sql_fetchrow($result))
+				{
+					foreach ($row as $k => $v)
+					{
+						if ($name == 'invite')
+						{
+							$this->invite_user[$k] = utf8_normalize_nfc($v);
+						}
+						if ($name == 'register')
+						{
+							$this->register_user[$k] = utf8_normalize_nfc($v);
+						}
+					}
+				}
+				$db->sql_freeresult($result);
+			}
+		}
+		
+		$this->set_vars($data);
+		$this->messenger($data, $data['method']);
+		
+		if (empty($this->register_user))
+		{
+			$this->log_table($data);
+		}
+		
+		// ACP log
+		$user_id_save = $user->data['user_id'];
+		
+		if ($data['message_type'] == $this->INVITE_MESSAGE_TYPE['invite'])
+		{
+			$user->data['user_id']	= $this->invite_user['user_id'];
+			add_log('invite', 'LOG_INVITE_' . strtoupper(array_search($data['message_type'], $this->INVITE_MESSAGE_TYPE)), $data['register_email']);
+			
+			$this->give_cash('invite', $this->invite_user['user_id']);
+			$this->give_points('invite', $this->invite_user['user_id']);
+		}
+		else
+		{
+			$user->data['user_id']	= $this->register_user['user_id'];
+			$name_or_email = ($data['method'] == EMAIL) ? $this->invite_user['user_email'] : $this->invite_user['username'];
+			add_log('invite', 'LOG_INVITE_' . strtoupper(array_search($data['message_type'], $this->INVITE_MESSAGE_TYPE)), $name_or_email, $this->register_user['username']);
+		}
+		
+		$user->data['user_id'] = $user_id_save;
+		
+		return true;
+	}
+	/**
+	* function messenger
+	*/
+	function messenger($data, $method)
+	{
+		global $config, $user, $phpbb_root_path, $phpEx;
+		
+		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+		include_once($phpbb_root_path . 'includes/functions_privmsgs.' . $phpEx);
+		
+		$message = htmlspecialchars_decode($this->load_message($data['invite_language'], $data['message_type'], true));
+		$subject = htmlspecialchars_decode($data['subject']);
+		
+		switch($method)
+		{
+			case EMAIL:
+				// Use false so send the email immediately
+				$messenger		= new messenger(false);
+				$username		= (isset($data['register_real_name'])) ? $data['register_real_name'] : $this->register_user['username'];
+				
+				// Assign vars
+				foreach ($this->vars as $k => $v)
+				{
+					$messenger->vars[$k] = $v;
+				}
+				
+				$messenger->msg = $message;
+				$messenger->to($data['register_email'], $username);
+				
+				$messenger->headers('X-AntiAbuse: Board servername - ' . $config['server_name']);
+				$messenger->headers('X-AntiAbuse: User_id - ' . $data['method_user_id']);
+				$messenger->headers('X-AntiAbuse: Username - ' . $this->user_return_data($data['method_user_id'], 'user_id', 'username'));
+				$messenger->headers('X-AntiAbuse: User IP - ' . $this->user_return_data($data['method_user_id'], 'user_id', 'user_ip'));
+				
+				$messenger->subject($subject);
+				$messenger->set_mail_priority(MAIL_NORMAL_PRIORITY);
+				
+				$messenger->assign_vars(array(
+					'CONTACT_EMAIL' => $config['board_contact'],
+					'MESSAGE'		=> (empty($data['message'])) ? '' : htmlspecialchars_decode($data['message']),
+				));
+				
+				$messenger->send();
+				$messenger->save_queue();
+			break;
+			
+			case PM:
+				// We can use invite_user_id here, because we are just going to send confirmations
+				$address_list 	= array();
+				$address_list['u'][$data['invite_user_id']] = 'to';
+				
+				// Replace all placeholders
+				foreach ($this->vars as $replace => $value)
+				{
+					$message	= str_replace('{' . $replace . '}', $value, $message);
+				}
+				
+				$pm_data = array(
+						'from_user_id'			=> $this->register_user['user_id'],
+						'from_user_ip'			=> $this->register_user['user_ip'],
+						'from_username'			=> $this->register_user['username'],
+						'icon_id'				=> 0,
+						'enable_sig'			=> true,
+						'enable_bbcode'			=> false,
+						'enable_smilies'		=> false,
+						'enable_urls'			=> false,
+						'bbcode_bitfield'		=> '',
+						'bbcode_uid'			=> '',
+						'message'				=> $message,
+						'attachment_data'		=> '',
+						'filename_data'			=> '',
+						'address_list'			=> $address_list,
+				);
+				
+				submit_pm('post', $subject, $pm_data);
+			break;
+		}
+	}
+	
+	/**
+	* function log_table
+	*/
+	function log_table($data)
+	{
+		global $db;
+		
+		$sql_ary = array(
+			'invite_user_id'		=> $data['invite_user_id'],
+			'register_user_id'		=> $data['register_user_id'],
+			'register_email'		=> $data['register_email'],
+			'invite_confirm'		=> (!$this->config['confirm']) ? 0 : (($this->config['confirm'] == 1) ? 1 : $data['invite_confirm']),
+			'invite_confirm_method'	=> ($this->config['confirm_method'] == EMAIL) ? EMAIL : (($this->config['confirm_method'] == PM) ? PM : $data['invite_confirm_method']),
+			'register_key_used'		=> $data['register_key_used'],
+			'register_key'			=> $data['register_key'],
+			'invite_session_ip'		=> $data['invite_session_ip'],
+			'invite_time'			=> $data['invite_time'],
+			'invite_zebra'			=> (!$this->config['zebra']) ? 0 : (($this->config['zebra'] == 1) ? 1 : $data['invite_zebra']),
+		);
+		
+		$sql = 'INSERT INTO ' . INVITE_LOG_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 		$db->sql_query($sql);
 	}
 	
 	/**
-	* function send_email
-	* Send the email to a friend
+	* function user_return_data
 	*/
-	function send_email($data)
+	function user_return_data($data, $given = 'username_clean', $return = 'user_id')
 	{
-		global $phpEx, $phpbb_root_path, $config, $user;
-		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+		global $db;
 		
-		// Use false so send the email immediately
-		$use_queue	= ($this->config['send_now']) ? false : true;
-		$messenger	= new messenger($use_queue);
+		$user_return_data	= array();
 		
-		// Get some information about the sender and set vars
-		$this->get_sender($data['from']);
-		$this->set_vars($data);
-		
-		foreach ($this->vars as $k => $v)
+		if ($data)
 		{
-			$messenger->vars[$k] = utf8_normalize_nfc(request_var($k, $v, true));
-		}
-		
-		$messenger->to($data['email'], $data['name']);
-		$messenger->template('invite', $data['lang']);
-
-		$messenger->headers('X-AntiAbuse: Board servername - ' . $config['server_name']);
-		$messenger->headers('X-AntiAbuse: User_id - ' . $user->data['user_id']);
-		$messenger->headers('X-AntiAbuse: Username - ' . $user->data['username']);
-		$messenger->headers('X-AntiAbuse: User IP - ' . $user->ip);
-
-		$messenger->subject(htmlspecialchars_decode($data['subject']));
-		$messenger->set_mail_priority(MAIL_NORMAL_PRIORITY);
-
-		$messenger->assign_vars(array(
-			'CONTACT_EMAIL' => $config['board_contact'],
-			'MESSAGE'		=> htmlspecialchars_decode($data['message']))
-		);
-		
-		$messenger->send();
-		$messenger->save_queue();
-		
-		// Create an entry for the key in database
-		// If keys are disabled we still create an entry,
-		// so we can use INVITE_KEYS_TABLE as log
-		$this->insert_key($data);
-		
-		// Cash mod
-		$this->give_cash('invitation', $data['from']);
-		
-		// Add log entry
-		add_log('invite', 'LOG_INVITE_EMAIL', $data['email']);
-		
-		if ($this->cash_installed() && $this->config['cash_enable'])
-		{
-			add_log('invite', 'LOG_CASH_INVITATION', $data['email'], $this->config['cash_invitation'], $this->get_currency_name($this->config['cash_id_invitation']));
-		}
-		
-		return true;
-	}
-	
-	/**
-	* function send_confirm
-	* Send confirmation that invitited user has registered
-	*/
-	function send_confirm($key, $new_user_id)
-	{
-		global $phpEx, $phpbb_root_path, $config, $user, $db;
-		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
-		
-		// Use false so send the email immediately
-		$use_queue	= ($this->config['send_now']) ? false : true;
-		$messenger	= new messenger($use_queue);
-		
-		// Get some information about the new user and set vars
-		$this->get_new_user($new_user_id);
-		
-		// Fix: [phpBB Debug] PHP Notice: in file /includes/functions_invite.php on line 209: Undefined variable: invitation_data
-		if ($this->config['auth_key'] == 2 && empty($key))
-		{
-			return false;
-		}
-		
-		// Which invitation do we talk about?
-		$sql 	= 'SELECT * FROM ' . INVITE_KEYS_TABLE . " WHERE auth_key = '$key' AND key_used = 1";
-		$result	= $db->sql_query($sql);
-		
-		while ($row	= $db->sql_fetchrow($result))
-		{
-			foreach ($row as $k => $v)
+			$sql	= 'SELECT * FROM ' . USERS_TABLE . " WHERE $given = '" . $db->sql_escape($data) . "'";
+			$result = $db->sql_query($sql);
+				
+			while ($row = $db->sql_fetchrow($result))
 			{
-				$invitation_data[$k] = utf8_normalize_nfc(request_var($k, $v, true));
+				foreach ($row as $k => $v)
+				{
+					$user_return_data[$k] = utf8_normalize_nfc($v);
+				}
+			}
+			$db->sql_freeresult($result);
+			
+			if (sizeof($user_return_data))
+			{
+				return $user_return_data[$return];
+			}
+			else
+			{
+				return false;
 			}
 		}
-		
-		// Don't send confirmation e-mail if not wished
-		if (!$invitation_data['send_confirm'])
-		{
-			return false;
-		}
-		
-		// Get some information about the sender and set vars
-		$this->get_sender($invitation_data['user_id']);
-		
-		$data	= array(
-			'key'	=> $key,
-			'name'	=> $this->from['username'],
-		);
-		$this->set_vars($data);
-		
-		foreach ($this->vars as $k => $v)
-		{
-			$messenger->vars[$k] = utf8_normalize_nfc(request_var($k, $v, true));
-		}
-		
-		$messenger->to($this->from['user_email'], $this->from['username']);
-		$messenger->template('invite_confirm', $this->from['user_lang']);
-		
-		$messenger->headers('X-AntiAbuse: Board servername - ' . $config['server_name']);
-		$messenger->headers('X-AntiAbuse: User_id - ' . $user->data['user_id']);
-		$messenger->headers('X-AntiAbuse: Username - ' . $user->data['username']);
-		$messenger->headers('X-AntiAbuse: User IP - ' . $user->ip);
-		
-		$messenger->subject(htmlspecialchars_decode($user->lang['INVITE_CONFIRM_EMAIL']));
-		$messenger->set_mail_priority(MAIL_NORMAL_PRIORITY);
-		
-		$messenger->assign_vars(array(
-			'CONTACT_EMAIL' => $config['board_contact'],
-		));
-		
-		$messenger->send();
-		$messenger->save_queue();
-		
-		
-		$user_id_save			= $user->data['user_id'];
-		$user->data['user_id']	= $this->from['user_id'];
-		
-		add_log('invite', 'LOG_INVITE_CONFIRM_EMAIL', $this->from['user_email'], $this->new_user['username']);
-		
-		$user->data['user_id']	= $user_id_save;
-		
-		return true;
 	}
 	
 	/**
 	* function create_key
-	* Create a random key
 	*/
 	function create_key()
 	{
 		mt_srand(crc32(microtime()));
-		$charset 	= $this->config['charset'];
-		$lenght		= rand($this->config['key_min_chars'], $this->config['key_max_chars']);
+		$charset 	= REGISTER_KEY_CHARSET;
+		$disabled	= REGISTER_KEY_DISABLED;
+		$lenght		= rand(REGISTER_KEY_MIN_CHARS, REGISTER_KEY_MAX_CHARS);
 		
 		$str_lng 	= strlen($charset) - 1;
 		$rand		= '';
 		
 		for($i = 0; $i < $lenght; $i++)   
 		{
-			$rand	.= $charset{mt_rand(0, $str_lng)};
+			$rand .= $charset{mt_rand(0, $str_lng)};
 		}
 		
 		// It is highly unlikely this will happen, but still possible
-		if ($rand == AUTH_KEY_DISABLED)
+		if ($rand == $disabled)
 		{
 			$rand		= '';
-			
-			// We delete the first character used in AUTH_KEY_DISABLED in $charset
-			// so we can't create AUTH_KEY_DISABLED again
-			$auth_key_disabled	= AUTH_KEY_DISABLED;
-			$charset			= str_replace($auth_key_disabled{0}, '', $charset);
+			$charset	= str_replace($disabled{0}, '', $charset);
 			
 			for($i = 0; $i < $lenght; $i++)   
 			{
-				$rand	.= $charset{mt_rand(0, $str_lng)};
+				$rand .= $charset{mt_rand(0, $str_lng)};
 			}
 		}
 		
-		// If keys are disabled we still create a key,
-		// so we can use INVITE_KEYS_TABLE as log
-		if (!$this->config['auth_key'])
+		// If keys are disabled we still create a key
+		if (!$this->config['enable_key'])
 		{
-			$rand = AUTH_KEY_DISABLED;
+			$rand = $disabled;
 		}
 		
 		return $rand; 
 	}
 	
 	/**
-	* function insert_key
-	* Create an entry for the key in database
+	* function invite_yourself
 	*/
-	function insert_key($data)
+	function invite_yourself($key)
 	{
-		global $db;
+		global $user, $db;
 		
-		$key_data	= array(
-			'user_id'		=> (int) $data['from'],
-			'to_email'		=> (string) $data['email'],
-			'auth_key'		=> (string) $data['key'],
-			'key_time'		=> time(),
-			'send_confirm'	=> (!$this->config['confirm_email']) ? 0 : (($this->config['confirm_email'] == 1) ? 1 : $data['confirm_email']),
-			'key_used'		=> 0,
-			'new_user'		=> 0,
-		);
+		// Just check if wished
+		if ($this->config['invite_yourself'] || ($this->config['enable_key'] == 2 && empty($key)))
+		{
+			return false;
+		}
 		
-		$db->sql_query('INSERT INTO ' . INVITE_KEYS_TABLE . $db->sql_build_array('INSERT', $key_data));
+		$sql 			= 'SELECT COUNT(log_id) AS invitations FROM ' . INVITE_LOG_TABLE . " WHERE invite_session_ip = '" . $db->sql_escape($user->data['session_ip']) . "'";
+		$result 		= $db->sql_query($sql);
+		$invitations	= $db->sql_fetchfield('invitations');
+		
+		if ($invitations > 0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	/**
 	* function valid_key
-	* Check if our key exists in database
 	*/
 	function valid_key($key)
 	{
 		global $db;
 		
 		// $key == AUTH_KEY_DISABLED is important to check!
-		// Otherwise someone could enter 'key_disabled', which is default value for AUTH_KEY_DISABLED!
-		if ($key == AUTH_KEY_DISABLED)
+		// Otherwise someone could enter 'key_disabled', which is default value for REGISTER_KEY_DISABLED!
+		if ($key == REGISTER_KEY_DISABLED)
 		{
 			return false;
 		}
 		
 		// Optional registration-key?
-		if (empty($key) && $this->config['auth_key'] == 1)
+		if (empty($key) && $this->config['enable_key'] == 1)
 		{
 			return false;
 		}
-		if (empty($key) && $this->config['auth_key'] == 2)
+		if (empty($key) && $this->config['enable_key'] == 2)
 		{
 			return true;
 		}
 		
-		$sql 		= 'SELECT COUNT(key_id) AS valid FROM ' . INVITE_KEYS_TABLE . " WHERE auth_key = '$key' AND key_used = 0";
+		$sql 		= 'SELECT COUNT(log_id) AS valid FROM ' . INVITE_LOG_TABLE . " WHERE register_key = '" . $db->sql_escape($key) . "' AND register_key_used = 0";
 		$result 	= $db->sql_query($sql);
 		$valid		= $db->sql_fetchfield('valid');
 		
@@ -369,31 +486,28 @@ class invite
 	}
 	
 	/**
-	* function key_used
-	* Set key_used to 1 so the key can't be used more than one time
+	* function register_user
 	*/
-	function key_used($key, $new_user_id = false)
+	function register_user($key, $register_user_id)
 	{
 		global $db, $user;
 		
-		$data	= array(
-			'key_used'	=> 1,
-			'new_user'	=> $new_user_id,
+		// Update the referring log entry
+		$sql_ary	= array(
+			'register_key_used'	=> 1,
+			'register_user_id'	=> (int) $register_user_id,
 		);
 		
-		// We don't have to check whether $key is empty
-		// because we shouldn't get to this point
-		// if registration-keys == 1
-		if (empty($key) && $this->config['auth_key'] == 2)
+		if (empty($key) && $this->config['enable_key'] == 2)
 		{
 			return;
 		}
 		
-		$sql 		= 'UPDATE ' . INVITE_KEYS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $data) . " WHERE auth_key = '$key'";
+		$sql 		= 'UPDATE ' . INVITE_LOG_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $sql_ary) . " WHERE register_key = '" . $db->sql_escape($key) . "'";
 		$result 	= $db->sql_query($sql);
 		
-		// Correct user_id (log)
-		$sql 		= 'SELECT * FROM ' . INVITE_KEYS_TABLE . ' WHERE new_user = ' . $new_user_id;
+		// Which invitation do we talk about?
+		$sql 		= 'SELECT * FROM ' . INVITE_LOG_TABLE . ' WHERE register_user_id = ' . (int) $register_user_id;
 		$result		= $db->sql_query($sql);
 		
 		while ($row	= $db->sql_fetchrow($result))
@@ -403,167 +517,79 @@ class invite
 				$invitation_data[$k] = utf8_normalize_nfc($v);
 			}
 		}
-		
-		// Cash mod
-		$this->give_cash('registration', $invitation_data['user_id']);
-		
-		// Add log entry
-		$this->get_new_user($new_user_id);
-		
-		$user_id_save			= $user->data['user_id'];
-		$user->data['user_id']	= $invitation_data['user_id'];
-		
-		add_log('invite', 'LOG_INVITE_KEY_USED', $this->new_user['username']);
-		
-		if ($this->cash_installed() && $this->config['cash_enable'])
-		{
-			add_log('invite', 'LOG_CASH_REGISTRATION', $this->new_user['username'], $this->config['cash_registration'], $this->get_currency_name($this->config['cash_id_registration']));
-		}
-		
-		$user->data['user_id']	= $user_id_save;
-	}
-	
-	/**
-	* function get_sender
-	* Set sender-data as $from
-	*/
-	function get_sender($user_id)
-	{
-		global $db;
-		
-		$sql 	= 'SELECT * FROM ' . USERS_TABLE . ' WHERE user_id = ' . $user_id;
-		$result	= $db->sql_query($sql);
-		
-		while ($row	= $db->sql_fetchrow($result))
-		{
-			foreach ($row as $k => $v)
-			{
-				$this->from[$k] = utf8_normalize_nfc($v);
-			}
-		}
-		
 		$db->sql_freeresult($result);
-	}
-	
-	/**
-	* function get_new_user
-	* Set recipient-data as $new_user
-	*/
-	function get_new_user($user_id)
-	{
-		global $db;
 		
-		$sql 	= 'SELECT * FROM ' . USERS_TABLE . ' WHERE user_id = ' . $user_id;
-		$result	= $db->sql_query($sql);
-		
-		while ($row	= $db->sql_fetchrow($result))
+		// Send confirmation
+		if ($invitation_data['invite_confirm'])
 		{
-			foreach ($row as $k => $v)
-			{
-				$this->new_user[$k] = utf8_normalize_nfc($v);
-			}
-		}
-		
-		$db->sql_freeresult($result);
-	}
-	
-	/**
-	* function set_vars
-	* Requires $this->from to be set (function get_sender)
-	*/
-	function set_vars($data)
-	{
-		global $config, $phpEx, $user;
-		
-		foreach ($this->from as $k => $v)
-		{
-			$this->vars['FROM_' . strtoupper($k)] = utf8_normalize_nfc(request_var($k, $v, true));
-		}
-		
-		// Set vars for confirmation email
-		if (sizeof($this->new_user))
-		{
-			foreach ($this->new_user as $k => $v)
-			{
-				$this->vars['NEW_USER_' . strtoupper($k)] = utf8_normalize_nfc(request_var($k, $v, true));
-			}
+			$confirm_data 					= $invitation_data;
+			$confirm_data['register_email'] = $this->user_return_data($invitation_data['invite_user_id'], 'user_id', 'user_email');
+			$confirm_data['message_type'] 	= $this->INVITE_MESSAGE_TYPE['confirm'];
+			$confirm_data['method'] 		= (empty($confirm_data['register_email'])) ? PM : $invitation_data['invite_confirm_method'];
+			$confirm_data['method_user_id'] = $register_user_id;
+			$confirm_data['invite_language']= $this->user_return_data($invitation_data['invite_user_id'], 'user_id', 'user_lang');
+			$confirm_data['subject']		= $user->lang['INVITE_CONFIRM'];
 			
-			$this->vars['U_NEW_USER_PROFILE'] = generate_board_url() . '/memberlist.' . $phpEx . '?mode=viewprofile&u=' . $this->new_user['user_id'];
+			$this->message_handle($confirm_data, true, true);
 		}
 		
-		$this->vars['RECIPIENT'] 	= $data['name'];
-		$this->vars['USERNAME']		= $user->data['username'];
-		$this->vars['AUTH_KEY'] 	= ($this->config['auth_key']) ? $data['key'] : $user->lang['AUTH_KEY_DISABLED'];
-		$this->vars['U_AUTH_KEY']	= generate_board_url() . '/ucp.' . $phpEx . '?mode=register&key=' . $data['key'];
+		$save_user_id = $user->data['user_id'];
+		
+		// Add friend
+		if ($invitation_data['invite_zebra'])
+		{
+			$zebra_data	= array();
+			
+			$zebra_data[]	= array(
+				'user_id'	=> (int) $this->invite_user['user_id'],
+				'zebra_id'	=> (int) $this->register_user['user_id'],
+				'friend'	=> 1,
+				'foe'		=> 0,
+			);
+			$zebra_data[]	= array(
+				'user_id'	=> (int) $this->register_user['user_id'],
+				'zebra_id'	=> (int) $this->invite_user['user_id'],
+				'friend'	=> 1,
+				'foe'		=> 0,
+			);
+			
+			for ($i = 0, $size = sizeof($zebra_data); $i < $size; $i++)
+			{
+				$user->data['user_id']	= $zebra_data[$i]['zebra_id'];
+				$db->sql_query('INSERT INTO ' . ZEBRA_TABLE . $db->sql_build_array('INSERT', $zebra_data[$i]));
+				add_log('invite', 'LOG_INVITE_ZEBRA', $this->user_return_data($zebra_data[$i]['user_id'], 'user_id', 'username'), $this->user_return_data($zebra_data[$i]['zebra_id'], 'user_id', 'username'));
+			}
+		}
+		
+		$user->data['user_id']	= $register_user_id;
+		add_log('invite', 'LOG_INVITE_REGISTER', $this->register_user['username']);
+		$user->data['user_id'] = $save_user_id;
+		
+		$this->give_cash('register', $this->invite_user['user_id']);
+		$this->give_points('register', $this->invite_user['user_id']);
 	}
 	
 	/**
-	* function session
-	* Register a session using a registration-key
+	* function get_profile_info
 	*/
-	function session($key)
-	{
-		global $user, $db;
-		
-		// $key == AUTH_KEY_DISABLED is important to check!
-		// Otherwise someone could enter 'key_disabled', which is default value for AUTH_KEY_DISABLED!
-		if (empty($key) || $key == AUTH_KEY_DISABLED)
-		{
-			return false;
-		}
-		
-		$data	= array(
-			'session_ip'	=> $user->data['session_ip'],
-		);
-		
-		$sql 		= 'UPDATE ' . INVITE_KEYS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $data) . " WHERE auth_key = '$key' AND key_used = 0";
-		$result 	= $db->sql_query($sql);
-	}
-	
-	/**
-	* function self_invite_check
-	* Check whether someone want to trick us
-	*/
-	function self_invite_check($key)
-	{
-		global $user, $db;
-		
-		// Just check if wished
-		if (!$this->config['self_invite'] || ($this->config['auth_key'] == 2 && empty($key)))
-		{
-			return false;
-		}
-				
-		$sql 			= 'SELECT COUNT(key_id) AS num_sessions FROM ' . INVITE_KEYS_TABLE . " WHERE session_ip = '" . $user->data['session_ip'] . "'";
-		$result 		= $db->sql_query($sql);
-		$num_sessions	= $db->sql_fetchfield('num_sessions');
-		
-		if ($num_sessions > 1)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
-	/**
-	* function get_info
-	* Get information on the invitations which belong to the user defined in $log_id
-	*/
-	function get_info($log_id)
+	function get_profile_info($log_id, $mode = 'log', $user_id = '')
 	{
 		global $db, $phpbb_admin_path, $phpbb_root_path, $phpEx;
 		
-		// Set up some vars
 		$profile_url 	= (defined('IN_ADMIN')) ? append_sid("{$phpbb_admin_path}index.$phpEx", 'i=users&amp;mode=overview') : append_sid("{$phpbb_root_path}memberlist.$phpEx", 'mode=viewprofile');
 		$new_users		= array();
 		
-		$sql = "SELECT l.*, u.username, u.username_clean, u.user_colour
-		FROM " . LOG_TABLE . " l, " . USERS_TABLE . " u
-		WHERE l.log_id = $log_id
-			AND u.user_id = l.user_id";
+		if ($mode == 'log')
+		{
+			$sql = "SELECT l.*, u.username, u.username_clean, u.user_colour
+			FROM " . LOG_TABLE . " l, " . USERS_TABLE . " u
+			WHERE l.log_id = " . (int) $log_id . "
+				AND u.user_id = l.user_id";
+		}
+		else
+		{
+			$sql = 'SELECT * FROM ' . USERS_TABLE . ' WHERE user_id = ' . (int) $user_id;
+		}
 		$result = $db->sql_query($sql);
 		
 		while ($row = $db->sql_fetchrow($result))
@@ -577,21 +603,21 @@ class invite
 		$db->sql_freeresult($result);
 		
 		// Invitations sent
-		$sql	= 'SELECT COUNT(key_id) as invitations FROM ' . INVITE_KEYS_TABLE . ' WHERE user_id = ' . $data['user_id'];
+		$sql	= 'SELECT COUNT(log_id) as invitations FROM ' . INVITE_LOG_TABLE . ' WHERE invite_user_id = ' . (int) $data['user_id'];
 		$result = $db->sql_query($sql);
 		
 		$data['invitations']	= $db->sql_fetchfield('invitations');
 		$db->sql_freeresult($result);
 		
 		// Total registrations
-		$sql	= 'SELECT COUNT(key_id) as registrations FROM ' . INVITE_KEYS_TABLE . ' WHERE user_id = ' . $data['user_id'] . ' AND key_used = 1';
+		$sql	= 'SELECT COUNT(log_id) as registrations FROM ' . INVITE_LOG_TABLE . ' WHERE invite_user_id = ' . (int) $data['user_id'] . ' AND register_key_used = 1';
 		$result = $db->sql_query($sql);
 		
 		$data['registrations']	= $db->sql_fetchfield('registrations');
 		$db->sql_freeresult($result);
 		
 		// Get all invitations sent by our current user
-		$sql 			= 'SELECT * FROM ' . INVITE_KEYS_TABLE . ' WHERE user_id = ' . $data['user_id'] . ' AND key_used = 1';
+		$sql 			= 'SELECT * FROM ' . INVITE_LOG_TABLE . ' WHERE invite_user_id = ' . (int) $data['user_id'] . ' AND register_key_used = 1';
 		$result 		= $db->sql_query($sql);
 		
 		while ($row = $db->sql_fetchrow($result))
@@ -601,21 +627,25 @@ class invite
 				$invitations_row[$k] = utf8_normalize_nfc($v);
 			}
 			
-			// Get information on all new users, who were invited by our current user
-			$sql2			= 'SELECT * FROM ' . USERS_TABLE . ' WHERE user_id = ' . $invitations_row['new_user'];
-			$result2 		= $db->sql_query($sql2);
-				
-			while ($row2 = $db->sql_fetchrow($result2))
+			// Fix: Undefined variable
+			if ($invitations_row['register_user_id'])
 			{
-				foreach ($row2 as $k2 => $v2)
+				// Get information on all new users, who were invited by our current user
+				$sql2			= 'SELECT * FROM ' . USERS_TABLE . ' WHERE user_id = ' . (int) $invitations_row['register_user_id'];
+				$result2 		= $db->sql_query($sql2);
+					
+				while ($row2 = $db->sql_fetchrow($result2))
 				{
-					$new_user_row[$k2] = utf8_normalize_nfc($v2);
+					foreach ($row2 as $k2 => $v2)
+					{
+						$register_user_row[$k2] = utf8_normalize_nfc($v2);
+					}
 				}
+				$db->sql_freeresult($result2);
+				
+				// Add them to an array so we can use implode() later
+				$new_users[] = get_username_string('full', $register_user_row['user_id'], $register_user_row['username'], $register_user_row['user_colour'], false, $profile_url);
 			}
-			$db->sql_freeresult($result2);
-			
-			// Add them to an array so we can use implode() later
-			$new_users[] = get_username_string('full', $new_user_row['user_id'], $new_user_row['username'], $new_user_row['user_colour'], false, $profile_url);
 		}
 		$db->sql_freeresult($result);
 		
@@ -623,28 +653,62 @@ class invite
 		
 		return $data;
 	}
+	
+	/**
+	* function profile_fields
+	*/
+	function profile_fields($postrow, $poster_id)
+	{
+		global $template, $user;
 		
+		$user->add_lang('mods/info_acp_invite');
+		$info = $this->get_profile_info('', 'profile', $poster_id);
+		
+		$invite_row = array(
+			'POSTER_INVITE_INVITE'		=> $info['invitations'],
+			'POSTER_INVITE_REGISTER'	=> $info['registrations'],
+			'POSTER_INVITE_NAME'		=> $info['reg_users'],
+		);
+		
+		$template->assign_vars(array(
+			'S_T_DISPLAY_INVITE'	=> $this->config['display_t_invite'],
+			'S_T_DISPLAY_REGISTER'	=> $this->config['display_t_register'],
+			'S_T_DISPLAY_NAME'		=> $this->config['display_t_name'],
+			'S_P_DISPLAY_INVITE'	=> $this->config['display_p_invite'],
+			'S_P_DISPLAY_REGISTER'	=> $this->config['display_p_register'],
+			'S_P_DISPLAY_NAME'		=> $this->config['display_p_name'],
+		));
+		
+		$postrow = array_merge($invite_row, $postrow);
+		
+		return $postrow;
+	}
+	
 	/**
 	* function header_template
-	* Called in functions.php so users don't have to add much code there
-	*
+	*/
 	function header_template()
 	{
 		global $user, $auth, $template, $phpbb_root_path, $phpEx;
 		
-		$user->add_lang('invite');
+		if (!$this->config['display_navigation'])
+		{
+			return;
+		}
+		$user->add_lang('mods/info_acp_invite');
 		
 		$template->assign_vars(array(
-			'U_INVITE_A_FRIEND'		=> append_sid("{$phpbb_root_path}invite.$phpEx"),
-			
-			'S_SHOW_IAF'			=> (!$this->config['enable']) ? false : (($auth->acl_get('u_send_iaf')) ? true : false),
+			'U_INVITE_A_FRIEND'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=invite&amp;mode=invite'),
+			'S_DISPLAY_INVITE'		=> (!$this->config['enable']) ? false : (($auth->acl_get('u_send_invite')) ? true : false),
 		));
 	}
-	*/
+	
+	/** ################
+	* ##### PLUGINS######
+	*/#################
 	
 	/**
 	* function cash_installed
-	* Check whether cash mod is installed
 	*/
 	function cash_installed()
 	{
@@ -664,31 +728,29 @@ class invite
 	
 	/**
 	* function give_cash
-	* Add the cash defined in config
 	*/
 	function give_cash($mode, $user_id)
 	{
-		global $config, $user, $phpbb_root_path, $phpEx;
+		//
 		
-		if ($this->cash_installed() && $this->config['cash_enable'])
+		if ($this->cash_installed() && $this->config['enable_cash'])
 		{
 			global $cash;
 			
-			if ($mode = 'invitation')
+			if ($mode == 'invite')
 			{
-				$cash->give_cash($user_id, $this->config['cash_invitation'], $this->config['cash_id_invitation']);
+				$cash->give_cash($user_id, $this->config['cash_invite'], $this->config['cash_id_invite']);
 			}
 			else
 			{
-				// $mode = 'registration'
-				$cash->give_cash($user_id, $this->config['cash_registration'], $this->config['cash_id_registration']);
+				// $mode = 'register'
+				$cash->give_cash($user_id, $this->config['cash_register'], $this->config['cash_id_register']);
 			}
 		}
 	}
 	
 	/**
 	* function get_currency_name
-	* Return currency name from given id
 	*/
 	function get_currency_name($cash_id)
 	{
@@ -698,7 +760,7 @@ class invite
 		{
 			global $cash;
 			
-			$sql	= 'SELECT * FROM ' . CASH_TABLE . ' WHERE cash_id = ' . $cash_id;
+			$sql	= 'SELECT * FROM ' . CASH_TABLE . ' WHERE cash_id = ' . (int) $cash_id;
 			$result = $db->sql_query($sql);
 				
 			while ($row = $db->sql_fetchrow($result))
@@ -708,6 +770,59 @@ class invite
 			$db->sql_freeresult($result);
 			
 			return $return;
+		}
+	}
+	
+	/**
+	* function points_installed
+	*/
+	function points_installed()
+	{
+		global $phpbb_root_path, $phpEx;
+		
+		$check_file = $phpbb_root_path . 'includes/points/functions_points.' . $phpEx;
+		
+		if (file_exists($check_file))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	/**
+	* function give_points
+	*/
+	function give_points($mode, $user_id)
+	{
+		global $db;
+		
+		if ($this->points_installed() && $this->config['enable_points'])
+		{
+			$add_points	= ($mode == 'invite') ? $this->config['points_invite'] : $this->config['points_register'];
+			
+			$sql = 'UPDATE ' . USERS_TABLE . ' SET ' . USER_POINTS . ' = ' . USER_POINTS . ' + ' . (int) $add_points . " WHERE user_id = '" . (int) $user_id . "'";
+			$db->sql_query($sql);
+		}
+	}
+	
+	/**
+	* function get_points_name
+	*/
+	function get_points_name()
+	{
+		global $db;
+		
+		if ($this->points_installed() && $this->config['enable_points'])
+		{
+			$sql 		= 'SELECT * FROM ' . POINTS_CONFIG_TABLE;
+			$result 	= $db->sql_query($sql);
+			$points_row = $db->sql_fetchrow($result);
+			$db->sql_freeresult($result);
+			
+			return $points_row['points_name'];
 		}
 	}
 }
