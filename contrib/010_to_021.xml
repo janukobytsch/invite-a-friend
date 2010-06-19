@@ -145,39 +145,31 @@ CREATE TABLE `phpbb_iaf_keys` (
 -- Change the prefix if required!
 --
 
+DELETE FROM `phpbb_acl_groups` WHERE `group_id` =6 AND `forum_id` =0 AND `auth_option_id` =(SELECT `auth_option_id` FROM `phpbb_acl_options` WHERE `auth_option` = 'u_send_iaf') AND `auth_role_id` =0 AND `auth_setting` =0 LIMIT 1 ;
+DELETE FROM `phpbb_acl_groups` WHERE `group_id` =5 AND `forum_id` =0 AND `auth_option_id` =(SELECT `auth_option_id` FROM `phpbb_acl_options` WHERE `auth_option` = 'u_send_iaf') AND `auth_role_id` =0 AND `auth_setting` =1 LIMIT 1 ;
+DELETE FROM `phpbb_acl_groups` WHERE `group_id` =4 AND `forum_id` =0 AND `auth_option_id` =(SELECT `auth_option_id` FROM `phpbb_acl_options` WHERE `auth_option` = 'u_send_iaf') AND `auth_role_id` =0 AND `auth_setting` =1 LIMIT 1 ;
+DELETE FROM `phpbb_acl_groups` WHERE `group_id` =3 AND `forum_id` =0 AND `auth_option_id` =(SELECT `auth_option_id` FROM `phpbb_acl_options` WHERE `auth_option` = 'u_send_iaf') AND `auth_role_id` =0 AND `auth_setting` =1 LIMIT 1 ;
+DELETE FROM `phpbb_acl_groups` WHERE `group_id` =2 AND `forum_id` =0 AND `auth_option_id` =(SELECT `auth_option_id` FROM `phpbb_acl_options` WHERE `auth_option` = 'u_send_iaf') AND `auth_role_id` =0 AND `auth_setting` =1 LIMIT 1 ;
+DELETE FROM `phpbb_acl_groups` WHERE `group_id` =1 AND `forum_id` =0 AND `auth_option_id` =(SELECT `auth_option_id` FROM `phpbb_acl_options` WHERE `auth_option` = 'u_send_iaf') AND `auth_role_id` =0 AND `auth_setting` =0 LIMIT 1 ;
+DELETE FROM `phpbb_acl_options` WHERE `auth_option` ='u_send_iaf' ;
+
 INSERT INTO phpbb_acl_options (auth_option, is_global, is_local, founder_only) VALUES ('u_send_iaf', 1, 0, 0);]]></sql>
 
-	<open src="includes/constants.php">
-	    <edit>
-	        <find><![CDATA[// Additional tables]]></find>
-	        <action type="after-add"><![CDATA[define('INVITE_KEYS_TABLE',			$table_prefix . 'iaf_keys');
-define('INVITE_CONFIG_TABLE',		$table_prefix . 'iaf_config');]]></action>
-	    </edit>
-	</open>
-	
-	<open src="ucp.php">
-	    <edit>
-			<find><![CDATA[$user->setup('ucp');]]></find>
-	        <action type="replace-with"><![CDATA[$user->setup(array('ucp', 'invite'));]]></action>
-	    </edit>
-	</open>
-	
 	<open src="includes/functions.php">
 		<edit>
-			<find><![CDATA[define('HEADER_INC', true);]]></find>
-	        <action type="after-add"><![CDATA[include_once($phpbb_root_path . 'includes/functions_invite.' . $phpEx);
+			<find><![CDATA[$user->add_lang('invite');]]></find>
+	        <action type="replace-with"><![CDATA[include_once($phpbb_root_path . 'includes/functions_invite.' . $phpEx);
 	$invite	= new invite();
 	$invite->header_template();]]></action>
 	    </edit>
+		
+		<edit>
+			<find><![CDATA['U_INVITE_A_FRIEND'		=> append_sid("{$phpbb_root_path}invite.$phpEx"),]]></find>
+	        <action type="replace-with"><![CDATA[]]></action>
+	    </edit>
 	</open>
 	
-	<open src="includes/ucp/ucp_register.php">
-	    <edit>
-			<find><![CDATA[include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);]]></find>
-	        <action type="after-add"><![CDATA[include($phpbb_root_path . 'includes/functions_invite.' . $phpEx);
-		$invite			= new invite();]]></action>
-	    </edit>
-		
+	<open src="includes/ucp/ucp_register.php">	
 		<edit>
 			<find><![CDATA[$s_hidden_fields = ($confirm_id) ? array('confirm_id' => $confirm_id) : array();]]></find>
 	        <action type="after-add"><![CDATA[$key = (request_var('key', '', true)) ? 'key=' . request_var('key', '', true) . '&amp;' : '';
@@ -248,13 +240,22 @@ define('INVITE_CONFIG_TABLE',		$table_prefix . 'iaf_config');]]></action>
 	    </edit>
 		
 		<edit>
-			<find><![CDATA['tz'				=> request_var('tz', (float) $timezone),]]></find>
-	        <action type="after-add"><![CDATA['key'				=> request_var('key', '', true),]]></action>
-	    </edit>
-		
-		<edit>
-			<find><![CDATA[// DNSBL check]]></find>
-	        <action type="before-add"><![CDATA[// Handle keys
+			<find><![CDATA[// Handle keys
+			if ($invite->config['enable'])
+			{
+				if ($invite->config['auth_key'])
+				{
+					if (!$invite->valid_key($data['key']) || empty($data['key']))
+					{
+						$error[] 	= $user->lang['AUTH_KEY_WRONG'];
+					}
+					else
+					{
+						$invite->delete_key($data['key']);
+					}
+				}
+			}]]></find>
+	        <action type="replace-with"><![CDATA[// Handle keys
 			if ($invite->config['enable'])
 			{
 				if ($invite->config['auth_key'] == 1)
@@ -285,8 +286,9 @@ define('INVITE_CONFIG_TABLE',		$table_prefix . 'iaf_config');]]></action>
 	    </edit>
 		
 		<edit>
-			<find><![CDATA['S_UCP_ACTION'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=register'),]]></find>
-	        <action type="after-add"><![CDATA['AUTH_KEY'			=> $data['key'],
+			<find><![CDATA['AUTH_KEY'			=> $data['key'],
+			'S_SHOW_AUTH_KEY'	=> ($invite->config['enable'] && $invite->config['auth_key']) ? true : false,]]></find>
+	        <action type="replace-with"><![CDATA['AUTH_KEY'			=> $data['key'],
 			'S_SHOW_AUTH_KEY'	=> (!$invite->config['enable']) ? false : ((!$invite->config['auth_key']) ? false : true),
 			'S_AUTH_KEY_OPTION'	=> (!$invite->config['enable']) ? false : (($invite->config['auth_key'] == 2) ? true : false),]]></action>
 	    </edit>
@@ -294,11 +296,13 @@ define('INVITE_CONFIG_TABLE',		$table_prefix . 'iaf_config');]]></action>
 	
 	<open src="styles/prosilver/template/ucp_register.html">
 	    <edit>
-	        <find><![CDATA[<dl>
-		<dt><label for="username">{L_USERNAME}:</label><br /><span>{L_USERNAME_EXPLAIN}</span></dt>
-		<dd><input type="text" tabindex="1" name="username" id="username" size="25" value="{USERNAME}" class="inputbox autowidth" title="{L_USERNAME}" /></dd>
-	</dl>]]></find>
-	        <action type="after-add"><![CDATA[<!-- IF S_SHOW_AUTH_KEY -->
+	        <find><![CDATA[<!-- IF S_SHOW_AUTH_KEY -->
+		<dl>
+			<dt><label for="key">{L_AUTH_KEY}:</label><br /><span>{L_AUTH_KEY_EXPLAIN}</span></dt>
+			<dd><input type="text" tabindex="1" name="key" id="key" size="25" value="{AUTH_KEY}" class="inputbox autowidth" title="{L_AUTH_KEY}" /></dd>
+		</dl>
+	<!-- ENDIF -->]]></find>
+	        <action type="replace-with"><![CDATA[<!-- IF S_SHOW_AUTH_KEY -->
 		<dl>
 			<dt><label for="key">{L_AUTH_KEY}:</label><br /><span>{L_AUTH_KEY_EXPLAIN}</span></dt>
 			<dd><input type="text" tabindex="1" name="key" id="key" size="25" value="{AUTH_KEY}" class="inputbox autowidth" title="{L_AUTH_KEY}" /><!-- IF S_AUTH_KEY_OPTION -->&nbsp; ({L_OPTIONAL})<!-- ENDIF --></dd>
@@ -314,8 +318,9 @@ define('INVITE_CONFIG_TABLE',		$table_prefix . 'iaf_config');]]></action>
 	
 	<open src="styles/prosilver/template/overall_header.html">
 	    <edit>
-			<find><![CDATA[<a href="{U_SEARCH_SELF}">{L_SEARCH_SELF}</a>]]></find>
-	        <action type="after-add"><![CDATA[<!-- IF S_SHOW_IAF --> &bull;
+			<find><![CDATA[ &bull;
+					<a href="{U_INVITE_A_FRIEND}">{L_INVITE_A_FRIEND}</a>]]></find>
+	        <action type="replace-with"><![CDATA[<!-- IF S_SHOW_IAF --> &bull;
 					<a href="{U_INVITE_A_FRIEND}">{L_INVITE_A_FRIEND}</a>
 					<!-- ENDIF -->]]></action>
 	    </edit>
@@ -323,11 +328,13 @@ define('INVITE_CONFIG_TABLE',		$table_prefix . 'iaf_config');]]></action>
 	
 	<open src="styles/subsilver2/template/ucp_register.html">
 	    <edit>
-	        <find><![CDATA[<tr>
-		<td class="row1" width="38%"><b class="genmed">{L_USERNAME}: </b><br /><span class="gensmall">{L_USERNAME_EXPLAIN}</span></td>
-		<td class="row2"><input class="post" type="text" name="username" size="25" value="{USERNAME}" /></td>
-	</tr>]]></find>
-	        <action type="after-add"><![CDATA[<!-- IF S_SHOW_AUTH_KEY -->
+	        <find><![CDATA[<<!-- IF S_SHOW_AUTH_KEY -->
+	<tr>
+		<td class="row1" width="38%"><b class="genmed">{L_AUTH_KEY}: </b><br /><span class="gensmall">{L_AUTH_KEY_EXPLAIN}</span></td>
+		<td class="row2"><input class="post" type="text" name="key" size="25" value="{AUTH_KEY}" /></td>
+	</tr>
+<!-- ENDIF -->]]></find>
+	        <action type="replace-with"><![CDATA[<!-- IF S_SHOW_AUTH_KEY -->
 	<tr>
 		<td class="row1" width="38%"><b class="genmed">{L_AUTH_KEY}: </b><br /><span class="gensmall">{L_AUTH_KEY_EXPLAIN}</span></td>
 		<td class="row2"><input class="post" type="text" name="key" size="25" value="{AUTH_KEY}" /><!-- IF S_AUTH_KEY_OPTION -->&nbsp; ({L_OPTIONAL})<!-- ENDIF --></td>
@@ -343,7 +350,7 @@ define('INVITE_CONFIG_TABLE',		$table_prefix . 'iaf_config');]]></action>
 	
 	<open src="styles/subsilver2/template/overall_header.html">
 	    <edit>
-			<find><![CDATA[<!-- IF S_DISPLAY_PM --> &nbsp;<a href="{U_PRIVATEMSGS}"><img src="{T_THEME_PATH}/images/icon_mini_message.gif" width="12" height="13" alt="*" /> {PRIVATE_MESSAGE_INFO}<!-- IF PRIVATE_MESSAGE_INFO_UNREAD -->, {PRIVATE_MESSAGE_INFO_UNREAD}<!-- ENDIF --></a><!-- ENDIF -->]]></find>
+			<find><![CDATA[<!-- IF S_DISPLAY_PM --> &nbsp;<a href="{U_PRIVATEMSGS}"><img src="{T_THEME_PATH}/images/icon_mini_message.gif" width="12" height="13" alt="*" /> {PRIVATE_MESSAGE_INFO}<!-- IF PRIVATE_MESSAGE_INFO_UNREAD -->, {PRIVATE_MESSAGE_INFO_UNREAD}<!-- ENDIF --></a> &nbsp;<a href="{U_INVITE_A_FRIEND}"><img src="{T_THEME_PATH}/images/icon_mini_profile.gif" width="12" height="13" alt="*" /> {L_INVITE_A_FRIEND}</a><!-- ENDIF -->]]></find>
 	        <action type="replace-with"><![CDATA[<!-- IF S_DISPLAY_PM --> &nbsp;<a href="{U_PRIVATEMSGS}"><img src="{T_THEME_PATH}/images/icon_mini_message.gif" width="12" height="13" alt="*" /> {PRIVATE_MESSAGE_INFO}<!-- IF PRIVATE_MESSAGE_INFO_UNREAD -->, {PRIVATE_MESSAGE_INFO_UNREAD}<!-- ENDIF --></a><!-- IF S_SHOW_IAF --> &nbsp;<a href="{U_INVITE_A_FRIEND}"><img src="{T_THEME_PATH}/images/icon_mini_profile.gif" width="12" height="13" alt="*" /> {L_INVITE_A_FRIEND}</a><!-- ENDIF --><!-- ENDIF -->]]></action>
 	    </edit>
 	</open>

@@ -38,9 +38,7 @@ class acp_invite
 		$submit				= (isset($_POST['submit']))  ? true : false;
 		$error				= array();
 		
-		/**
-		* Development
-		*
+		// ########### Remove this later!!!!!!######################################
 		$cache_file 	= $phpbb_root_path . 'cache/ctpl_admin_acp_invite.html.' . $phpEx;
 		$cache_file2 	= $phpbb_root_path . 'cache/ctpl_admin_acp_invite_log.html.' . $phpEx;
 		
@@ -52,7 +50,7 @@ class acp_invite
 		{
 			unlink($cache_file2);
 		}
-		*/
+		// ##############################################################
 		
 		// Do the job ...
 		switch ($mode)

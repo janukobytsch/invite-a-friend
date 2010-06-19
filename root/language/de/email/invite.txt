@@ -4,7 +4,7 @@ gesendet. Er ist der Meinung, dass dich folgende Internetseite
 interessieren könnte und möchte dich deshalb auf diese aufmerksam machen:
 
 {U_BOARD}
-Verwende folgenden Key, falls du dich dort registrieren möchtest: {AUTH_KEY}
+Du kannst dich hier registrieren: {U_AUTH_KEY} (Key: {AUTH_KEY})
 
 Dein Freund schrieb:
 -------------------------------------------

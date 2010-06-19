@@ -51,11 +51,11 @@ $lang = array_merge($lang, array(
 	'REGISTRATIONS'						=> 'Geworbene Benutzer',
 	
 	// Settings
-	'USER'								=> 'Benutzer',
-	
 	'SETTINGS_ENABLE'					=> 'Einladung von Freunden aktivieren',
 	'SETTINGS_AUTH_KEY'					=> 'Registrierungs-Schlüssel aktivieren',
 	'SETTINGS_AUTH_KEY_EXPLAIN'			=> 'Neue Benutzer können sich nur noch mit Registrierungs-Schlüsseln, die von Freunden versendet werden, registrieren.',
+	'SETTINGS_SELF_INVITE'				=> 'Einladungen beschränken',
+	'SETTINGS_SELF_INVITE_EXPLAIN'		=> 'Verhindert das ständige Versenden von Einladungen an sich selbst, indem nur ein Registrierungs-Schlüssel pro IP verwendet werden kann.',
 	'SETTINGS_MULTI_EMAIL'				=> 'Mehrere Einladungen zulassen',
 	'SETTINGS_MULTI_EMAIL_EXPLAIN'		=> 'Erlaubt das Versenden mehrerer Einladungen an die gleiche E-Mail-Adresse.',
 	'SETTINGS_CONFIRM_EMAIL'			=> 'E-Mail-Bestätigung',

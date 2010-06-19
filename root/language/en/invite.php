@@ -37,33 +37,36 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	// General
-	'INVITE_A_FRIEND'		=> 'Invite a friend',
-	'INVITE_A_FRIEND_DESC'	=> 'Send an e-mail to a friend of yours and advise him of this board',
-	'INVITE_CONFIRM_EMAIL'	=> 'Confirmation - Invite a friend',
+	'INVITE_A_FRIEND'			=> 'Invite a friend',
+	'INVITE_A_FRIEND_DESC'		=> 'Send an e-mail to a friend of yours and advise him of this board',
+	'INVITE_CONFIRM_EMAIL'		=> 'Confirmation - Invite a friend',
+	'OPTIONAL'					=> 'Optional',
 	
 	// Form
-	'AUTH_KEY'				=> 'Registration-key',
-	'AUTH_KEY_EXPLAIN'		=> 'Obtained by a user of this board via e-mail.',
-	'AUTH_KEY_DISABLED'		=> 'You don’t need a registration-key to register at the moment.',
-	'EMAIL_SENT_SUCCESS'	=> 'The e-mail was successfully sent to your friend.',
-	'FRIENDS_EMAIL'			=> 'Your friend’s e-mail address',
-	'FRIENDS_NAME'			=> 'Your friend’s name',
-	'SEND_CONFIRM_EMAIL'	=> 'Send confirmation',
+	'AUTH_KEY'					=> 'Registration-key',
+	'AUTH_KEY_EXPLAIN'			=> 'Obtained by a user of this board via e-mail.',
+	'AUTH_KEY_DISABLED'			=> 'You don’t need a registration-key to register at the moment.',
+	'EMAIL_SENT_SUCCESS'		=> 'The e-mail was successfully sent to your friend.',
+	'FRIENDS_EMAIL'				=> 'Your friend’s e-mail address',
+	'FRIENDS_NAME'				=> 'Your friend’s name',
+	'SEND_CONFIRM_EMAIL'		=> 'Send confirmation',
 	
 	// Errors
-	'IAF_DISABLED'			=> 'Inviting friends is currently disabled.',
+	'IAF_DISABLED'				=> 'Inviting friends is currently disabled.',
+	'INVITE_YOURSELF'			=> 'You must not use more than one registration-key each IP.',
 	
-	'ALREADY_INVITED'		=> 'The entered e-mail address already obtained an invitation.',
-	'AUTH_KEY_WRONG'		=> 'The registration-key is invalid.',
-	'EMAIL_EQ_EMAIL'		=> 'You can’t invite yourself.',
-	'EMAIL_SENT_FAILURE'	=> 'An error occured while sending the e-mail.',
-	'TOO_SHORT_NAME'		=> 'The name you entered is too short.',
-	'TOO_SHORT_SUBJECT'		=> 'The subject you entered is too short.',
-	'TOO_SHORT_MESSAGE'		=> 'The message you entered is too short.',
-	'TOO_LONG_NAME'			=> 'The name you entered is too long.',
-	'TOO_LONG_SUBJECT'		=> 'The subject you entered is too long.',
-	'TOO_LONG_MESSAGE'		=> 'The message you entered is too long.',
-	'WAIT_NEXT_IAF'			=> 'You have to wait a while until you can send another e-mail to a friend of yours.',
+	'ALREADY_INVITED'			=> 'The entered e-mail address already obtained an invitation.',
+	'AUTH_KEY_WRONG'			=> 'The registration-key is invalid.',
+	'OPTIONAL_AUTH_KEY_WRONG'	=> 'The registration-key is invalid. You can leave it out.',
+	'EMAIL_EQ_EMAIL'			=> 'You can’t invite yourself.',
+	'EMAIL_SENT_FAILURE'		=> 'An error occured while sending the e-mail.',
+	'TOO_SHORT_NAME'			=> 'The name you entered is too short.',
+	'TOO_SHORT_SUBJECT'			=> 'The subject you entered is too short.',
+	'TOO_SHORT_MESSAGE'			=> 'The message you entered is too short.',
+	'TOO_LONG_NAME'				=> 'The name you entered is too long.',
+	'TOO_LONG_SUBJECT'			=> 'The subject you entered is too long.',
+	'TOO_LONG_MESSAGE'			=> 'The message you entered is too long.',
+	'WAIT_NEXT_IAF'				=> 'You have to wait a while until you can send another e-mail to a friend of yours.',
 ));
 
 ?>

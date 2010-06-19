@@ -59,7 +59,11 @@ td input {
 	</dl>
 	<dl>
 		<dt><label for="auth_key">{L_SETTINGS_AUTH_KEY}:</label><br /><span>{L_SETTINGS_AUTH_KEY_EXPLAIN}</span></dt>
-		<dd><input type="radio" class="radio" id="auth_key" name="auth_key"<!-- IF S_AUTH_KEY --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="auth_key"<!-- IF not S_AUTH_KEY --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
+		<dd><input type="radio" class="radio" id="auth_key" name="auth_key"<!-- IF S_AUTH_KEY eq 1 --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="auth_key"<!-- IF not S_AUTH_KEY --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}&nbsp;&nbsp;<input type="radio" class="radio" name="auth_key"<!-- IF S_AUTH_KEY eq 2 --> checked="checked"<!-- ENDIF --> value="2"/>&nbsp;{L_OPTIONAL}</dd>
+	</dl>
+	<dl>
+		<dt><label for="confirm_email">{L_SETTINGS_CONFIRM_EMAIL}:</label><br /><span>{L_SETTINGS_CONFIRM_EMAIL_EXPLAIN}</span></dt>
+		<dd><input type="radio" class="radio" id="confirm_email" name="confirm_email"<!-- IF S_CONFIRM_EMAIL eq 1 --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="confirm_email"<!-- IF not S_CONFIRM_EMAIL --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}&nbsp;&nbsp;<input type="radio" class="radio" name="confirm_email"<!-- IF S_CONFIRM_EMAIL eq 2 --> checked="checked"<!-- ENDIF --> value="2"/>&nbsp;{L_OPTIONAL}</dd>
 	</dl>
 	<dl>
 		<dt><label for="send_now">{L_SETTINGS_SEND_NOW}:</label><br /><span>{L_SETTINGS_SEND_NOW_EXPLAIN}</span></dt>
@@ -70,8 +74,8 @@ td input {
 		<dd><input type="radio" class="radio" id="multi_email" name="multi_email"<!-- IF S_MULTI_EMAIL --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="multi_email"<!-- IF not S_MULTI_EMAIL --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
 	</dl>
 	<dl>
-		<dt><label for="confirm_email">{L_SETTINGS_CONFIRM_EMAIL}:</label><br /><span>{L_SETTINGS_CONFIRM_EMAIL_EXPLAIN}</span></dt>
-		<dd><input type="radio" class="radio" id="confirm_email" name="confirm_email"<!-- IF S_CONFIRM_EMAIL eq 1 --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="confirm_email"<!-- IF not S_CONFIRM_EMAIL --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}&nbsp;&nbsp;<input type="radio" class="radio" name="confirm_email"<!-- IF S_CONFIRM_EMAIL eq 2 --> checked="checked"<!-- ENDIF --> value="2"/>&nbsp;{L_USER}</dd>
+		<dt><label for="self_invite">{L_SETTINGS_SELF_INVITE}:</label><br /><span>{L_SETTINGS_SELF_INVITE_EXPLAIN}</span></dt>
+		<dd><input type="radio" class="radio" id="self_invite" name="self_invite"<!-- IF S_SELF_INVITE --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="self_invite"<!-- IF not S_SELF_INVITE --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
 	</dl>
 </fieldset>
 

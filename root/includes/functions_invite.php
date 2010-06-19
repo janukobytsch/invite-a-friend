@@ -2,7 +2,7 @@
 /**
 *
 * @package phpBB3
-* @version $Id: functions_invite.php 8645 2008-10-06 10:40:17Z Bycoja $
+* @version $Id: functions_invite.php 8645 2008-10-03 10:40:17Z Bycoja $
 * @copyright (c) 2008 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -321,9 +321,19 @@ class invite
 		
 		// $key == AUTH_KEY_DISABLED is important to check!
 		// Otherwise someone could enter 'key_disabled', which is default value for AUTH_KEY_DISABLED!
-		if (empty($key) || $key == AUTH_KEY_DISABLED)
+		if ($key == AUTH_KEY_DISABLED)
 		{
 			return false;
+		}
+		
+		// Optional registration-key?
+		if (empty($key) && $this->config['auth_key'] == 1)
+		{
+			return false;
+		}
+		if (empty($key) && $this->config['auth_key'] == 2)
+		{
+			return true;
 		}
 		
 		$sql 		= 'SELECT COUNT(key_id) AS valid FROM ' . INVITE_KEYS_TABLE . " WHERE auth_key = '$key' AND key_used = 0";
@@ -348,7 +358,11 @@ class invite
 		
 		// We don't have to check whether $key is empty
 		// because we shouldn't get to this point
-		// if registration-keys are disabled
+		// if registration-keys == 1
+		if (empty($key) && $this->config['auth_key'] == 2)
+		{
+			return;
+		}
 		
 		$sql 		= 'UPDATE ' . INVITE_KEYS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $data) . " WHERE auth_key = '$key'";
 		$result 	= $db->sql_query($sql);
@@ -425,6 +439,58 @@ class invite
 		$this->vars['RECIPIENT'] 	= $data['name'];
 		$this->vars['USERNAME']		= $user->data['username'];
 		$this->vars['AUTH_KEY'] 	= ($this->config['auth_key']) ? $data['key'] : $user->lang['AUTH_KEY_DISABLED'];
+		$this->vars['U_AUTH_KEY']	= generate_board_url() . '/ucp.' . $phpEx . '?mode=register&key=' . $data['key'];
+	}
+	
+	/**
+	* function session
+	* Register a session using a registration-key
+	*/
+	function session ($key)
+	{
+		global $user, $db;
+		
+		// $key == AUTH_KEY_DISABLED is important to check!
+		// Otherwise someone could enter 'key_disabled', which is default value for AUTH_KEY_DISABLED!
+		if (empty($key) || $key == AUTH_KEY_DISABLED)
+		{
+			return false;
+		}
+		
+		$data	= array(
+			'session_ip'	=> $user->data['session_ip'],
+		);
+		
+		$sql 		= 'UPDATE ' . INVITE_KEYS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $data) . " WHERE auth_key = '$key' AND key_used = 0";
+		$result 	= $db->sql_query($sql);
+	}
+	
+	/**
+	* function self_invite_check
+	* Check whether someone want to trick us
+	*/
+	function self_invite_check ($key)
+	{
+		global $user, $db;
+		
+		// Just check if wished
+		if (!$this->config['self_invite'] || ($this->config['auth_key'] == 2 && empty($key)))
+		{
+			return false;
+		}
+				
+		$sql 			= 'SELECT COUNT(key_id) AS num_sessions FROM ' . INVITE_KEYS_TABLE . " WHERE session_ip = '" . $user->data['session_ip'] . "'";
+		$result 		= $db->sql_query($sql);
+		$num_sessions	= $db->sql_fetchfield('num_sessions');
+		
+		if ($num_sessions > 1)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	/**
