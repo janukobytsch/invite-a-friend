@@ -26,14 +26,14 @@
 	</tr>
 	<tr> 
 		<td class="row1" width="25%"><b class="genmed">{L_SUBJECT}: </b></td>
-		<td class="row2"><input type="text" name="subject" id="subject" value="{SUBJECT}" size="45" maxlength="60" tabindex="3" class="inputbox autowidth" /></td>
+		<td class="row2"><input type="text" name="subject" id="subject" value="{SUBJECT}" size="45" maxlength="60" tabindex="3" class="inputbox autowidth" /><!-- IF S_SHOW_CONFIRM --><input style="margin-left: 10px;" type="checkbox" name="send_confirm" value="1" tabindex="4" checked="checked" /><!-- ENDIF -->&nbsp;{L_SEND_CONFIRM_EMAIL}</td>
 	</tr>
 	<tr> 
 		<td class="row1" width="25%"><b class="genmed">{L_MESSAGE}: </b></td>
 		<td class="row2"><textarea style="max-width: 700px;" name="message" id="message" rows="12" cols="60" tabindex="5" class="inputbox">{MESSAGE}</textarea></td>
 	</tr>
 	<tr>
-		<td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input style="width: 80px !important; text-align:center;" class="btnmain" type="submit" name="submit" value="{L_SUBMIT}" tabindex="6" <!-- IF S_DISABLE -->disabled="disabled"<!-- ENDIF --> />&nbsp;&nbsp;<input style="width: 80px !important; text-align:center;" class="btnlite" type="reset" value="{L_RESET}" name="reset" tabindex="7" <!-- IF S_DISABLE -->disabled="disabled"<!-- ENDIF --> /></td>
+		<td class="cat" colspan="2" align="center">{S_HIDDEN_FIELDS}<input style="width: 85px !important; text-align:center;" class="btnmain" type="submit" name="submit" value="{L_SUBMIT}" tabindex="6" <!-- IF S_DISABLE -->disabled="disabled"<!-- ENDIF --> />&nbsp;&nbsp;<input style="width: 85px !important; text-align:center;" class="btnlite" type="reset" value="{L_RESET}" name="reset" tabindex="7" <!-- IF S_DISABLE -->disabled="disabled"<!-- ENDIF --> /></td>
 	</tr>
 	</table>
 	

@@ -35,29 +35,45 @@ $lang = array_merge($lang, array(
 
 $lang = array_merge($lang, array(
 	// General
-	'ACP_INVITE_A_FRIEND'			=> 'Freunde einladen',
-	'ACP_INVITE_A_FRIEND_EXPLAIN'	=> 'Hier kannst du die Einstellungen bezüglich der E-Mails, die Benutzer an Freunde verschicken können, vornehmen.',
+	'ACP_INVITE_A_FRIEND'				=> 'Freunde einladen',
+	'ACP_INVITE_A_FRIEND_EXPLAIN'		=> 'Hier kannst du die Einstellungen bezüglich der E-Mails, die Benutzer an Freunde verschicken können, vornehmen.',
+	'ACP_INVITE_A_FRIEND_LOG'			=> 'Freunde einladen - Protokoll',
+	'ACP_INVITE_A_FRIEND_LOG_EXPLAIN'	=> 'Hier kannst du Information zu allen Einladungen, die von Benutzern versendet wurden, finden.',
 	
 	// Errors
-	'ERROR_SETTINGS'				=> 'Du musst alle Felder korrekt ausfüllen.',
+	'ERROR_SETTINGS'					=> 'Du musst alle Felder korrekt ausfüllen.',
 	
 	// Log
-	'LOG_IAF_SETTINGS_UPDATED'		=> '<strong>Einstellungen zum Einladen von Freunden geändert</strong>',
+	'LOG_IAF_SETTINGS_UPDATED'			=> '<strong>Einstellungen zum Einladen von Freunden geändert</strong>',
+	
+	'DATE'								=> 'Datum',
+	'INVITATIONS'						=> 'Einladungen',
+	'REGISTRATIONS'						=> 'Geworbene Benutzer',
 	
 	// Settings
-	'SETTINGS_ENABLE'				=> 'Einladung von Freunden aktivieren',
-	'SETTINGS_AUTH_KEY'				=> 'Registrierungs-Schlüssel aktivieren',
-	'SETTINGS_AUTH_KEY_EXPLAIN'		=> 'Neue Benutzer können sich nur noch mit Registrierungs-Schlüsseln, die von Freunden versendet werden, registrieren.',
-	'SETTINGS_SEND_NOW'				=> 'E-Mails sofort versenden',
-	'SETTINGS_SEND_NOW_EXPLAIN'		=> 'E-Mails an Freunde ohne Verzögerung versenden.',
-	'SETTINGS_MAX_MESSAGE'			=> 'Max. Zeichen der Nachricht',
-	'SETTINGS_MAX_SUBJECT'			=> 'Max. Zeichen des Betreffs',
-	'SETTINGS_KEY_MIN_CHARS'		=> 'Min. Zeichen der Registrierungs-Schlüssel',
-	'SETTINGS_KEY_MAX_CHARS'		=> 'Max. Zeichen der Registrierungs-Schlüssel',
-	'SETTINGS_CHARSET'				=> 'Zeichen im Registrierungs-Schlüssel',
-	'SETTINGS_CHARSET_EXPLAIN'		=> 'Mögliche Zeichen aus denen der Registrierungs-Schlüssel zusammengesetzt wird.',
-	'SETTINGS_TIME'					=> 'Vergangene Zeit',
-	'SETTINGS_TIME_EXPLAIN'			=> 'Ein Benutzer muss zum Versenden einer neuen E-Mail die hier angegebene Zeitspanne warten.',
-	'SETTINGS_IAF_MESSAGE_EXPLAIN'	=> 'Die Nachricht, die Benutzer an Freunde versenden, wird in folgende Nachricht eingebettet. Als Platzhalter wird {MESSAGE} verwendet.',
+	'USER'								=> 'Benutzer',
+	
+	'SETTINGS_ENABLE'					=> 'Einladung von Freunden aktivieren',
+	'SETTINGS_AUTH_KEY'					=> 'Registrierungs-Schlüssel aktivieren',
+	'SETTINGS_AUTH_KEY_EXPLAIN'			=> 'Neue Benutzer können sich nur noch mit Registrierungs-Schlüsseln, die von Freunden versendet werden, registrieren.',
+	'SETTINGS_MULTI_EMAIL'				=> 'Mehrere Einladungen zulassen',
+	'SETTINGS_MULTI_EMAIL_EXPLAIN'		=> 'Erlaubt das Versenden mehrerer Einladungen an die gleiche E-Mail-Adresse.',
+	'SETTINGS_CONFIRM_EMAIL'			=> 'E-Mail-Bestätigung',
+	'SETTINGS_CONFIRM_EMAIL_EXPLAIN'	=> 'Sendet eine E-Mail zur Bestätigung an einen Benutzer, wenn sich der eingeladene Freund registriert.',
+	'SETTINGS_SEND_NOW'					=> 'E-Mails sofort versenden',
+	'SETTINGS_SEND_NOW_EXPLAIN'			=> 'E-Mails an Freunde ohne Verzögerung versenden.',
+	'SETTINGS_MESSAGE_CHARS'			=> 'Länge der Nachricht',
+	'SETTINGS_MESSAGE_CHARS_EXPLAIN'	=> 'Die minimale und maximale Anzahl an Zeichen in der Nachricht.',
+	'SETTINGS_SUBJECT_CHARS'			=> 'Länge des Betreffs',
+	'SETTINGS_SUBJECT_CHARS_EXPLAIN'	=> 'Die minimale und maximale Anzahl an Zeichen im Betreffs.',
+	'SETTINGS_KEY_CHARS'				=> 'Länge des Registrierungs-Schlüssels',
+	'SETTINGS_KEY_CHARS_EXPLAIN'		=> 'Die minimale und maximale Anzahl an Zeichen im Registrierungs-Schlüssels.',
+	'SETTINGS_CHARSET'					=> 'Zeichen im Registrierungs-Schlüssel',
+	'SETTINGS_CHARSET_EXPLAIN'			=> 'Mögliche Zeichen aus denen der Registrierungs-Schlüssel zusammengesetzt wird.',
+	'SETTINGS_TIME'						=> 'Vergangene Zeit',
+	'SETTINGS_TIME_EXPLAIN'				=> 'Ein Benutzer muss zum Versenden einer neuen E-Mail die hier angegebene Zeitspanne warten.',
+	
+	'SETTINGS_IAF_MESSAGE_EXPLAIN'		=> 'Die Nachricht, die Benutzer an Freunde versenden, wird in folgende Nachricht eingebettet. Als Platzhalter wird {MESSAGE} verwendet.',
+	'SETTINGS_CONFIRM_MESSAGE_EXPLAIN'	=> 'Die Nachricht, die an einen Benutzer versendet wird, wenn sich der geworbene Freund registriert.',
 ));
 ?>

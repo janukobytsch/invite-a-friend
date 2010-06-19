@@ -36,18 +36,27 @@ if (empty($lang) || !is_array($lang))
 // in a url you again do not need to specify an order e.g., 'Click %sHERE%s' is fine
 
 $lang = array_merge($lang, array(
+	// General
 	'INVITE_A_FRIEND'		=> 'Freunde einladen',
 	'INVITE_A_FRIEND_DESC'	=> 'Sende eine E-Mail an einen deiner Freunde und mache ihn auf dieses Forum aufmerksam',
-	'IAF_DISABLED'			=> 'Das Einladen von Freunden wurde von der Board-Administration deaktiviert.',
-
+	'INVITE_CONFIRM_EMAIL'	=> 'Bestätigung - Freunde einladen',
+	
+	// Form
 	'AUTH_KEY'				=> 'Registrierungs-Schlüssel',
 	'AUTH_KEY_EXPLAIN'		=> 'Von einem Benutzer des Boards per E-Mail erhalten.',
-	'AUTH_KEY_WRONG'		=> 'Der Registrierungs-Schlüssel ist ungültig.',
+	'AUTH_KEY_DISABLED'		=> 'Zur Zeit wird kein Registrierungs-Schlüssel benötigt.',
 	'EMAIL_SENT_SUCCESS'	=> 'Die E-Mail wurde erfolgreich versendet.',
-	'EMAIL_SENT_FAILURE'	=> 'Beim Versenden der E-Mail ist ein Fehler aufgetreten.',
 	'FRIENDS_EMAIL'			=> 'E-Mail-Adresse des Freundes',
 	'FRIENDS_NAME'			=> 'Name des Freundes',
+	'SEND_CONFIRM_EMAIL'	=> 'Bestätigung senden',
 	
+	// Errors
+	'IAF_DISABLED'			=> 'Das Einladen von Freunden wurde von der Board-Administration deaktiviert.',
+	
+	'ALREADY_INVITED'		=> 'Die von dir angegebene E-Mail-Adresse hat bereits eine Einladung erhalten.',
+	'AUTH_KEY_WRONG'		=> 'Der Registrierungs-Schlüssel ist ungültig.',
+	'EMAIL_EQ_EMAIL'		=> 'Du kannst dich nicht selbst einladen.',
+	'EMAIL_SENT_FAILURE'	=> 'Beim Versenden der E-Mail ist ein Fehler aufgetreten.',
 	'TOO_SHORT_NAME'		=> 'Der von dir angegebene Name ist zu kurz.',
 	'TOO_SHORT_SUBJECT'		=> 'Der von dir angegebene Betreff ist zu kurz.',
 	'TOO_SHORT_MESSAGE'		=> 'Die von dir angegebene Nachricht ist zu kurz.',

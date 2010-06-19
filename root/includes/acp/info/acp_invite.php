@@ -21,6 +21,7 @@ class acp_invite_info
 			'version'	=> '0.1.0',
 			'modes'		=> array(
 				'settings'		=> array('title' => 'ACP_INVITE_A_FRIEND', 'auth' => 'acl_a_', 'cat' => array('ACP_BOARD_CONFIGURATION')),
+				'log'			=> array('title' => 'ACP_INVITE_A_FRIEND_LOG', 'auth' => 'acl_a_', 'cat' => array('ACP_BOARD_CONFIGURATION')),
 			),
 		);
 	}

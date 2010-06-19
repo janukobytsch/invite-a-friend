@@ -1,0 +1,4 @@
+Hello {RECIPIENT},
+this message has been sent to confirm your invitation sent to a friend of yours.
+
+Your friend registered on {U_BOARD} and chose the nickname '{NEW_USER_USERNAME}'; here you can view his profile: {U_NEW_USER_PROFILE}

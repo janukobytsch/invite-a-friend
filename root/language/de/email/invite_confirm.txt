@@ -1,0 +1,4 @@
+Hallo {RECIPIENT},
+diese Nachricht wurde dir zur Bestätigung der Einladung deines Freundes gesendet.
+
+Dieser hat sich auf {U_BOARD} unter dem Benutzernamen '{NEW_USER_USERNAME}' angemeldet; hier gelangst du zu seinem Profil: {U_NEW_USER_PROFILE}

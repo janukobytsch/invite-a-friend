@@ -1,0 +1,61 @@
+<!-- INCLUDE overall_header.html -->
+
+<a name="maincontent"></a>
+
+<h1>{L_ACP_INVITE_A_FRIEND_LOG}</h1>
+
+<p>{L_ACP_INVITE_A_FRIEND_LOG_EXPLAIN}</p>
+
+
+<form id="acp_invite" method="post" action="{U_SETTINGS}">
+
+<!-- IF PAGINATION -->
+<div class="pagination">
+	<a href="#" onclick="jumpto(); return false;" title="{L_JUMP_TO_PAGE}">{S_ON_PAGE}</a> &bull; <span>{PAGINATION}</span>
+</div>
+<!-- ENDIF -->
+
+<!-- IF .log -->
+	<table cellspacing="1">
+	<thead>
+	<tr>
+		<th>{L_USERNAME}</th>
+		<th>{L_DATE}</th>
+		<th>{L_INVITATIONS}</th>
+		<th>{L_REGISTRATIONS}</th>
+		<th>{L_EMAIL}</th>
+	</tr>
+	</thead>
+	<tbody>
+	<!-- BEGIN log -->
+		<!-- IF log.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
+			<td style="text-align: center;">{log.USERNAME}</td>
+			<td style="text-align: center;">{log.DATE}</td>
+			<td style="text-align: center;">{log.INVITATIONS}</td>
+			<td style="text-align: center;">{log.REGISTRATIONS_USER}</td>
+			<td style="text-align: center;">{log.EMAIL}</td>
+		</tr>
+	<!-- END log -->
+	</tbody>
+	</table>
+
+<!-- ELSE -->
+
+	<div class="errorbox">
+		<p>{L_NO_ENTRIES}</p>
+	</div>
+
+<!-- ENDIF -->
+
+<!-- IF PAGINATION -->
+<div class="pagination">
+	<a href="#" onclick="jumpto(); return false;" title="{L_JUMP_TO_PAGE}">{S_ON_PAGE}</a> &bull; <span>{PAGINATION}</span>
+</div>
+<!-- ENDIF -->
+
+{S_FORM_TOKEN}
+
+</form>
+
+
+<!-- INCLUDE overall_footer.html -->

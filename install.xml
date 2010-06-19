@@ -19,7 +19,7 @@ Also enables registration-keys which must be entered to register and can only be
 	</author-group>
 	<mod-version>
 		<major>0</major>
-		<minor>1</minor>
+		<minor>2</minor>
 		<revision>0</revision>
 	</mod-version>
 	<installation>
@@ -34,6 +34,24 @@ Also enables registration-keys which must be entered to register and can only be
 	</installation>
 	
 	<history>
+		<entry>
+			<date>2008-10-06</date>
+			<rev-version>
+				<major>0</major>
+				<minor>2</minor>
+				<revision>0 [Beta]</revision>
+			</rev-version>
+			<changelog lang="en">
+				<change>[Added] Confirmation e-mail</change>
+				<change>[Added] New settings</change>
+				<change>[Added] Log</change>
+				<change>[Fixed] Report #005: Invite yourself</change>
+				<change>[Fixed] Report #004: phpBB Debug</change>
+				<change>[Fixed] Report #003: ACP: Edit Mail</change>
+				<change>[Fixed] Report #002: 'Invite a friend' shown in navigation</change>
+				<change>[Fixed] Report #001: Registration-keys</change>
+			</changelog>
+		</entry>
 	</history>
 </header>
 
@@ -42,6 +60,7 @@ Also enables registration-keys which must be entered to register and can only be
 		<file from="/root/includes/acp/info/acp_invite.php" to="/includes/acp/info/acp_invite.php" />
 		<file from="/root/includes/acp/acp_invite.php" to="/includes/acp/acp_invite.php" />
 		<file from="/root/adm/style/acp_invite.html" to="/adm/style/acp_invite.html" />
+		<file from="/root/adm/style/acp_invite_log.html" to="/adm/style/acp_invite_log.html" />
 		<file from="/root/includes/functions_invite.php" to="/includes/functions_invite.php" />
 		<file from="/root/invite.php" to="/invite.php" />
 		<file from="/root/language/de/invite.php" to="/language/de/invite.php" />
@@ -50,6 +69,8 @@ Also enables registration-keys which must be entered to register and can only be
 		<file from="/root/language/en/mods/info_acp_invite.php" to="/language/en/mods/info_acp_invite.php" />
 		<file from="/root/language/de/email/invite.txt" to="/language/de/email/invite.txt" />
 		<file from="/root/language/en/email/invite.txt" to="/language/en/email/invite.txt" />
+		<file from="/root/language/de/email/invite_confirm.txt" to="/language/de/email/invite_confirm.txt" />
+		<file from="/root/language/en/email/invite_confirm.txt" to="/language/en/email/invite_confirm.txt" />
 		<file from="/root/styles/prosilver/template/invite.html" to="/styles/prosilver/template/invite.html" />
 		<file from="/root/styles/subsilver2/template/invite.html" to="/styles/subsilver2/template/invite.html" />
 	</copy>
@@ -58,26 +79,30 @@ Also enables registration-keys which must be entered to register and can only be
 -- Change the prefix if required!
 --
 
-CREATE TABLE IF NOT EXISTS `phpbb_iaf_config` (
+DROP TABLE IF EXISTS `phpbb_iaf_config`;
+CREATE TABLE `phpbb_iaf_config` (
   `config_id` tinyint(1) unsigned NOT NULL auto_increment,
-  `enable` tinyint(1) unsigned NOT NULL,
-  `auth_key` tinyint(1) unsigned NOT NULL,
-  `send_now` tinyint(1) unsigned NOT NULL,
-  `max_message` mediumint(8) unsigned NOT NULL,
-  `max_subject` mediumint(8) unsigned NOT NULL,
-  `key_min_chars` mediumint(8) unsigned NOT NULL,
-  `key_max_chars` mediumint(8) unsigned NOT NULL,
-  `time` mediumint(8) unsigned NOT NULL,
-  `charset` varchar(250) character set utf8 collate utf8_bin NOT NULL,
+  `enable` tinyint(1) unsigned NOT NULL default '0',
+  `auth_key` tinyint(1) unsigned NOT NULL default '0',
+  `send_now` tinyint(1) unsigned NOT NULL default '0',
+  `confirm_email` tinyint(1) unsigned NOT NULL default '0',
+  `multi_email` tinyint(1) unsigned NOT NULL default '0',
+  `min_message` mediumint(8) unsigned NOT NULL default '0',
+  `max_message` mediumint(8) unsigned NOT NULL default '0',
+  `min_subject` mediumint(8) unsigned NOT NULL default '0',
+  `max_subject` mediumint(8) unsigned NOT NULL default '0',
+  `key_min_chars` mediumint(8) unsigned NOT NULL default '0',
+  `key_max_chars` mediumint(8) unsigned NOT NULL default '0',
+  `time` mediumint(8) unsigned NOT NULL default '0',
+  `charset` varchar(250) binary NOT NULL default '',
   PRIMARY KEY  (`config_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) TYPE=MyISAM AUTO_INCREMENT=1 AUTO_INCREMENT=1 ;
 
 --
 -- Change the prefix if required!
 --
 
-INSERT INTO `phpbb_iaf_config` (`config_id`, `enable`, `auth_key`, `send_now`, `max_message`, `max_subject`, `key_min_chars`, `key_max_chars`, `time`, `charset`) VALUES
-(1, 1, 1, 1, 1000, 25, 12, 18, 300, 'abcdefghijkmnpqrstuvwxyz123456789ABCDEFGHIJKLMNPQRSTUVWXYZ');
+INSERT INTO `phpbb_iaf_config` (`config_id`, `enable`, `auth_key`, `send_now`, `confirm_email`, `multi_email`, `min_message`, `max_message`, `min_subject`, `max_subject`, `key_min_chars`, `key_max_chars`, `time`, `charset`) VALUES (1, 1, 1, 1, 2, 0, 1, 1000, 1, 25, 12, 18, 300, 0x6162636465666768696a6b6d6e707172737475767778797a3132333435363738394142434445464748494a4b4c4d4e505152535455565758595a);
 
 -- --------------------------------------------------------
 
@@ -85,13 +110,18 @@ INSERT INTO `phpbb_iaf_config` (`config_id`, `enable`, `auth_key`, `send_now`, `
 -- Change the prefix if required!
 --
 
-CREATE TABLE IF NOT EXISTS `phpbb_iaf_keys` (
+DROP TABLE IF EXISTS `phpbb_iaf_keys`;
+CREATE TABLE `phpbb_iaf_keys` (
   `key_id` mediumint(8) unsigned NOT NULL auto_increment,
-  `user_id` mediumint(8) unsigned NOT NULL,
-  `auth_key` varchar(40) character set utf8 collate utf8_bin NOT NULL,
-  `key_time` int(11) unsigned NOT NULL,
+  `user_id` mediumint(8) unsigned NOT NULL default '0',
+  `to_email` varchar(100) binary NOT NULL default '',
+  `auth_key` varchar(40) binary NOT NULL default '',
+  `key_time` int(11) unsigned NOT NULL default '0',
+  `send_confirm` tinyint(1) unsigned NOT NULL default '0',
+  `key_used` tinyint(1) unsigned NOT NULL default '0',
+  `new_user` mediumint(8) unsigned NOT NULL default '0',
   PRIMARY KEY  (`key_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) TYPE=MyISAM AUTO_INCREMENT=1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -143,12 +173,9 @@ define('INVITE_CONFIG_TABLE',		$table_prefix . 'iaf_config');]]></action>
 	<open src="includes/functions.php">
 		<edit>
 			<find><![CDATA[define('HEADER_INC', true);]]></find>
-	        <action type="after-add"><![CDATA[$user->add_lang('invite');]]></action>
-	    </edit>
-		
-	    <edit>
-			<find><![CDATA['U_RESTORE_PERMISSIONS'	=> ($user->data['user_perm_from'] && $auth->acl_get('a_switchperm')) ? append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=restore_perm') : '',]]></find>
-	        <action type="after-add"><![CDATA['U_INVITE_A_FRIEND'		=> append_sid("{$phpbb_root_path}invite.$phpEx"),]]></action>
+	        <action type="after-add"><![CDATA[include_once($phpbb_root_path . 'includes/functions_invite.' . $phpEx);
+	$invite	= new invite();
+	$invite->header_template();]]></action>
 	    </edit>
 	</open>
 	
@@ -175,12 +202,14 @@ define('INVITE_CONFIG_TABLE',		$table_prefix . 'iaf_config');]]></action>
 					{
 						$error[] 	= $user->lang['AUTH_KEY_WRONG'];
 					}
-					else
-					{
-						$invite->delete_key($data['key']);
-					}
 				}
 			}]]></action>
+	    </edit>
+		
+		<edit>
+			<find><![CDATA[$user_id = user_add($user_row, $cp_data);]]></find>
+	        <action type="after-add"><![CDATA[$invite->key_used($data['key'], $user_id);
+				$invite->send_confirm($data['key'], $user_id);]]></action>
 	    </edit>
 		
 		<edit>
@@ -208,8 +237,9 @@ define('INVITE_CONFIG_TABLE',		$table_prefix . 'iaf_config');]]></action>
 	<open src="styles/prosilver/template/overall_header.html">
 	    <edit>
 			<find><![CDATA[<a href="{U_SEARCH_SELF}">{L_SEARCH_SELF}</a>]]></find>
-	        <action type="after-add"><![CDATA[ &bull;
-					<a href="{U_INVITE_A_FRIEND}">{L_INVITE_A_FRIEND}</a>]]></action>
+	        <action type="after-add"><![CDATA[<!-- IF S_SHOW_IAF --> &bull;
+					<a href="{U_INVITE_A_FRIEND}">{L_INVITE_A_FRIEND}</a>
+					<!-- ENDIF -->]]></action>
 	    </edit>
 	</open>
 	
@@ -231,12 +261,12 @@ define('INVITE_CONFIG_TABLE',		$table_prefix . 'iaf_config');]]></action>
 	<open src="styles/subsilver2/template/overall_header.html">
 	    <edit>
 			<find><![CDATA[<!-- IF S_DISPLAY_PM --> &nbsp;<a href="{U_PRIVATEMSGS}"><img src="{T_THEME_PATH}/images/icon_mini_message.gif" width="12" height="13" alt="*" /> {PRIVATE_MESSAGE_INFO}<!-- IF PRIVATE_MESSAGE_INFO_UNREAD -->, {PRIVATE_MESSAGE_INFO_UNREAD}<!-- ENDIF --></a><!-- ENDIF -->]]></find>
-	        <action type="replace-with"><![CDATA[<!-- IF S_DISPLAY_PM --> &nbsp;<a href="{U_PRIVATEMSGS}"><img src="{T_THEME_PATH}/images/icon_mini_message.gif" width="12" height="13" alt="*" /> {PRIVATE_MESSAGE_INFO}<!-- IF PRIVATE_MESSAGE_INFO_UNREAD -->, {PRIVATE_MESSAGE_INFO_UNREAD}<!-- ENDIF --></a> &nbsp;<a href="{U_INVITE_A_FRIEND}"><img src="{T_THEME_PATH}/images/icon_mini_profile.gif" width="12" height="13" alt="*" /> {L_INVITE_A_FRIEND}</a><!-- ENDIF -->]]></action>
+	        <action type="replace-with"><![CDATA[<!-- IF S_DISPLAY_PM --> &nbsp;<a href="{U_PRIVATEMSGS}"><img src="{T_THEME_PATH}/images/icon_mini_message.gif" width="12" height="13" alt="*" /> {PRIVATE_MESSAGE_INFO}<!-- IF PRIVATE_MESSAGE_INFO_UNREAD -->, {PRIVATE_MESSAGE_INFO_UNREAD}<!-- ENDIF --></a><!-- IF S_SHOW_IAF --> &nbsp;<a href="{U_INVITE_A_FRIEND}"><img src="{T_THEME_PATH}/images/icon_mini_profile.gif" width="12" height="13" alt="*" /> {L_INVITE_A_FRIEND}</a><!-- ENDIF --><!-- ENDIF -->]]></action>
 	    </edit>
 	</open>
 	
-	<diy-instructions lang="en">Purge the cache and assign the permissions (User permissions -> Misc) to send invitations.</diy-instructions>
-	<diy-instructions lang="de">Leere den Cache und vergebe die Berechtigung (Benutzer-Berechtigungen -> Diverses) Einladungen zu senden.</diy-instructions>
+	<diy-instructions lang="en">Purge the cache.</diy-instructions>
+	<diy-instructions lang="de">Leere den Cache.</diy-instructions>
 
 	<diy-instructions>
 		

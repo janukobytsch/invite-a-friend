@@ -2,7 +2,7 @@
 /**
 *
 * @package phpBB3
-* @version $Id: functions_invite.php 8645 2008-10-03 10:40:17Z Bycoja $
+* @version $Id: functions_invite.php 8645 2008-10-06 10:40:17Z Bycoja $
 * @copyright (c) 2008 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -17,6 +17,12 @@ if (!defined('IN_PHPBB'))
 }
 
 /**
+* Default constants
+*/
+define('AUTH_KEY_DISABLED',		'key_disabled');
+define('LOG_ENTRIES_PER_PAGE',	20);
+
+/**
 * Class invite
 * Send emails, create keys ...
 */              
@@ -24,10 +30,14 @@ class invite
 {
 	var $config;
 	var $from;
+	var $new_user;
 	var $vars;
 	
 	// Contains the message stored in ./language/.../email/invite.txt
 	var $message;
+	
+	// Contains the message stored in ./language/.../email/invite_confirm.txt
+	var $confirm_message;
 	
 	/**
 	* Constructor
@@ -53,18 +63,29 @@ class invite
 	
 		// $this->message
 		
-		$this->message_file($user->data['user_lang']);
+		$this->message_file($user->data['user_lang'], 'invite');
+		
+		// $this->confirm_message
+		
+		$this->message_file($user->data['user_lang'], 'invite_confirm');
 	}
 	
 	/**
 	* function message_file
-	* Read and update the message stored in ./language/.../email/invite.txt
+	* Read and update the messages stored in ./language/.../email/...
 	*/
-	function message_file($template_lang, $mode = 'read', $new_message = '')
+	function message_file($template_lang, $template_file, $mode = 'read', $new_message = '')
 	{
 		global $phpEx, $phpbb_root_path, $user;
 		
-		$tpl_file = "{$phpbb_root_path}language/$template_lang/email/invite.txt";
+		if ($template_file == 'invite')
+		{
+			$tpl_file = "{$phpbb_root_path}language/$template_lang/email/invite.txt";
+		}
+		else
+		{
+			$tpl_file = "{$phpbb_root_path}language/$template_lang/email/invite_confirm.txt";
+		}
 		
 		if ($mode == 'read')
 		{
@@ -73,12 +94,19 @@ class invite
 				trigger_error("Failed opening template file [ $tpl_file ]", E_USER_ERROR);
 			}
 			
-			$this->message = $data;
+			if ($template_file == 'invite')
+			{
+				$this->message = $data;
+			}
+			else
+			{
+				$this->confirm_message = $data;
+			}
 		}
 		
 		if ($mode == 'update')
 		{
-			$file = fopen($tpl_file, "r+");
+			$file = fopen($tpl_file, "w+");
 			
 			rewind($file);
 			fwrite($file, $new_message);
@@ -88,7 +116,7 @@ class invite
 	
 	/**
 	* function set_config
-	* Updates the iaf_config-table
+	* Update the iaf_config-table
 	*/
 	function set_config($key, $value)
 	{
@@ -102,11 +130,11 @@ class invite
 	
 	/**
 	* function send_email
-	* Sends the email to a friend
+	* Send the email to a friend
 	*/
 	function send_email($data)
 	{
-		global $phpEx, $phpbb_root_path, $config;
+		global $phpEx, $phpbb_root_path, $config, $user;
 		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
 		
 		// Use false so send the email immediately
@@ -142,7 +170,78 @@ class invite
 		$messenger->save_queue();
 		
 		// Create an entry for the key in database
-		$this->insert_key($data['from'], $data['key']);
+		// If keys are disabled we still create an entry,
+		// so we can use INVITE_KEYS_TABLE as log
+		$this->insert_key($data);
+				
+		return true;
+	}
+	
+	/**
+	* function send_confirm
+	* Send confirmation that invitited user has registered
+	*/
+	function send_confirm($key, $new_user_id)
+	{
+		global $phpEx, $phpbb_root_path, $config, $user, $db;
+		include_once($phpbb_root_path . 'includes/functions_messenger.' . $phpEx);
+		
+		// Use false so send the email immediately
+		$use_queue	= ($this->config['send_now']) ? false : true;
+		$messenger	= new messenger($use_queue);
+		
+		// Get some information about the new user and set vars
+		$this->get_new_user($new_user_id);
+		
+		// Which invitation do we talk about?
+		$sql 	= 'SELECT * FROM ' . INVITE_KEYS_TABLE . " WHERE auth_key = '$key' AND key_used = 1";
+		$result	= $db->sql_query($sql);
+		
+		while ($row	= $db->sql_fetchrow($result))
+		{
+			foreach ($row as $k => $v)
+			{
+				$invitation_data[$k] = utf8_normalize_nfc(request_var($k, $v, true));
+			}
+		}
+		
+		// Don't send confirmation email if not wished
+		if (!$invitation_data['send_confirm'])
+		{
+			return false;
+		}
+		
+		// Get some information about the sender and set vars
+		$this->get_sender($invitation_data['user_id']);
+		
+		$data	= array(
+			'key'	=> $key,
+			'name'	=> $this->from['username'],
+		);
+		$this->set_vars($data);
+		
+		foreach ($this->vars as $k => $v)
+		{
+			$messenger->vars[$k] = utf8_normalize_nfc(request_var($k, $v, true));
+		}
+		
+		$messenger->to($this->from['user_email'], $this->from['username']);
+		$messenger->template('invite_confirm', $this->from['user_lang']);
+		
+		$messenger->headers('X-AntiAbuse: Board servername - ' . $config['server_name']);
+		$messenger->headers('X-AntiAbuse: User_id - ' . $user->data['user_id']);
+		$messenger->headers('X-AntiAbuse: Username - ' . $user->data['username']);
+		$messenger->headers('X-AntiAbuse: User IP - ' . $user->ip);
+		
+		$messenger->subject(htmlspecialchars_decode($user->lang['INVITE_CONFIRM_EMAIL']));
+		$messenger->set_mail_priority(MAIL_NORMAL_PRIORITY);
+		
+		$messenger->assign_vars(array(
+			'CONTACT_EMAIL' => $config['board_contact'],
+		));
+		
+		$messenger->send();
+		$messenger->save_queue();
 		
 		return true;
 	}
@@ -163,7 +262,30 @@ class invite
 		for($i = 0; $i < $lenght; $i++)   
 		{
 			$rand	.= $charset{mt_rand(0, $str_lng)};
-		}	
+		}
+		
+		// It is highly unlikely this will happen, but still possible
+		if ($rand == AUTH_KEY_DISABLED)
+		{
+			$rand		= '';
+			
+			// We delete the first character used in AUTH_KEY_DISABLED in $charset
+			// so we can't create AUTH_KEY_DISABLED again
+			$auth_key_disabled	= AUTH_KEY_DISABLED;
+			$charset			= str_replace($auth_key_disabled{0}, '', $charset);
+			
+			for($i = 0; $i < $lenght; $i++)   
+			{
+				$rand	.= $charset{mt_rand(0, $str_lng)};
+			}
+		}
+		
+		// If keys are disabled we still create a key,
+		// so we can use INVITE_KEYS_TABLE as log
+		if (!$this->config['auth_key'])
+		{
+			$rand = AUTH_KEY_DISABLED;
+		}
 		
 		return $rand; 
 	}
@@ -172,14 +294,18 @@ class invite
 	* function insert_key
 	* Create an entry for the key in database
 	*/
-	function insert_key($user_id, $key)
+	function insert_key($data)
 	{
 		global $db;
 		
 		$key_data	= array(
-			'user_id'	=> (int) $user_id,
-			'auth_key'	=> (string) $key,
-			'key_time'	=> time(),
+			'user_id'		=> (int) $data['from'],
+			'to_email'		=> (string) $data['email'],
+			'auth_key'		=> (string) $data['key'],
+			'key_time'		=> time(),
+			'send_confirm'	=> (!$this->config['confirm_email']) ? 0 : (($this->config['confirm_email'] == 1) ? 1 : $data['confirm_email']),
+			'key_used'		=> 0,
+			'new_user'		=> 0,
 		);
 		
 		$db->sql_query('INSERT INTO ' . INVITE_KEYS_TABLE . $db->sql_build_array('INSERT', $key_data));
@@ -193,7 +319,14 @@ class invite
 	{
 		global $db;
 		
-		$sql 		= 'SELECT COUNT(key_id) AS valid FROM ' . INVITE_KEYS_TABLE . " WHERE auth_key = '$key'";
+		// $key == AUTH_KEY_DISABLED is important to check!
+		// Otherwise someone could enter 'key_disabled', which is default value for AUTH_KEY_DISABLED!
+		if (empty($key) || $key == AUTH_KEY_DISABLED)
+		{
+			return false;
+		}
+		
+		$sql 		= 'SELECT COUNT(key_id) AS valid FROM ' . INVITE_KEYS_TABLE . " WHERE auth_key = '$key' AND key_used = 0";
 		$result 	= $db->sql_query($sql);
 		$valid		= $db->sql_fetchfield('valid');
 		
@@ -201,14 +334,23 @@ class invite
 	}
 	
 	/**
-	* function delete_key
-	* Delete the key so it can't be used more than one time
+	* function key_used
+	* Set key_used to 1 so the key can't be used more than one time
 	*/
-	function delete_key($key)
+	function key_used($key, $new_user_id = false)
 	{
 		global $db;
 		
-		$sql 		= 'DELETE FROM ' . INVITE_KEYS_TABLE . " WHERE auth_key = '$key'";
+		$data	= array(
+			'key_used'	=> 1,
+			'new_user'	=> $new_user_id,
+		);
+		
+		// We don't have to check whether $key is empty
+		// because we shouldn't get to this point
+		// if registration-keys are disabled
+		
+		$sql 		= 'UPDATE ' . INVITE_KEYS_TABLE . ' SET ' . $db->sql_build_array('UPDATE', $data) . " WHERE auth_key = '$key'";
 		$result 	= $db->sql_query($sql);
 	}
 	
@@ -227,7 +369,29 @@ class invite
 		{
 			foreach ($row as $k => $v)
 			{
-				$this->from[$k] = utf8_normalize_nfc(request_var($k, $v, true));
+				$this->from[$k] = utf8_normalize_nfc($v);
+			}
+		}
+		
+		$db->sql_freeresult($result);
+	}
+	
+	/**
+	* function get_new_user
+	* Set recipient-data as $new_user
+	*/
+	function get_new_user($user_id)
+	{
+		global $db;
+		
+		$sql 	= 'SELECT * FROM ' . USERS_TABLE . ' WHERE user_id = ' . $user_id;
+		$result	= $db->sql_query($sql);
+		
+		while ($row	= $db->sql_fetchrow($result))
+		{
+			foreach ($row as $k => $v)
+			{
+				$this->new_user[$k] = utf8_normalize_nfc($v);
 			}
 		}
 		
@@ -240,13 +404,44 @@ class invite
 	*/
 	function set_vars($data)
 	{
+		global $config, $phpEx, $user;
+		
 		foreach ($this->from as $k => $v)
 		{
-			$this->vars[strtoupper($k)] = utf8_normalize_nfc(request_var($k, $v, true));
+			$this->vars['FROM_' . strtoupper($k)] = utf8_normalize_nfc(request_var($k, $v, true));
+		}
+		
+		// Set vars for confirmation email
+		if (sizeof($this->new_user))
+		{
+			foreach ($this->new_user as $k => $v)
+			{
+				$this->vars['NEW_USER_' . strtoupper($k)] = utf8_normalize_nfc(request_var($k, $v, true));
+			}
+			
+			$this->vars['U_NEW_USER_PROFILE'] = generate_board_url() . '/memberlist.' . $phpEx . '?mode=viewprofile&u=' . $this->new_user['user_id'];
 		}
 		
 		$this->vars['RECIPIENT'] 	= $data['name'];
-		$this->vars['AUTH_KEY'] 	= $data['key'];
+		$this->vars['USERNAME']		= $user->data['username'];
+		$this->vars['AUTH_KEY'] 	= ($this->config['auth_key']) ? $data['key'] : $user->lang['AUTH_KEY_DISABLED'];
+	}
+	
+	/**
+	* function header_template
+	* Called in functions.php so users don't have to add much code there
+	*/
+	function header_template()
+	{
+		global $user, $auth, $template, $phpbb_root_path, $phpEx;
+		
+		$user->add_lang('invite');
+		
+		$template->assign_vars(array(
+			'U_INVITE_A_FRIEND'		=> append_sid("{$phpbb_root_path}invite.$phpEx"),
+			
+			'S_SHOW_IAF'			=> (!$this->config['enable']) ? false : (($auth->acl_get('u_send_iaf')) ? true : false),
+		));
 	}
 }
 ?>

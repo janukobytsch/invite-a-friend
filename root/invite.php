@@ -23,14 +23,16 @@ $user->session_begin();
 $auth->acl($user->data);
 $user->setup(array('invite', 'ucp'));
 
-// ################ REMOVE LATER ###################
+/**
+* Development
+*
 $cache_file = $phpbb_root_path . 'cache/tpl_prosilver_invite.html.' . $phpEx;
 		
 if (file_exists($cache_file))
 {
 	unlink($cache_file);
 }
-// #############################################
+*/
 
 // Set some vars
 $invite		= new invite();
@@ -51,14 +53,15 @@ if (!$auth->acl_get('u_send_iaf'))
 
 // Get data
 $data	= array(
-	'email'		=> utf8_normalize_nfc(request_var('recipient', '', true)),
-	'name'		=> utf8_normalize_nfc(request_var('name', '', true)),
-	'subject'	=> utf8_normalize_nfc(request_var('subject', '', true)),
-	'message'	=> utf8_normalize_nfc(request_var('message', '', true)),
-	'from'		=> $user->data['user_id'],
-	'lang'		=> $user->data['user_lang'],
-	'method'	=> NOTIFY_EMAIL,
-	'key'		=> $invite->create_key(),
+	'email'			=> utf8_normalize_nfc(request_var('recipient', '', true)),
+	'name'			=> utf8_normalize_nfc(request_var('name', '', true)),
+	'subject'		=> utf8_normalize_nfc(request_var('subject', '', true)),
+	'message'		=> utf8_normalize_nfc(request_var('message', '', true)),
+	'confirm_email'	=> request_var('send_confirm', 0, true),
+	'from'			=> $user->data['user_id'],
+	'lang'			=> $user->data['user_lang'],
+	'method'		=> NOTIFY_EMAIL,
+	'key'			=> $invite->create_key(),
 );
 
 // Wait until we can send another email?
@@ -87,11 +90,26 @@ if ($submit && $send_iaf)
 			array('string', false, 6, 60),
 			array('email')),
 		'name'		=> array('string', false, 1, 60),
-		'subject'	=> array('string', false, 1, $invite->config['max_subject']),
-		'message'	=> array('string', false, 1, $invite->config['max_message']),
+		'subject'	=> array('string', false, $invite->config['min_subject'], $invite->config['max_subject']),
+		'message'	=> array('string', false, $invite->config['min_message'], $invite->config['max_message']),
 	);
 
 	$error = validate_data($data, $check_ary);
+	
+	if($data['email'] == $user->data['user_email'])
+	{
+		$error[]	= $user->lang['EMAIL_EQ_EMAIL'];
+	}
+	
+	// Already got invitation?
+	$sql 		= 'SELECT COUNT(key_id) AS multi_num FROM ' . INVITE_KEYS_TABLE . ' WHERE to_email = "' . $data['email'] . '"';
+	$result 	= $db->sql_query($sql);
+	$multi_num	= (int) $db->sql_fetchfield('multi_num');
+	
+	if ($multi_num && !$invite->config['multi_email'])
+	{
+		$error[]	= $user->lang['ALREADY_INVITED'];
+	}
 	
 	if (!sizeof($error))
 	{
@@ -112,14 +130,15 @@ if ($submit && $send_iaf)
 $template->assign_vars(array(
 	// Display all errors: 'ERROR'		=> (sizeof($error)) ? implode('<br />', $error) : '',
 	// We only display the first error in array so eveything is clearly arranged
-	'ERROR'		=> (sizeof($error)) ? $error[0] : '',
-		
-	'RECIPIENT'	=> (isset($data['email'])) ? $data['email'] : '',
-	'NAME'		=> (isset($data['name'])) ? $data['name'] : '',
-	'SUBJECT'	=> (isset($data['subject'])) ? $data['subject'] : '',
-	'MESSAGE'	=> (isset($data['message'])) ? $data['message'] : '',
+	'ERROR'				=> (sizeof($error)) ? $error[0] : '',
 	
-	'S_DISABLE'	=> ($send_iaf) ? false : true,
+	'RECIPIENT'			=> (isset($data['email'])) ? $data['email'] : '',
+	'NAME'				=> (isset($data['name'])) ? $data['name'] : '',
+	'SUBJECT'			=> (isset($data['subject'])) ? $data['subject'] : '',
+	'MESSAGE'			=> (isset($data['message'])) ? $data['message'] : '',
+	
+	'S_DISABLE'			=> ($send_iaf) ? false : true,
+	'S_SHOW_CONFIRM'	=> ($invite->config['confirm_email'] == 2) ? true : false,
 ));
 
 // Output the page

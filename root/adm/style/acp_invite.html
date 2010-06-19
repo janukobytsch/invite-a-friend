@@ -62,8 +62,16 @@ td input {
 		<dd><input type="radio" class="radio" id="auth_key" name="auth_key"<!-- IF S_AUTH_KEY --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="auth_key"<!-- IF not S_AUTH_KEY --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
 	</dl>
 	<dl>
-		<dt><label for="no_answer">{L_SETTINGS_SEND_NOW}:</label><br /><span>{L_SETTINGS_SEND_NOW_EXPLAIN}</span></dt>
+		<dt><label for="send_now">{L_SETTINGS_SEND_NOW}:</label><br /><span>{L_SETTINGS_SEND_NOW_EXPLAIN}</span></dt>
 		<dd><input type="radio" class="radio" id="send_now" name="send_now"<!-- IF S_SEND_NOW --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="send_now"<!-- IF not S_SEND_NOW --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
+	</dl>
+	<dl>
+		<dt><label for="multi_email">{L_SETTINGS_MULTI_EMAIL}:</label><br /><span>{L_SETTINGS_MULTI_EMAIL_EXPLAIN}</span></dt>
+		<dd><input type="radio" class="radio" id="multi_email" name="multi_email"<!-- IF S_MULTI_EMAIL --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="multi_email"<!-- IF not S_MULTI_EMAIL --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
+	</dl>
+	<dl>
+		<dt><label for="confirm_email">{L_SETTINGS_CONFIRM_EMAIL}:</label><br /><span>{L_SETTINGS_CONFIRM_EMAIL_EXPLAIN}</span></dt>
+		<dd><input type="radio" class="radio" id="confirm_email" name="confirm_email"<!-- IF S_CONFIRM_EMAIL eq 1 --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="confirm_email"<!-- IF not S_CONFIRM_EMAIL --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}&nbsp;&nbsp;<input type="radio" class="radio" name="confirm_email"<!-- IF S_CONFIRM_EMAIL eq 2 --> checked="checked"<!-- ENDIF --> value="2"/>&nbsp;{L_USER}</dd>
 	</dl>
 </fieldset>
 
@@ -74,24 +82,20 @@ td input {
 		<dd><input size="5" maxlength="5" type="text" id="time" name="time" value="{S_TIME}" /> {L_SECONDS}</dd>
 	</dl>
 	<dl>
-		<dt><label for="max_message">{L_SETTINGS_MAX_MESSAGE}:</label></dt>
-		<dd><input size="3" maxlength="4" type="text" id="max_message" name="max_message" value="{S_MAX_MESSAGE}" /></dd>
+		<dt><label for="min_message">{L_SETTINGS_MESSAGE_CHARS}:</label><br /><span>{L_SETTINGS_MESSAGE_CHARS_EXPLAIN}</span></dt>
+		<dd><input size="3" maxlength="4" type="text" id="min_message" name="min_message" value="{S_MIN_MESSAGE}" /> {L_MIN_CHARS}&nbsp;&nbsp;<input size="3" maxlength="4" type="text" id="max_message" name="max_message" value="{S_MAX_MESSAGE}" /> {L_MAX_CHARS}</dd>
 	</dl>
 	<dl>
-		<dt><label for="max_subject">{L_SETTINGS_MAX_SUBJECT}:</label></dt>
-		<dd><input size="3" maxlength="3" type="text" id="max_subject" name="max_subject" value="{S_MAX_SUBJECT}" /></dd>
+		<dt><label for="min_subject">{L_SETTINGS_SUBJECT_CHARS}:</label><br /><span>{L_SETTINGS_SUBJECT_CHARS_EXPLAIN}</dt>
+		<dd><input size="3" maxlength="3" type="text" id="min_subject" name="min_subject" value="{S_MIN_SUBJECT}" /> {L_MIN_CHARS}&nbsp;&nbsp;<input size="3" maxlength="3" type="text" id="max_subject" name="max_subject" value="{S_MAX_SUBJECT}" /> {L_MAX_CHARS}</dd>
 	</dl>
 	<dl>
-		<dt><label for="key_min_chars">{L_SETTINGS_KEY_MIN_CHARS}:</label></dt>
-		<dd><input size="3" maxlength="3" type="text" id="key_min_chars" name="key_min_chars" value="{S_KEY_MIN_CHARS}" /></dd>
-	</dl>
-	<dl>
-		<dt><label for="key_max_chars">{L_SETTINGS_KEY_MAX_CHARS}:</label></dt>
-		<dd><input size="3" maxlength="3" type="text" id="key_max_chars" name="key_max_chars" value="{S_KEY_MAX_CHARS}" /></dd>
+		<dt><label for="key_min_chars">{L_SETTINGS_KEY_CHARS}:</label><br /><span>{L_SETTINGS_KEY_CHARS_EXPLAIN}</dt>
+		<dd><input size="3" maxlength="3" type="text" id="key_min_chars" name="key_min_chars" value="{S_KEY_MIN_CHARS}" /> {L_MIN_CHARS}&nbsp;&nbsp;<input size="3" maxlength="3" type="text" id="key_max_chars" name="key_max_chars" value="{S_KEY_MAX_CHARS}" /> {L_MAX_CHARS}</dd>
 	</dl>
 	<dl>
 		<dt><label for="charset">{L_SETTINGS_CHARSET}:</label><br /><span>{L_SETTINGS_CHARSET_EXPLAIN}</span></dt>
-		<dd><textarea style="width: 250px; height: 50px;" name="charset" id="charset" class="inputbox">{S_CHARSET}</textarea></dd>
+		<dd><textarea style="width: 400px; height: 50px;" name="charset" id="charset" class="inputbox">{S_CHARSET}</textarea></dd>
 	</dl>
 </fieldset>
 	
@@ -100,6 +104,13 @@ td input {
 	<p>{L_SETTINGS_IAF_MESSAGE_EXPLAIN}</p>
 
 	<br /><textarea style="width: 500px; height: 150px;" name="message" id="message" class="inputbox">{S_MESSAGE}</textarea>
+</fieldset>
+
+<fieldset>
+	<legend>{L_SETTINGS_CONFIRM_EMAIL}</legend>
+	<p>{L_SETTINGS_CONFIRM_MESSAGE_EXPLAIN}</p>
+
+	<br /><textarea style="width: 500px; height: 150px;" name="confirm_message" id="confirm_message" class="inputbox">{S_CONFIRM_MESSAGE}</textarea>
 </fieldset>
 
 <p class="submit-buttons">
