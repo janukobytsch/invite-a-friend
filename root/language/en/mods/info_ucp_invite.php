@@ -1,14 +1,15 @@
 <?php
 /**
-* @author Bycoja bycoja@web.de
-* info_acp_invite [British English]
 *
+* info_ucp_invite [British English]
+*
+* @author Bycoja bycoja@web.de
 * @package language
-* @version $Id: info_ucp_invite.php 054 2009-11-28 14:41:59GMT Bycoja $
-* @copyright (c) 2008 Bycoja
+* @version $Id info_ucp_invite 0.6.0 2010-04-02 01:37:02GMT Bycoja $
+* @copyright (c) 2010 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
-* Englische Übersetzung durch den Autor:
+* English tranlation by:
 * Bycoja
 */
 
@@ -38,30 +39,28 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'UCP_INVITE'					=> 'Invite A Friend',
 	'UCP_INVITE_INVITE'				=> 'Compose invitation',
-	'UCP_INVITE_DESCRIPTION'		=> 'Send an e-mail to a friend of yours and advise him of this board.',
-
-	'RECIPIENT_EMAIL'				=> 'Your friend’s e-mail address',
-	'RECIPIENT_NAME'				=> 'Your friend’s name',
-	'SEND_CONFIRM'					=> 'Send confirmation',
-	'SEND_CONFIRM_METHOD'			=> 'Confirmation via',
-	'INVITE_ZEBRA'					=> 'Add friend',
-	'OPTIONAL'						=> 'Optional',
-
-	'INVITE_NO_REGISTER_KEY'		=> 'If you don’t enter a registration key: ',
+	'UCP_INVITE_DESCRIPTION'		=> 'Send an invitation e-mail to a friend of yours and draw his attention to this board.',
 	'REGISTER_KEY'					=> 'Registration key',
 	'REGISTER_KEY_EXPLAIN'			=> 'Obtained by a user of this board via e-mail.',
-	'REGISTER_KEY_DISABLED'			=> 'You don’t need a registration key in order to register at the moment.',
 
-	'QUEUE_QUEUE'					=> 'You have to wait a while until you can send another e-mail to a friend of yours.',
-	'QUEUE_LIMIT_INVITE_DAY'		=> 'You have reached the daily limit and are not able to send other invitations today.',
-	'QUEUE_LIMIT_INVITE_USER'		=> 'You have reached the total limit and are not able to send other invitations.',
-	'INVITE_DISABLED'				=> 'Inviting friends is currently disabled.',
-	'INVITE_YOURSELF'				=> 'You must not use registration keys you sent to yourself.',
-	'INVITE_TO_YOUR_EMAIL'			=> 'You cannnot invite yourself.',
+	// Invitation form
+	'RECIPIENT_EMAIL'				=> 'Your friend’s e-mail address',
+	'RECIPIENT_NAME'				=> 'Your friend’s name',
+	'MESSAGE_EXPLAIN'				=> 'Tell your friend why you would like him to visit this board.',
+	'SEND_CONFIRMATION'				=> 'Receive confirmation',
+	'SEND_CONFIRMATION_METHOD'		=> 'Receive confirmation via',
+	'INVITATION_ZEBRA'				=> 'Add invited user to friendlist',
 
-	'EMAIL_DISABLED'				=> 'E-mail-functionality has been disabled, so you cannot send any invitations.',
-	'EMAIL_SENT_FAILURE'			=> 'An error occured while sending the e-mail.',
+	// Error messages
+	'EMAIL_DISABLED'				=> 'E-mail-functionality has been disabled and you cannot send any invitations.',
+	'EMAIL_SENT_FAILURE'			=> 'An error occurred while sending the invitation.',
 	'EMAIL_SENT_SUCCESS'			=> 'The e-mail was successfully sent to your friend.',
+	'INVITE_DISABLED'				=> 'Sending invitations to friends has been disabled by the Board Administration.',
+	'QUEUE_QUEUE'					=> 'You have to wait %d:%02d minutes until you can send another e-mail to a friend of yours.',
+	'INVITATION_LIMIT_DAILY'		=> 'You have reached the daily limit of %d invitations and you may not send another invitation today.',
+	'INVITATION_LIMIT_TOTAL'		=> 'You have reached the total limit of %d invitations and you may not send another invitation at all.',
+	'INVITE_YOURSELF'				=> 'You must not use registration keys you sent to yourself.',
+	'INVITE_TO_YOUR_EMAIL'			=> 'You cannot invite yourself.',
 	'INVITE_MULTIPLE'				=> 'The entered e-mail address already obtained an invitation.',
 	'REGISTER_KEY_INVALID'			=> 'The registration key is invalid.',
 	'REGISTER_KEY_INVALID_OPTIONAL'	=> 'The registration key is invalid. You can leave it out.',
@@ -76,4 +75,5 @@ $lang = array_merge($lang, array(
 	'POST_CONFIRM_EXPLAIN'			=> 'To prevent automated invitations the board requires you to enter a confirmation code. The code is displayed in the image you should see below. If you are visually impaired or cannot otherwise read this code please contact the Board Administrator.',
 
 ));
+
 ?>

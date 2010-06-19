@@ -1,0 +1,7 @@
+Hello {INVITER_USERNAME},
+this message was sent to you as a confirmation since a friend of yours registered on
+{BOARD_URL}
+
+using the nickname '{INVITED_USERNAME}'.
+
+Here you can view his profile: {INVITED_USER_PROFILE_URL}

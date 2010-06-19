@@ -1,10 +1,10 @@
 <?php
-/** 
-* @author Bycoja bycoja@web.de
+/**
 *
+* @author Bycoja bycoja@web.de
 * @package acp
-* @version $Id: acp_invite.php 054 2009-11-28 14:41:59GMT Bycoja $
-* @copyright (c) 2008 Bycoja
+* @version $Id acp_invite 0.6.0 2010-04-02 01:37:02GMT Bycoja $
+* @copyright (c) 2010 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
@@ -19,8 +19,6 @@ if (!defined('IN_PHPBB'))
 
 /**
 * @package acp
-* @todo		- http://bycoja.by.funpic.de/viewtopic.php?f=13&t=53#p463
-			- OpenInviter
 */
 class acp_invite
 {
@@ -31,48 +29,37 @@ class acp_invite
 		global $db, $user, $auth, $template, $cache, $phpEx;
 		global $config, $phpbb_root_path, $phpbb_admin_path;
 
-		$user->add_lang(array('ucp', 'mods/info_acp_invite', 'acp/board'));
-
 		include ($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 		include ($phpbb_root_path . 'includes/functions_invite.' . $phpEx);
 
-		// General vars
-		$invite		 		= new invite();
-		$action				= request_var('action', '');
-		$this->page_title	= ($mode == 'log') ? 'ACP_INVITE_LOG' : 'ACP_INVITE';
-		$this->tpl_name		= ($mode == 'log') ? 'acp_invite_log' : 'acp_invite';
-		$submit				= (isset($_POST['submit']))  ? true : false;		
+		$user->add_lang(array('ucp', 'mods/info_acp_invite', 'acp/board', 'acp/email'));
+
+		$invite	= new invite();
+		$action	= request_var('action', '');
+		$submit	= (isset($_POST['submit'])) ? true : false;
+		$error	= array();
 
 		foreach ($invite->config as $k => $v)
 		{
 			$new_config[$k] = utf8_normalize_nfc(request_var($k, $v, true));
 		}
 
+		$form_key = 'acp_invite';
+		add_form_key($form_key);
+
 		switch ($mode)
 		{
 			case 'settings':
-				$block_assigned		= false;
-				$message_error		= false;
-				$message_ary 		= array();
-				$error				= array();
-				$lang_ary			= $invite->get_languages();
 
-				$queue_time_m	= request_var('queue_time_m', floor($invite->config['queue_time'] / 60));
-				$queue_time_s	= request_var('queue_time_s', $invite->config['queue_time'] % 60);
+				$this->page_title = 'ACP_INVITE_SETTINGS';
+				$this->tpl_name = 'acp_invite';
 
-				foreach ($lang_ary as $iso => $data)
-				{
-					foreach ($INVITE_MESSAGE_TYPE as $string => $int)
-					{
-						// Fill $message_ary with the messages located in email files
-						// example# array ( 'iso' => array ( int => 'message', int => 'message', ),)
-						$message_ary[$iso][$string] = utf8_normalize_nfc(request_var($string . '_' . $iso, $invite->get_template("invite_{$string}.txt", $iso), true));
-					}
-				}
+				$queue_time_m = request_var('queue_time_m', floor($invite->config['queue_time'] / 60));
+				$queue_time_s = request_var('queue_time_s', $invite->config['queue_time'] % 60);
 
 				if ($submit)
 				{
-					$new_config['queue_time']= $queue_time_s + ($queue_time_m * 60);
+					$new_config['queue_time'] = $queue_time_s + ($queue_time_m * 60);
 
 					$check_ary = array(
 						'queue_time'				=> array('num', true, 1, 9999999999),
@@ -80,28 +67,12 @@ class acp_invite
 						'message_max_chars'			=> array('num', false, 1, 9999),
 						'subject_min_chars'			=> array('num', false, 1, 999),
 						'subject_max_chars'			=> array('num', false, 1, 999),
-						'limit_invite_day'			=> array('num', true, 0, 99999),
-						'limit_invite_day_posts'	=> array('num', true, 0, 99999),
-						'limit_invite_day_topics'	=> array('num', true, 0, 99999),
-						'limit_invite_user'			=> array('num', true, 0, 99999),
-						'limit_invite_user_posts'	=> array('num', true, 0, 99999),
-						'limit_invite_user_topics'	=> array('num', true, 0, 99999),
 					);
 					$error = validate_data($new_config, $check_ary);
 
-					// Empty messages?
-					foreach ($lang_ary as $iso => $data)
+					if (!check_form_key($form_key))
 					{
-						foreach ($INVITE_MESSAGE_TYPE as $string => $int)
-						{
-							if (empty($message_ary[$iso][$string]))
-							{
-								$error[] = $user->lang['ERROR_MESSAGE_' . strtoupper($string)];
-
-								// Message errors are more important than others, so we display the message error
-								$message_error = true;
-							}
-						}
+						$error[] = $user->lang['FORM_INVALID'];
 					}
 
 					// No errors.. continue!
@@ -110,13 +81,6 @@ class acp_invite
 						foreach ($new_config as $k => $v)
 						{
 							$invite->set_config($k, $v);
-						}
-						foreach ($message_ary as $iso => $data_ary)
-						{
-							foreach ($data_ary as $tpl_name => $tpl_data)
-							{
-								$invite->set_template($tpl_data, "invite_{$tpl_name}.txt", $iso);
-							}
 						}
 
 						add_log('admin', 'LOG_INVITE_SETTINGS_UPDATED');
@@ -142,38 +106,9 @@ class acp_invite
 					));
 				}
 
-				// Handle messages
-				foreach ($INVITE_MESSAGE_TYPE as $parent_string => $parent_int)
-				{
-					foreach ($message_ary as $iso => $data_ary)
-					{
-						if ($user->data['user_lang'] == $iso && !$block_assigned)
-						{
-							$style_display		= 'block';
-							$block_assigned 	= true;
-						}
-						else
-						{
-							$style_display		= 'none';
-						}
-
-						$template->assign_block_vars('message', array(
-							'S_STYLE_DISPLAY'	=> $style_display,
-							'LANGUAGE'			=> $iso,
-							'MESSAGE_TYPE'		=> $parent_string,
-							'MESSAGE'			=> $data_ary[$parent_string],
-						));
-					}
-
-					$template->assign_block_vars('explain', array(
-						'EXPLAIN_TYPE'		=> $parent_string,
-						'EXPLAIN_TEXT'		=> $user->lang['SETTINGS_MESSAGE_' . strtoupper($parent_string) . '_EXPLAIN'],
-					));
-				}
-
 				$template->assign_vars(array(
 					// Display all errors: 'ERROR'		=> (sizeof($error)) ? implode('<br />', $error) : '',
-					'ERROR'						=> (sizeof($error) && !$message_error) ? $user->lang['ERROR_INVITE_SETTINGS'] : (sizeof($error) && $message_error) ? array_pop($error) : '',
+					'ERROR'						=> (sizeof($error)) ? array_pop($error) : '',
 
 					'S_VALUE_EMAIL'				=> EMAIL,
 					'S_VALUE_PM'				=> PM,
@@ -181,17 +116,16 @@ class acp_invite
 
 					'S_GROUP_SELECT'			=> group_select_options($new_config['key_group'], false, 0), // Show groups not managed by founders
 					'S_EMAIL_ENABLE'			=> ($config['email_enable']) ? true : false,
-					'S_SELECT_LANGUAGE'			=> language_select($user->data['user_lang']),
-					'S_SELECT_MESSAGE'			=> $this->build_select('message', $INVITE_MESSAGE_TYPE),
+					'S_SELECT_LANGUAGE'			=> $this->build_select('language', '', $new_config['invite_language_select']),
 					'S_SELECT_PROFILE_LOCATION'	=> $this->build_select('profile_location'),
 					'S_SELECT_PROFILE_TYPE'		=> $this->build_select('profile_type'),
+					'S_PRIORITY_OPTIONS'		=> $this->build_select('priority', '', $new_config['invite_priority_flag']),
 					'S_QUEUE_TIME_M'			=> $queue_time_m,
 					'S_QUEUE_TIME_S'			=> $queue_time_s,
 
 					'U_ACTION'					=> $this->u_action,
 				));
 
-				// ####### PLUGINS ########
 				if ($invite->ultimate_points_installed())
 				{
 					$template->assign_vars(array(
@@ -210,18 +144,83 @@ class acp_invite
 						'S_CASH_CURRENCY_REGISTER'	=> $cash->get_currencies($invite->config['cash_id_register'], true),
 					));
 				}
+
+			break;
+
+			case 'templates':
+
+				$this->page_title = 'ACP_INVITE_TEMPLATES';
+				$this->tpl_name = 'acp_invite_templates';
+
+				$select = (isset($_POST['select'])) ? true : false;
+
+				$tpl_type = request_var('template_type', '', true);
+				$tpl_lang = request_var('template_language', $user->data['user_lang'], true);
+				$tpl_subject = ($select) ? $invite->get_template("{$tpl_type}_subject.txt", $tpl_lang) : '';
+				$tpl_message = ($select) ? $invite->get_template("{$tpl_type}_message.txt", $tpl_lang) : '';
+
+				if ($submit)
+				{
+					$tpl_subject = request_var('template_subject', $invite->get_template("{$tpl_type}_subject.txt", $tpl_lang), true);
+					$tpl_message = request_var('template_message', $invite->get_template("{$tpl_type}_message.txt", $tpl_lang), true);
+
+					if (!check_form_key($form_key))
+					{
+						$error[] = $user->lang['FORM_INVALID'];
+					}
+
+					// No errors.. continue!
+					if (!sizeof($error))
+					{
+						$invite->set_template($tpl_subject, "{$tpl_type}_subject.txt", $tpl_lang);
+						$invite->set_template($tpl_message, "{$tpl_type}_message.txt", $tpl_lang);
+
+						add_log('admin', 'LOG_INVITE_TEMPLATES_UPDATED');
+						trigger_error($user->lang['CONFIG_UPDATED'] . adm_back_link($this->u_action));
+					}
+				}
+
+				// Output wildcard tables
+				$wildcards['general'] = $this->print_wildcard_array($invite, 'general');
+				$wildcards['user'] = $this->print_wildcard_array($invite, 'user');
+
+				foreach ($wildcards as $type => $data)
+				{
+					foreach ($data as $wildcard => $example_value)
+					{
+						$template->assign_block_vars($type . '_wildcards', array(
+							'WILDCARD'		=> $wildcard,
+							'EXAMPLE_VALUE'	=> $example_value,
+						));
+					}
+				}
+
+				$template->assign_vars(array(
+					// Display all errors: 'ERROR'	=> (sizeof($error)) ? implode('<br />', $error) : '',
+					'ERROR'				=> (sizeof($error)) ? array_pop($error) : '',
+					'TEMPLATE_SUBJECT'	=> $tpl_subject,
+					'TEMPLATE_MESSAGE'	=> $tpl_message,
+					
+					'S_EDIT_TEMPLATE' 				=> ($select) ? true : false,
+					'S_TEMPLATE_TYPE_SELECT'		=> $this->build_select('message', $invite->INVITE_MESSAGE_TYPE, $tpl_type),
+					'S_TEMPLATE_LANGUAGE_SELECT'	=> language_select($tpl_lang),
+				));
+
 			break;
 
 			case 'log':
-				// Set up general vars
+
+				$this->page_title	= 'ACP_INVITE_LOG';
+				$this->tpl_name		= 'acp_invite_log';
 				$this->log_type		= LOG_INVITE;
-				$entries_per_page	= 25;
 
 				$start				= request_var('start', 0);
 				$show_info			= request_var('info', 0);
 				$marked				= request_var('mark', array(0));
+				$filter				= request_var('filter', 'all');
 				$deletemark 		= (isset($_POST['delmarked'])) ? true : false;
 				$deleteall			= (isset($_POST['delall'])) ? true : false;
+				$entries_per_page	= 25;
 
 				// Sort keys
 				$sort_days	= request_var('st', 0);
@@ -254,6 +253,7 @@ class acp_invite
 								$where_sql";
 							$db->sql_query($sql);
 						}
+						add_log('admin', 'LOG_INVITE_LOG_CLEARED');
 					}
 					else
 					{
@@ -283,20 +283,20 @@ class acp_invite
 				// Define where and sort sql for use in displaying logs
 				$sql_where 	= ($sort_days) ? (time() - ($sort_days * 86400)) : 0;
 				$sql_sort 	= $sort_by_sql[$sort_key] . ' ' . (($sort_dir == 'd') ? 'DESC' : 'ASC');
-				$sql_user	= $invite->user_return_data($db->sql_escape(utf8_clean_string($sort_user)));
+				$sql_user	= $invite->user_return_data($db->sql_escape(utf8_clean_string($sort_user)), 'username_clean', 'user_id');
 
 				// Grab log data
 				$log_data 	= array();
 				$log_count 	= 0;
-				view_log('invite', $log_data, $log_count, $entries_per_page, $start, $sql_user, 0, 0, $sql_where, $sql_sort);
+				view_log('invite', $log_data, $log_count, $entries_per_page, $start, $sql_user, $filter, $sql_user, $sql_where, $sql_sort);
 
-				$u_sort_param	.= ($show_info) ? "&amp;info=$show_info" : '';
 				$u_sort_param	.= ($sql_user) ? "&amp;ui=$sort_user" : '';
 				$log_count		= ($sql_user) ? $log_count : (($sort_user) ? 0 : $log_count);
 
 				$template->assign_vars(array(
 					'U_ACTION'		=> $this->u_action,
 
+					'S_FILTER'		=> $this->build_select('filter', '', $filter),
 					'S_ON_PAGE'		=> on_page($log_count, $entries_per_page, $start),
 					'PAGINATION'	=> generate_pagination($this->u_action . "&amp;$u_sort_param", $log_count, $entries_per_page, $start, true),
 
@@ -305,21 +305,8 @@ class acp_invite
 					'S_SORT_DIR'	=> $s_sort_dir,
 					'S_SORT_USER'	=> ($sort_user) ? $sort_user : '',
 					'S_CLEARLOGS'	=> $auth->acl_get('a_clearlogs'),
-					'S_SHOW_INFO'	=> ($show_info) ? true : false,
 					'S_USER_ENTRY'	=> (empty($sort_user)) ? true : $sql_user,
 				));
-
-				if ($show_info)
-				{
-					$info = $invite->get_profile_info($show_info);
-
-					$template->assign_vars(array(
-						'INFO_USERNAME'			=> $info['username_full'],
-						'INFO_INVITATIONS'		=> $info['invitations'],
-						'INFO_REGISTRATIONS'	=> $info['registrations'],
-						'INFO_REG_USERS'		=> $info['reg_users'],
-					));
-				}
 
 				foreach ($log_data as $row)
 				{
@@ -336,15 +323,15 @@ class acp_invite
 						'ACTION'			=> $row['action'],
 						'DATA'				=> (sizeof($data)) ? implode(' | ', $data) : '',
 						'ID'				=> $row['id'],
-						'INFO'				=> append_sid("{$phpbb_admin_path}index.$phpEx", 'i=invite&amp;mode=log&amp;info=' . $row['id'] . "&amp;$u_sort_param&amp;start=$start"),
 						)
 					);
 				}
+
 			break;
 		}
 	}
 
-	function build_select($mode, $INVITE_MESSAGE_TYPE = '')
+	function build_select($mode, $INVITE_MESSAGE_TYPE = '', $selected = '')
 	{
 		global $user;
 
@@ -363,6 +350,7 @@ class acp_invite
 				$array = array(
 					'VIEWTOPIC'			=> 't',
 					'MEMBERLIST_VIEW'	=> 'p',
+					'MEMBERLIST'		=> 'm',
 				);
 			break;
 
@@ -371,18 +359,93 @@ class acp_invite
 					'DISPLAY_INVITER'	=> 'inviter',
 					'DISPLAY_INVITE'	=> 'invite',
 					'DISPLAY_REGISTER'	=> 'register',
-					'DISPLAY_NAME'		=> 'name',
 				);
+			break;
+
+			case 'language':
+				$array = array();
+			break;
+
+			case 'priority':
+				$array = array(
+					'OPTIONAL'				=> MAIL_LOW_PRIORITY + 1,
+					'MAIL_LOW_PRIORITY'		=> MAIL_LOW_PRIORITY,
+					'MAIL_NORMAL_PRIORITY'	=> MAIL_NORMAL_PRIORITY,
+					'MAIL_HIGH_PRIORITY'	=> MAIL_HIGH_PRIORITY,
+				);
+			break;
+
+			case 'filter':
+				$array = array(
+					'LOG_FILTER_ALL'		=> 'all',
+					'LOG_FILTER_INVITE'		=> 'invite',
+					'LOG_FILTER_CONFIRM'	=> 'confirm',
+					'LOG_FILTER_REGISTER'	=> 'register',
+					'LOG_FILTER_ZEBRA'		=> 'zebra',
+				);
+			break;
+
+			default:
 			break;
 		}
 
 		$select = '';
 		foreach ($array as $k => $v)
 		{
-			$select .= '<option value="' . $v . '">' . $user->lang[$k] . '</option>';
+			$mark = ($selected == $v) ? ' selected="selected"' : '';
+
+			$select .= '<option value="' . $v . '"' . $mark . '>' . $user->lang[$k] . '</option>';
 		}
 
+		// Language select
+		$mark = ($selected == 'opt') ? ' selected="selected"' : '';
+		$select .= ($mode == 'language') ? '<option value="opt"' . $mark . '>' . $user->lang['OPTIONAL'] . '</option>' : '';
+		$mark = ($selected == 'user') ? ' selected="selected"' : '';
+		$select .= ($mode == 'language') ? '<option value="user"' . $mark . '>' . $user->lang['USER_LANGUAGE'] . '</option>' : '';
+		$select .= ($mode == 'language') ? language_select($selected) : '';
+
 		return $select;
+	}
+
+	function print_wildcard_array($invite, $mode)
+	{
+		global $config, $user, $phpEx;
+
+		$arrray = array();
+
+		switch ($mode)
+		{
+			case 'general':
+				$wildcards['USER_SUBJECT'] = $wildcards['USER_MESSAGE'] = $user->lang['USER_DEFINED'];
+				$wildcards['REGISTRATION_KEY'] = $invite->create_key();
+				$wildcards['REGISTRATION_URL'] = generate_board_url() . '/ucp.' . $phpEx . '?mode=register&referral=' . urlencode($user->data['username']) . '&key=' . $wildcards['REGISTRATION_KEY'];
+				$wildcards['SITENAME'] = htmlspecialchars_decode($config['sitename']);
+				$wildcards['CONTACT_EMAIL'] = $config['board_contact'];
+				$wildcards['BOARD_URL'] = generate_board_url();
+			break;
+
+			case 'user':
+				// Show only the most important ones as there's a lot of boring crap in users table
+				$user_wildcards = array('user_id', 'username', 'username_clean', 'user_ip', 'user_email', 'user_posts', 'user_lang', 'user_from', 'user_icq', 'user_aim', 'user_yim', 'user_msnm', 'user_jabber', 'user_website', 'user_occ', 'user_interests', 'user_inviter_id', 'user_inviter_name', 'user_invitations', 'user_registrations');
+
+				$wildcards['INVITED_USER_PROFILE_URL'] = generate_board_url() . '/memberlist.' . $phpEx . '?mode=viewprofile&u=' . $user->data['user_id'];
+				$wildcards['RECIPIENT_NAME'] = $user->lang['USER_DEFINED'];
+
+				foreach ($user->data as $k => $v)
+				{
+					if (array_search($k, $user_wildcards))
+					{
+						$wildcards['INVITER_' . strtoupper($k)] = $v;
+						$wildcards['INVITED_' . strtoupper($k)] = $v;
+					}
+				}
+			break;
+
+			default:
+			break;
+		}
+
+		return $wildcards;
 	}
 }
 ?>

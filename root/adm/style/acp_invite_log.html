@@ -13,28 +13,6 @@
 	</div>
 <!-- ENDIF -->
 
-<!-- IF S_SHOW_INFO -->
-	<table cellspacing="1">
-	<thead>
-	<tr>
-		<th>{L_USERNAME}</th>
-		<th>{L_DISPLAY_INVITE}</th>
-		<th>{L_DISPLAY_REGISTER}</th>
-		<th>{L_DISPLAY_NAME}</th>
-	</tr>
-	</thead>
-	<tbody>
-	<tr class="row1">
-		<td style="text-align: center;">{INFO_USERNAME}</td>
-		<td style="text-align: center;">{INFO_INVITATIONS}</td>
-		<td style="text-align: center;">{INFO_REGISTRATIONS}</td>
-		<td style="text-align: center;">{INFO_REG_USERS}</td>
-	</tr>
-	</tbody>
-	</table>
-	<br />
-<!-- ENDIF -->
-
 <form id="acp_invite" method="post" action="{U_ACTION}">
 
 <!-- IF PAGINATION -->
@@ -65,7 +43,7 @@
 		<!-- IF log.S_ROW_COUNT is even --><tr class="row1"><!-- ELSE --><tr class="row2"><!-- ENDIF -->
 
 			<td>
-				{log.USERNAME}&nbsp;<a href="{log.INFO}">[{L_INVITE_INFO}]</a>
+				{log.USERNAME}
 				<!-- IF log.REPORTEE_USERNAME -->
 				<br />&raquo; {log.REPORTEE_USERNAME}
 				<!-- ENDIF -->
@@ -88,7 +66,7 @@
 <!-- ENDIF -->
 
 <fieldset class="display-options">
-	{L_USERNAME}: <input size="14" type="text" id="ui" name="ui" value="{S_SORT_USER}" />&nbsp;&nbsp;{L_DISPLAY_LOG}: &nbsp;{S_LIMIT_DAYS}&nbsp;{L_SORT_BY}: {S_SORT_KEY} {S_SORT_DIR}
+	{L_USERNAME}: <input size="14" type="text" id="ui" name="ui" value="{S_SORT_USER}" />&nbsp;{L_LOG_FILTER}: <select name="filter" id="filter">{S_FILTER}</select>&nbsp;{L_DISPLAY_LOG}: &nbsp;{S_LIMIT_DAYS}&nbsp;{L_SORT_BY}: {S_SORT_KEY} {S_SORT_DIR}
 	<input class="button2" type="submit" value="{L_GO}" name="sort" />
 	{S_FORM_TOKEN}
 </fieldset>

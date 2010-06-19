@@ -2,9 +2,9 @@
 
 <a name="maincontent"></a>
 
-<h1>{L_ACP_INVITE}</h1>
+<h1>{L_ACP_INVITE_SETTINGS}</h1>
 
-<p>{L_ACP_INVITE_EXPLAIN}</p>
+<p>{L_ACP_INVITE_SETTINGS_EXPLAIN}</p>
 
 <!-- IF ERROR -->
 	<div class="errorbox">
@@ -25,35 +25,19 @@
 		*/
 		function display_profile_handle(location, type)
 		{
-			dE('div_display_t_inviter', -1);
-			dE('div_display_t_invite', -1);
-			dE('div_display_t_register', -1);
-			dE('div_display_t_name', -1);
-			dE('div_display_p_inviter', -1);
-			dE('div_display_p_invite', -1);
-			dE('div_display_p_register', -1);
-			dE('div_display_p_name', -1);
-			
-			dE('div_display_' + location + '_' + type, 1);
+			dE('toggle_display_t_inviter', -1);
+			dE('toggle_display_t_invite', -1);
+			dE('toggle_display_t_register', -1);
+			dE('toggle_display_p_inviter', -1);
+			dE('toggle_display_p_invite', -1);
+			dE('toggle_display_p_register', -1);
+			dE('toggle_display_m_inviter', -1);
+			dE('toggle_display_m_invite', -1);
+			dE('toggle_display_m_register', -1);
+
+			dE('toggle_display_' + location + '_' + type, 1);
 		}
-		
-		/**
-		* Handle displaying/hiding all types of messages based on the selected language
-		*/
-		function display_options_handle(value, message)
-		{
-			<!-- BEGIN explain -->
-				dE('div_explain_{explain.EXPLAIN_TYPE}', -1);
-			<!-- END explain -->
-			
-			<!-- BEGIN message -->
-				dE('div_{message.MESSAGE_TYPE}_{message.LANGUAGE}', -1);
-			<!-- END message -->
-			
-			dE('div_' + message + '_' + value, 1);
-			dE('div_explain_' + message, 1);
-		}
-		
+
 		/**
 		* Handle displaying the group select
 		*/
@@ -61,49 +45,92 @@
 		{
 			if (value == 2)
 			{
+				dE('toggle_key_group', 1);
 				dE('toggle_key_group_default', 1);
 				dE('toggle_remove_newly_registered', 1);
-				dE('key_group', 1);
-				dE('key_group_explain', 1);
+				dE('toggle_invite_require_activation', 1);
 			}
 			else
 			{
+				dE('toggle_key_group', -1);
 				dE('toggle_key_group_default', -1);
 				dE('toggle_remove_newly_registered', -1);
-				dE('key_group', -1);
-				dE('key_group_explain', -1);
+				dE('toggle_invite_require_activation', -1);
 			}
 		}
-		
+
+		/**
+		* Handle displaying the limitation options
+		*/
+		function display_limitation(mode, value)
+		{
+			if (value == 1)
+			{
+				if (mode == 'total')
+				{
+					dE('toggle_limit_total_basic', 1);
+					dE('toggle_limit_total_posts', 1);
+					dE('toggle_limit_total_topics', 1);
+					dE('toggle_limit_total_memberdays', 1);
+					dE('toggle_limit_total_registrations', 1);
+				}
+				else
+				{
+					dE('toggle_limit_daily_basic', 1);
+					dE('toggle_limit_daily_posts', 1);
+					dE('toggle_limit_daily_topics', 1);
+					dE('toggle_limit_daily_memberdays', 1);
+					dE('toggle_limit_daily_registrations', 1);
+				}
+			}
+			else
+			{
+				if (mode == 'total')
+				{
+					dE('toggle_limit_total_basic', -1);
+					dE('toggle_limit_total_posts', -1);
+					dE('toggle_limit_total_topics', -1);
+					dE('toggle_limit_total_memberdays', -1);
+					dE('toggle_limit_total_registrations', -1);
+				}
+				else
+				{
+					dE('toggle_limit_daily_basic', -1);
+					dE('toggle_limit_daily_posts', -1);
+					dE('toggle_limit_daily_topics', -1);
+					dE('toggle_limit_daily_memberdays', -1);
+					dE('toggle_limit_daily_registrations', -1);
+				}
+			}
+		}
+
 		/**
 		* Init the wanted display functionality if javascript is enabled.
 		*/
 		onload = function()
 		{
 			dE('js_notice', -1);
-			
-			<!-- IF S_ENABLE_KEY eq 2 -->
-				dE('key_group', 1);
-				dE('key_group_explain', 1);
-				dE('toggle_key_group_default', 1);
-				dE('toggle_remove_newly_registered', 1);
+			<!-- IF S_DISPLAY_REGISTRATION -->
+				dE('toggle_autohide_valid_key', 1);
 			<!-- ELSE -->
-				dE('key_group', -1);
-				dE('key_group_explain', -1);
-				dE('toggle_key_group_default', -1);
-				dE('toggle_remove_newly_registered', -1);
+				dE('toggle_autohide_valid_key', -1);
 			<!-- ENDIF -->
-			
-			<!-- IF S_ENABLE eq 0 -->
-				dE('invite_disabled', -1);
-				dE('general_settings', -1);
-				dE('message_settings', -1);
-				dE('display_settings', -1);
-				dE('cash_settings', -1);
-				dE('points_settings', -1);
+			<!-- IF S_ENABLE_KEY eq 2 -->
+				display_key_group(2);
+			<!-- ELSE -->
+				display_key_group(0);
+			<!-- ENDIF -->
+			<!-- IF S_ENABLE_LIMIT_TOTAL -->
+				display_limitation('total', 1);
+			<!-- ELSE -->
+				display_limitation('total', 0);
+			<!-- ENDIF -->
+			<!-- IF S_ENABLE_LIMIT_DAILY -->
+				display_limitation('daily', 1);
+			<!-- ELSE -->
+				display_limitation('daily', 0);
 			<!-- ENDIF -->
 		}
-
 	// ]]>
 </script>
 
@@ -113,70 +140,68 @@
 	<legend>{L_GENERAL_OPTIONS}</legend>
 	<dl>
 		<dt><label for="enable">{L_SETTINGS_ENABLE}:</label></dt>
-		<dd><input type="radio" class="radio" id="enable" name="enable"<!-- IF S_ENABLE --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="enable"<!-- IF not S_ENABLE --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
+		<dd><label><input type="radio" class="radio" id="enable" name="enable"<!-- IF S_ENABLE --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="enable"<!-- IF not S_ENABLE --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
 	</dl>
-	<div id="invite_disabled">
+
+	<!-- IF S_ENABLE -->
+
 	<dl>
-		<dt>
-			<label for="enable_key">{L_SETTINGS_ENABLE_KEY}:</label><br />
-			<span>{L_SETTINGS_ENABLE_KEY_EXPLAIN}</span><span id="key_group_explain">{L_SETTINGS_KEY_GROUP_EXPLAIN}</span>
-		</dt>
-		<dd>
-			<input type="radio" class="radio" id="enable_key" name="enable_key"<!-- IF S_ENABLE_KEY eq 1 --> checked="checked"<!-- ENDIF --> value="1" onchange="display_key_group(1);" />&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="enable_key"<!-- IF not S_ENABLE_KEY --> checked="checked"<!-- ENDIF --> value="0" onchange="display_key_group(0);" />&nbsp;{L_NO}&nbsp;&nbsp;<input type="radio" class="radio" name="enable_key"<!-- IF S_ENABLE_KEY eq 2 --> checked="checked"<!-- ENDIF --> value="2" onchange="display_key_group(2);" />&nbsp;{L_OPTIONAL}<br/>
-			<select id="key_group" name="key_group" style="margin-top: 5px;">{S_GROUP_SELECT}</select>
-		</dd>
+		<dt><label for="enable_key">{L_SETTINGS_ENABLE_KEY}:</label><br /><span>{L_SETTINGS_ENABLE_KEY_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="enable_key" name="enable_key"<!-- IF S_ENABLE_KEY eq 1 --> checked="checked"<!-- ENDIF --> value="1" onchange="display_key_group(1);" /> {L_YES}</label><label><input type="radio" class="radio" name="enable_key"<!-- IF not S_ENABLE_KEY --> checked="checked"<!-- ENDIF --> value="0" onchange="display_key_group(0);" /> {L_NO}</label><label><input type="radio" class="radio" name="enable_key"<!-- IF S_ENABLE_KEY eq 2 --> checked="checked"<!-- ENDIF --> value="2" onchange="display_key_group(2);" /> {L_OPTIONAL}</label></dd>
 	</dl>
-	<div id="toggle_key_group_default">
-		<dl>
+	<dl id="toggle_key_group">
+			<dt><label for="key_group">{L_SETTINGS_KEY_GROUP}:</label><br /><span>{L_SETTINGS_KEY_GROUP_EXPLAIN}</span></dt>
+			<dd><select id="key_group" name="key_group" style="margin-top: 5px;">{S_GROUP_SELECT}</select></dd>
+		</dl>
+	</dl>
+	<dl id="toggle_key_group_default">
 			<dt><label for="key_group_default">{L_SETTINGS_KEY_GROUP_DEFAULT}:</label><br /><span>{L_SETTINGS_KEY_GROUP_DEFAULT_EXPLAIN}</span></dt>
-			<dd><input type="radio" class="radio" id="key_group_default" name="key_group_default"<!-- IF S_KEY_GROUP_DEFAULT --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="key_group_default"<!-- IF not S_KEY_GROUP_DEFAULT --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
+			<dd><label><input type="radio" class="radio" id="key_group_default" name="key_group_default"<!-- IF S_KEY_GROUP_DEFAULT --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="key_group_default"<!-- IF not S_KEY_GROUP_DEFAULT --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
 		</dl>
-	</div>
-	<div id="toggle_remove_newly_registered">
-		<dl>
+	</dl>
+	<dl id="toggle_remove_newly_registered">
 			<dt><label for="remove_newly_registered">{L_SETTINGS_REMOVE_NEWLY_REGISTERED}:</label><br /><span>{L_SETTINGS_REMOVE_NEWLY_REGISTERED_EXPLAIN}</span></dt>
-			<dd><input type="radio" class="radio" id="remove_newly_registered" name="remove_newly_registered"<!-- IF S_REMOVE_NEWLY_REGISTERED --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="remove_newly_registered"<!-- IF not S_REMOVE_NEWLY_REGISTERED --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
+			<dd><label><input type="radio" class="radio" id="remove_newly_registered" name="remove_newly_registered"<!-- IF S_REMOVE_NEWLY_REGISTERED --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="remove_newly_registered"<!-- IF not S_REMOVE_NEWLY_REGISTERED --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
 		</dl>
-	</div>
-	<dl>
-		<dt><label for="set_cookie">{L_SETTINGS_SET_COOKIE}:</label><br /><span>{L_SETTINGS_SET_COOKIE_EXPLAIN}</span></dt>
-		<dd><input type="radio" class="radio" id="set_cookie" name="set_cookie"<!-- IF S_SET_COOKIE --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="set_cookie"<!-- IF not S_SET_COOKIE --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
 	</dl>
-	<dl>
+	<dl id="toggle_invite_require_activation">
 		<dt><label for="invite_require_activation">{L_ACC_ACTIVATION}:</label><br /><span>{L_SETTINGS_INVITE_ACC_ACTIVATION_EXPLAIN}</span></dt>
-		<dd>
-			<input type="radio" class="radio" id="invite_require_activation" name="invite_require_activation"<!-- IF S_INVITE_REQUIRE_ACTIVATION eq 3 --> checked="checked"<!-- ENDIF --> value="3"/>&nbsp;{L_ACC_TRANSFER}&nbsp;&nbsp;<input type="radio" class="radio" name="invite_require_activation"<!-- IF not S_INVITE_REQUIRE_ACTIVATION --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_ACC_NONE}
-			<!-- IF S_EMAIL_ENABLE -->&nbsp;&nbsp;<input type="radio" class="radio" name="invite_require_activation"<!-- IF S_INVITE_REQUIRE_ACTIVATION eq 1 --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_ACC_USER}&nbsp;&nbsp;<input type="radio" class="radio" name="invite_require_activation"<!-- IF S_INVITE_REQUIRE_ACTIVATION eq 2 --> checked="checked"<!-- ENDIF --> value="2"/>&nbsp;{L_ACC_ADMIN}<!-- ENDIF -->
+		<dd><label><input type="radio" class="radio" id="invite_require_activation" name="invite_require_activation"<!-- IF S_INVITE_REQUIRE_ACTIVATION eq 3 --> checked="checked"<!-- ENDIF --> value="3" /> {L_ACC_TRANSFER}</label><label><input type="radio" class="radio" name="invite_require_activation"<!-- IF not S_INVITE_REQUIRE_ACTIVATION --> checked="checked"<!-- ENDIF --> value="0" /> {L_ACC_NONE}</label><!-- IF S_EMAIL_ENABLE --><label><input type="radio" class="radio" name="invite_require_activation"<!-- IF S_INVITE_REQUIRE_ACTIVATION eq 1 --> checked="checked"<!-- ENDIF --> value="1" /> {L_ACC_USER}</label><label><input type="radio" class="radio" name="invite_require_activation"<!-- IF S_INVITE_REQUIRE_ACTIVATION eq 2 --> checked="checked"<!-- ENDIF --> value="2" /> {L_ACC_ADMIN}</label><!-- ENDIF -->
 		</dd>
-	</dl>
-	<dl>
-		<dt><label for="confirm">{L_SETTINGS_CONFIRM}:</label><br /><span>{L_SETTINGS_CONFIRM_EXPLAIN}</span></dt>
-		<dd>
-			<input type="radio" class="radio" id="confirm" name="confirm"<!-- IF S_CONFIRM eq 1 --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="confirm"<!-- IF not S_CONFIRM --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}&nbsp;&nbsp;<input type="radio" class="radio" name="confirm"<!-- IF S_CONFIRM eq 2 --> checked="checked"<!-- ENDIF --> value="2"/>&nbsp;{L_OPTIONAL}
-			<select style="margin-left: 8px;" id="confirm_method" name="confirm_method"><option value="{S_VALUE_EMAIL}"<!-- IF S_CONFIRM_METHOD eq S_VALUE_EMAIL --> selected="selected"<!-- ENDIF -->>{L_EMAIL}</option><option value="{S_VALUE_PM}"<!-- IF S_CONFIRM_METHOD eq S_VALUE_PM --> selected="selected"<!-- ENDIF -->>{L_PM}</option><option value="{S_VALUE_OPTIONAL}"<!-- IF S_CONFIRM_METHOD eq S_VALUE_OPTIONAL --> selected="selected"<!-- ENDIF -->>{L_OPTIONAL}</option></select>
-		</dd>
-	</dl>
-	<dl>
-		<dt><label for="invite_language_select">{L_SETTINGS_INVITE_LANGUAGE_SELECT}:</label><br /><span>{L_SETTINGS_INVITE_LANGUAGE_SELECT_EXPLAIN}</span></dt>
-		<dd><input type="radio" class="radio" id="invite_language_select" name="invite_language_select"<!-- IF S_INVITE_LANGUAGE_SELECT --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="invite_language_select"<!-- IF not S_INVITE_LANGUAGE_SELECT --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
 	</dl>
 	<dl>
 		<dt><label for="invite_multiple">{L_SETTINGS_INVITE_MULTIPLE}:</label><br /><span>{L_SETTINGS_INVITE_MULTIPLE_EXPLAIN}</span></dt>
-		<dd><input type="radio" class="radio" id="invite_multiple" name="invite_multiple"<!-- IF S_INVITE_MULTIPLE --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="invite_multiple"<!-- IF not S_INVITE_MULTIPLE --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
+		<dd><label><input type="radio" class="radio" id="invite_multiple" name="invite_multiple"<!-- IF S_INVITE_MULTIPLE --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="invite_multiple"<!-- IF not S_INVITE_MULTIPLE --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
 	</dl>
 	<dl>
-		<dt><label for="invite_yourself">{L_SETTINGS_INVITE_YOURSELF}:</label><br /><span>{L_SETTINGS_INVITE_YOURSELF_EXPLAIN}</span></dt>
-		<dd><input type="radio" class="radio" id="invite_yourself" name="invite_yourself"<!-- IF S_INVITE_YOURSELF --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="invite_yourself"<!-- IF not S_INVITE_YOURSELF --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
+		<dt><label for="prevent_abuse">{L_SETTINGS_PREVENT_ABUSE}:</label><br /><span>{L_SETTINGS_PREVENT_ABUSE_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="prevent_abuse" name="prevent_abuse"<!-- IF S_PREVENT_ABUSE --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="prevent_abuse"<!-- IF not S_PREVENT_ABUSE --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
 	</dl>
 	<dl>
-		<dt><label for="zebra">{L_SETTINGS_ZEBRA}:</label><br /><span>{L_SETTINGS_ZEBRA_EXPLAIN}</span></dt>
-		<dd><input type="radio" class="radio" id="zebra" name="zebra"<!-- IF S_ZEBRA eq 1 --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="zebra"<!-- IF not S_ZEBRA --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}&nbsp;&nbsp;<input type="radio" class="radio" name="zebra"<!-- IF S_ZEBRA eq 2 --> checked="checked"<!-- ENDIF --> value="2"/>&nbsp;{L_OPTIONAL}</dd>
+		<dt><label for="invite_confirm_code">{L_SETTINGS_INVITE_CONFIRM_CODE}:</label><br /><span>{L_SETTINGS_INVITE_CONFIRM_CODE_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="invite_confirm_code" name="invite_confirm_code"<!-- IF S_INVITE_CONFIRM_CODE --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="invite_confirm_code"<!-- IF not S_INVITE_CONFIRM_CODE --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
 	</dl>
-	</div>
+	<dl>
+		<dt><label for="set_cookie">{L_SETTINGS_SET_COOKIE}:</label><br /><span>{L_SETTINGS_SET_COOKIE_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="set_cookie" name="set_cookie"<!-- IF S_SET_COOKIE --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="set_cookie"<!-- IF not S_SET_COOKIE --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="enable_email_identification">{L_SETTINGS_EMAIL_IDENTIFICATION}:</label><br /><span>{L_SETTINGS_EMAIL_IDENTIFICATION_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="enable_email_identification" name="enable_email_identification"<!-- IF S_ENABLE_EMAIL_IDENTIFICATION --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="enable_email_identification"<!-- IF not S_ENABLE_EMAIL_IDENTIFICATION --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="invite_search_allowed">{L_SETTINGS_INVITE_SEARCH_ALLOWED}:</label><br /><span>{L_SETTINGS_INVITE_SEARCH_ALLOWED_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="invite_search_allowed" name="invite_search_allowed"<!-- IF S_INVITE_SEARCH_ALLOWED --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="invite_search_allowed"<!-- IF not S_INVITE_SEARCH_ALLOWED --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+	</dl>
+
+	<!-- ENDIF -->
+
 </fieldset>
 
+<!-- IF S_ENABLE -->
+
 <fieldset id="general_settings">
-	<legend>{L_GENERAL_SETTINGS}</legend>
+	<legend>{L_ACP_INVITE_SETTINGS}</legend>
 	<dl>
 		<dt><label for="queue_time">{L_SETTINGS_QUEUE_TIME}:</label><br /><span>{L_SETTINGS_QUEUE_TIME_EXPLAIN}</span></dt>
 		<dd><input size="5" maxlength="5" type="text" id="queue_time" name="queue_time_m" value="{S_QUEUE_TIME_M}" /> {L_MINUTES}&nbsp;&nbsp;<input size="3" maxlength="2" type="text" name="queue_time_s" value="{S_QUEUE_TIME_S}" /> {L_SECONDS}</dd>
@@ -190,60 +215,118 @@
 		<dd><input size="3" maxlength="3" type="text" id="subject_min_chars" name="subject_min_chars" value="{S_SUBJECT_MIN_CHARS}" /> {L_MIN_CHARS}&nbsp;&nbsp;<input size="3" maxlength="3" type="text" id="subject_max_chars" name="subject_max_chars" value="{S_SUBJECT_MAX_CHARS}" /> {L_MAX_CHARS}</dd>
 	</dl>
 	<dl>
-		<dt><label for="limit_invite_day">{L_SETTINGS_LIMIT_INVITE}:</label><br /><span>{L_SETTINGS_LIMIT_INVITE_EXPLAIN}</span></dt>
-		<dd>
-			<table style="border: none; font-size: 1.15em;">
-			<tr><td><strong>{L_INVITE_DAILY}:</strong></td><td><input size="5" maxlength="5" type="text" id="limit_invite_day" name="limit_invite_day" value="{S_LIMIT_INVITE_DAY}" />&nbsp;{L_INVITATIONS}&nbsp;&nbsp;<input size="5" maxlength="5" type="text" id="limit_invite_day_posts" name="limit_invite_day_posts" value="{S_LIMIT_INVITE_DAY_POSTS}" />&nbsp;{L_POSTS}&nbsp;&nbsp;<input size="5" maxlength="5" type="text" id="limit_invite_day_topics" name="limit_invite_day_topics" value="{S_LIMIT_INVITE_DAY_TOPICS}" />&nbsp;{L_TOPICS}</td></tr>
-			<tr><td><strong>{L_INVITE_TOTAL}:</strong></td><td><input size="5" maxlength="5" type="text" id="limit_invite_user" name="limit_invite_user" value="{S_LIMIT_INVITE_USER}" />&nbsp;{L_INVITATIONS}&nbsp;&nbsp;<input size="5" maxlength="5" type="text" id="limit_invite_user_posts" name="limit_invite_user_posts" value="{S_LIMIT_INVITE_USER_POSTS}" />&nbsp;{L_POSTS}&nbsp;&nbsp;<input size="5" maxlength="5" type="text" id="limit_invite_user_topics" name="limit_invite_user_topics" value="{S_LIMIT_INVITE_USER_TOPICS}" />&nbsp;{L_TOPICS}</td></tr>
-			</table>
+		<dt><label for="confirm">{L_SETTINGS_CONFIRM}:</label><br /><span>{L_SETTINGS_CONFIRM_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="confirm" name="confirm"<!-- IF S_CONFIRM eq 1 --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="confirm"<!-- IF not S_CONFIRM --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label><label><input type="radio" class="radio" name="confirm"<!-- IF S_CONFIRM eq 2 --> checked="checked"<!-- ENDIF --> value="2" /> {L_OPTIONAL}</label>
+			<select style="margin-left: 8px;" id="confirm_method" name="confirm_method"><option value="{S_VALUE_EMAIL}"<!-- IF S_CONFIRM_METHOD eq S_VALUE_EMAIL --> selected="selected"<!-- ENDIF -->>{L_EMAIL}</option><option value="{S_VALUE_PM}"<!-- IF S_CONFIRM_METHOD eq S_VALUE_PM --> selected="selected"<!-- ENDIF -->>{L_PM}</option><option value="{S_VALUE_OPTIONAL}"<!-- IF S_CONFIRM_METHOD eq S_VALUE_OPTIONAL --> selected="selected"<!-- ENDIF -->>{L_OPTIONAL}</option></select>
 		</dd>
+	</dl>
+	<dl>
+		<dt><label for="zebra">{L_SETTINGS_ZEBRA}:</label><br /><span>{L_SETTINGS_ZEBRA_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="zebra" name="zebra"<!-- IF S_ZEBRA eq 1 --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}<label><input type="radio" class="radio" name="zebra"<!-- IF not S_ZEBRA --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label><label><input type="radio" class="radio" name="zebra"<!-- IF S_ZEBRA eq 2 --> checked="checked"<!-- ENDIF --> value="2" /> {L_OPTIONAL}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="invite_language_select">{L_SETTINGS_INVITE_LANGUAGE_SELECT}:</label><br /><span>{L_SETTINGS_INVITE_LANGUAGE_SELECT_EXPLAIN}</span></dt>
+		<dd><select id="invite_language_select" name="invite_language_select">{S_SELECT_LANGUAGE}</select></dd>
+	</dl>
+	<dl>
+		<dt><label for="invite_priority_flag">{L_SETTINGS_INVITE_PRIORITY_FLAG}:</label><br /><span>{L_SETTINGS_INVITE_PRIORITY_FLAG_EXPLAIN}</span></dt>
+		<dd><select id="invite_priority_flag" name="invite_priority_flag">{S_PRIORITY_OPTIONS}</select></dd>
 	</dl>
 </fieldset>
 
 <fieldset id="display_settings">
-	<legend>{L_DISPLAY_OPTIONS}</legend>
-	<dl>
-		<dt><label for="invite_confirm_code">{L_SETTINGS_INVITE_CONFIRM_CODE}:</label><br /><span>{L_SETTINGS_INVITE_CONFIRM_CODE_EXPLAIN}</span></dt>
-		<dd><input type="radio" class="radio" id="invite_confirm_code" name="invite_confirm_code"<!-- IF S_INVITE_CONFIRM_CODE --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="invite_confirm_code"<!-- IF not S_INVITE_CONFIRM_CODE --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
-	</dl>
-	<dl>
-		<dt><label for="autohide_valid_key">{L_SETTINGS_AUTOHIDE_VALID_KEY}:</label><br /><span>{L_SETTINGS_AUTOHIDE_VALID_KEY_EXPLAIN}</span></dt>
-		<dd><input type="radio" class="radio" id="autohide_valid_key" name="autohide_valid_key"<!-- IF S_AUTOHIDE_VALID_KEY --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="autohide_valid_key"<!-- IF not S_AUTOHIDE_VALID_KEY --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
-	</dl>
+	<legend>{L_ACP_INVITE_DISPLAY_OPTIONS}</legend>
 	<dl>
 		<dt><label for="display_navigation">{L_SETTINGS_DISPLAY_NAVIGATION}:</label><br /><span>{L_SETTINGS_DISPLAY_NAVIGATION_EXPLAIN}</span></dt>
-		<dd><input type="radio" class="radio" id="display_navigation" name="display_navigation"<!-- IF S_DISPLAY_NAVIGATION --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="display_navigation"<!-- IF not S_DISPLAY_NAVIGATION --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
+		<dd><label><input type="radio" class="radio" id="display_navigation" name="display_navigation"<!-- IF S_DISPLAY_NAVIGATION --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="display_navigation"<!-- IF not S_DISPLAY_NAVIGATION --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
 	</dl>
 	<dl>
 		<dt><label for="display_registration">{L_SETTINGS_DISPLAY_REGISTRATION}:</label><br /><span>{L_SETTINGS_DISPLAY_REGISTRATION_EXPLAIN}</span></dt>
-		<dd><input type="radio" class="radio" id="display_registration" name="display_registration"<!-- IF S_DISPLAY_REGISTRATION --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="display_registration"<!-- IF not S_DISPLAY_REGISTRATION --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
+		<dd><label><input type="radio" class="radio" id="display_registration" name="display_registration"<!-- IF S_DISPLAY_REGISTRATION --> checked="checked"<!-- ENDIF --> value="1" onclick="dE('toggle_autohide_valid_key', 1);" /> {L_YES}</label><label><input type="radio" class="radio" name="display_registration"<!-- IF not S_DISPLAY_REGISTRATION --> checked="checked"<!-- ENDIF --> value="0" onclick="dE('toggle_autohide_valid_key', -1);" /> {L_NO}</label></dd>
+	</dl>
+	<dl id="toggle_autohide_valid_key">
+		<dt><label for="autohide_valid_key">{L_SETTINGS_AUTOHIDE_VALID_KEY}:</label><br /><span>{L_SETTINGS_AUTOHIDE_VALID_KEY_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="autohide_valid_key" name="autohide_valid_key"<!-- IF S_AUTOHIDE_VALID_KEY --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="autohide_valid_key"<!-- IF not S_AUTOHIDE_VALID_KEY --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="advanced_statistics">{L_SETTINGS_ADVANCED_STATISTICS}:</label><br /><span>{L_SETTINGS_ADVANCED_STATISTICS_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="advanced_statistics" name="advanced_statistics"<!-- IF S_ADVANCED_STATISTICS --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="advanced_statistics"<!-- IF not S_ADVANCED_STATISTICS --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
 	</dl>
 	<dl>
 		<dt><label for="profile_location">{L_SETTINGS_PROFILE_FIELDS}:</label><br /><span>{L_SETTINGS_PROFILE_FIELDS_EXPLAIN}</span></dt>
-		<dd>
-			<select style="margin-bottom: 8px;" id="profile_location" name="profile_location" onchange="display_profile_handle(this.options[this.selectedIndex].value, profile_type.options[profile_type.selectedIndex].value);">{S_SELECT_PROFILE_LOCATION}</select>
-			<select style="margin-bottom: 8px;" id="profile_type" name="profile_type" onchange="display_profile_handle(profile_location.options[profile_location.selectedIndex].value, this.options[this.selectedIndex].value);">{S_SELECT_PROFILE_TYPE}</select><br />
-
-			<div id="div_display_t_inviter" style="display: block;"><p><input type="radio" class="radio" id="display_t_inviter" name="display_t_inviter"<!-- IF S_DISPLAY_T_INVITER --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" id="display_t_inviter" name="display_t_inviter"<!-- IF not S_DISPLAY_T_INVITER --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</p></div>
-			<div id="div_display_t_invite" style="display: none;"><p><input type="radio" class="radio" id="display_t_invite" name="display_t_invite"<!-- IF S_DISPLAY_T_INVITE --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" id="display_t_invite" name="display_t_invite"<!-- IF not S_DISPLAY_T_INVITE --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</p></div>
-			<div id="div_display_t_register" style="display: none;"><p><input type="radio" class="radio" id="display_t_register" name="display_t_register"<!-- IF S_DISPLAY_T_REGISTER --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" id="display_t_register" name="display_t_register"<!-- IF not S_DISPLAY_T_REGISTER --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</p></div>
-			<div id="div_display_t_name" style="display: none;"><p><input type="radio" class="radio" id="display_t_name" name="display_t_name"<!-- IF S_DISPLAY_T_NAME --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" id="display_t_name" name="display_t_name"<!-- IF not S_DISPLAY_T_NAME --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</p></div>
-			<div id="div_display_p_inviter" style="display: none;"><p><input type="radio" class="radio" id="display_p_inviter" name="display_p_inviter"<!-- IF S_DISPLAY_P_INVITER --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" id="display_p_inviter" name="display_p_inviter"<!-- IF not S_DISPLAY_P_INVITER --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</p></div>
-			<div id="div_display_p_invite" style="display: none;"><p><input type="radio" class="radio" id="display_p_invite" name="display_p_invite"<!-- IF S_DISPLAY_P_INVITE --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" id="display_p_invite" name="display_p_invite"<!-- IF not S_DISPLAY_P_INVITE --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</p></div>
-			<div id="div_display_p_register" style="display: none;"><p><input type="radio" class="radio" id="display_p_register" name="display_p_register"<!-- IF S_DISPLAY_P_REGISTER --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" id="display_p_register" name="display_p_register"<!-- IF not S_DISPLAY_P_REGISTER --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</p></div>
-			<div id="div_display_p_name" style="display: none;"><p><input type="radio" class="radio" id="display_p_name" name="display_p_name"<!-- IF S_DISPLAY_P_NAME --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" id="display_p_name" name="display_p_name"<!-- IF not S_DISPLAY_P_NAME --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</p></div>
-		</dd>
+		<dd><select style="margin-bottom: 8px;" id="profile_location" name="profile_location" onchange="display_profile_handle(this.options[this.selectedIndex].value, profile_type.options[profile_type.selectedIndex].value);">{S_SELECT_PROFILE_LOCATION}</select>
+			<select style="margin-bottom: 8px;" id="profile_type" name="profile_type" onchange="display_profile_handle(profile_location.options[profile_location.selectedIndex].value, this.options[this.selectedIndex].value);">{S_SELECT_PROFILE_TYPE}</select></dd>
+		<dd id="toggle_display_t_inviter" style="display: block;"><label><input type="radio" class="radio" id="display_t_inviter" name="display_t_inviter"<!-- IF S_DISPLAY_T_INVITER --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="display_t_inviter"<!-- IF not S_DISPLAY_T_INVITER --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+		<dd id="toggle_display_t_invite" style="display: none;"><label><input type="radio" class="radio" id="display_t_invite" name="display_t_invite"<!-- IF S_DISPLAY_T_INVITE --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="display_t_invite"<!-- IF not S_DISPLAY_T_INVITE --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+		<dd id="toggle_display_t_register" style="display: none;"><label><input type="radio" class="radio" id="display_t_register" name="display_t_register"<!-- IF S_DISPLAY_T_REGISTER --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="display_t_register"<!-- IF not S_DISPLAY_T_REGISTER --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+		<dd id="toggle_display_p_inviter" style="display: none;"><label><input type="radio" class="radio" id="display_p_inviter" name="display_p_inviter"<!-- IF S_DISPLAY_P_INVITER --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="display_p_inviter"<!-- IF not S_DISPLAY_P_INVITER --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+		<dd id="toggle_display_p_invite" style="display: none;"><label><input type="radio" class="radio" id="display_p_invite" name="display_p_invite"<!-- IF S_DISPLAY_P_INVITE --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="display_p_invite"<!-- IF not S_DISPLAY_P_INVITE --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+		<dd id="toggle_display_p_register" style="display: none;"><label><input type="radio" class="radio" id="display_p_register" name="display_p_register"<!-- IF S_DISPLAY_P_REGISTER --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="display_p_register"<!-- IF not S_DISPLAY_P_REGISTER --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+		<dd id="toggle_display_m_inviter" style="display: none;"><label><input type="radio" class="radio" id="display_m_inviter" name="display_m_inviter"<!-- IF S_DISPLAY_M_INVITER --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="display_m_inviter"<!-- IF not S_DISPLAY_M_INVITER --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+		<dd id="toggle_display_m_invite" style="display: none;"><label><input type="radio" class="radio" id="display_m_invite" name="display_m_invite"<!-- IF S_DISPLAY_M_INVITE --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="display_m_invite"<!-- IF not S_DISPLAY_M_INVITE --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+		<dd id="toggle_display_m_register" style="display: none;"><label><input type="radio" class="radio" id="display_m_register" name="display_m_register"<!-- IF S_DISPLAY_M_REGISTER --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="display_m_register"<!-- IF not S_DISPLAY_M_REGISTER --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
 	</dl>
 </fieldset>
 
-<!-- #### PLUGINS #### -->
+<fieldset id="limit_settings">
+	<legend>{L_ACP_INVITE_LIMITATION_OPTIONS}</legend>
+	<dl>
+		<dt><label for="enable_limit_daily">{L_SETTINGS_ENABLE_LIMIT_DAILY}:</label></dt>
+		<dd><label><input type="radio" class="radio" id="enable_limit_daily" name="enable_limit_daily"<!-- IF S_ENABLE_LIMIT_DAILY --> checked="checked"<!-- ENDIF --> value="1" onclick="display_limitation('daily', 1);" /> {L_YES}</label><label><input type="radio" class="radio" name="enable_limit_daily"<!-- IF not S_ENABLE_LIMIT_DAILY --> checked="checked"<!-- ENDIF --> value="0" onclick="display_limitation('daily', 0);" /> {L_NO}</label></dd>
+	</dl>
+	<dl id="toggle_limit_daily_basic">
+		<dt><label for="limit_daily_basic">{L_SETTINGS_LIMIT_DAILY_BASIC}:</label><br /><span>{L_SETTINGS_LIMIT_DAILY_BASIC_EXPLAIN}</span></dt>
+		<dd><input size="5" maxlength="5" type="text" id="limit_daily_basic" name="limit_daily_basic" value="{S_LIMIT_DAILY_BASIC}" /> {L_INVITATIONS}</dd>
+	</dl>
+	<dl id="toggle_limit_daily_registrations">
+		<dt><label for="limit_daily_registrations">{L_SETTINGS_LIMIT_REGISTRATIONS}:</label></dt>
+		<dd><input size="5" maxlength="5" type="text" id="limit_daily_registrations_invitations" name="limit_daily_registrations_invitations" value="{S_LIMIT_DAILY_REGISTRATIONS_INVITATIONS}" /> {L_INVITATIONS}&nbsp;&nbsp;<input size="5" maxlength="5" type="text" id="limit_daily_registrations" name="limit_daily_registrations" value="{S_LIMIT_DAILY_REGISTRATIONS}" /> {L_DISPLAY_REGISTER}</dd>
+	</dl>
+	<dl id="toggle_limit_daily_posts">
+		<dt><label for="limit_daily_posts">{L_SETTINGS_LIMIT_POSTS}:</label></dt>
+		<dd><input size="5" maxlength="5" type="text" id="limit_daily_posts_invitations" name="limit_daily_posts_invitations" value="{S_LIMIT_DAILY_POSTS_INVITATIONS}" /> {L_INVITATIONS}&nbsp;&nbsp;<input size="5" maxlength="5" type="text" id="limit_daily_posts" name="limit_daily_posts" value="{S_LIMIT_DAILY_POSTS}" /> {L_POSTS}</dd>
+	</dl>
+	<dl id="toggle_limit_daily_topics">
+		<dt><label for="limit_daily_topics">{L_SETTINGS_LIMIT_TOPICS}:</label></dt>
+		<dd><input size="5" maxlength="5" type="text" id="limit_daily_topics_invitations" name="limit_daily_topics_invitations" value="{S_LIMIT_DAILY_TOPICS_INVITATIONS}" /> {L_INVITATIONS}&nbsp;&nbsp;<input size="5" maxlength="5" type="text" id="limit_daily_topics" name="limit_daily_topics" value="{S_LIMIT_DAILY_TOPICS}" /> {L_TOPICS}</dd>
+	</dl>
+	<dl id="toggle_limit_daily_memberdays">
+		<dt><label for="limit_daily_memberdays">{L_SETTINGS_LIMIT_MEMBERDAYS}:</label></dt>
+		<dd><input size="5" maxlength="5" type="text" id="limit_daily_memberdays_invitations" name="limit_daily_memberdays_invitations" value="{S_LIMIT_DAILY_MEMBERDAYS_INVITATIONS}" /> {L_INVITATIONS}&nbsp;&nbsp;<input size="5" maxlength="5" type="text" id="limit_daily_memberdays" name="limit_daily_memberdays" value="{S_LIMIT_DAILY_MEMBERDAYS}" /> {L_MEMBERDAYS}</dd>
+	</dl>
+	<!-- IF S_ENABLE_LIMIT_DAILY or S_ENABLE_LIMIT_TOTAL --><hr /><!-- ENDIF -->
+	<dl>
+		<dt><label for="enable_limit_total">{L_SETTINGS_ENABLE_LIMIT_TOTAL}:</label></dt>
+		<dd><label><input type="radio" class="radio" id="enable_limit_total" name="enable_limit_total"<!-- IF S_ENABLE_LIMIT_TOTAL --> checked="checked"<!-- ENDIF --> value="1" onclick="display_limitation('total', 1);" /> {L_YES}</label><label><input type="radio" class="radio" name="enable_limit_total"<!-- IF not S_ENABLE_LIMIT_TOTAL --> checked="checked"<!-- ENDIF --> value="0" onclick="display_limitation('total', 0);" /> {L_NO}</label></dd>
+	</dl>
+	<dl id="toggle_limit_total_basic">
+		<dt><label for="limit_total_basic">{L_SETTINGS_LIMIT_TOTAL_BASIC}:</label><br /><span>{L_SETTINGS_LIMIT_TOTAL_BASIC_EXPLAIN}</span></dt>
+		<dd><input size="5" maxlength="5" type="text" id="limit_total_basic" name="limit_total_basic" value="{S_LIMIT_TOTAL_BASIC}" /> {L_INVITATIONS}</dd>
+	</dl>
+	<dl id="toggle_limit_total_registrations">
+		<dt><label for="limit_total_registrations">{L_SETTINGS_LIMIT_REGISTRATIONS}:</label></dt>
+		<dd><input size="5" maxlength="5" type="text" id="limit_total_registrations_invitations" name="limit_total_registrations_invitations" value="{S_LIMIT_TOTAL_REGISTRATIONS_INVITATIONS}" /> {L_INVITATIONS}&nbsp;&nbsp;<input size="5" maxlength="5" type="text" id="limit_total_registrations" name="limit_total_registrations" value="{S_LIMIT_TOTAL_REGISTRATIONS}" /> {L_DISPLAY_REGISTER}</dd>
+	</dl>
+	<dl id="toggle_limit_total_posts">
+		<dt><label for="limit_total_posts">{L_SETTINGS_LIMIT_POSTS}:</label></dt>
+		<dd><input size="5" maxlength="5" type="text" id="limit_total_posts_invitations" name="limit_total_posts_invitations" value="{S_LIMIT_TOTAL_POSTS_INVITATIONS}" /> {L_INVITATIONS}&nbsp;&nbsp;<input size="5" maxlength="5" type="text" id="limit_total_posts" name="limit_total_posts" value="{S_LIMIT_TOTAL_POSTS}" /> {L_POSTS}</dd>
+	</dl>
+	<dl id="toggle_limit_total_topics">
+		<dt><label for="limit_total_topics">{L_SETTINGS_LIMIT_TOPICS}:</label></dt>
+		<dd><input size="5" maxlength="5" type="text" id="limit_total_topics_invitations" name="limit_total_topics_invitations" value="{S_LIMIT_TOTAL_TOPICS_INVITATIONS}" /> {L_INVITATIONS}&nbsp;&nbsp;<input size="5" maxlength="5" type="text" id="limit_total_topics" name="limit_total_topics" value="{S_LIMIT_TOTAL_TOPICS}" /> {L_TOPICS}</dd>
+	</dl>
+	<dl id="toggle_limit_total_memberdays">
+		<dt><label for="limit_total_memberdays">{L_SETTINGS_LIMIT_MEMBERDAYS}:</label></dt>
+		<dd><input size="5" maxlength="5" type="text" id="limit_total_memberdays_invitations" name="limit_total_memberdays_invitations" value="{S_LIMIT_TOTAL_MEMBERDAYS_INVITATIONS}" /> {L_INVITATIONS}&nbsp;&nbsp;<input size="5" maxlength="5" type="text" id="limit_total_memberdays" name="limit_total_memberdays" value="{S_LIMIT_TOTAL_MEMBERDAYS}" /> {L_MEMBERDAYS}</dd>
+	</dl>
+</fieldset>
 
 <!-- IF S_ULTIMATE_POINTS_INSTALLED -->
 	<fieldset id="ultimate_points_settings">
 		<legend>{L_ULTIMATE_POINTS_SETTINGS}</legend>
 		<dl>
 			<dt><label for="enable_ultimate_points">{L_ULTIMATE_POINTS_ENABLE}:</label></dt>
-			<dd><input type="radio" class="radio" id="enable_ultimate_points" name="enable_ultimate_points"<!-- IF S_ENABLE_ULTIMATE_POINTS --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="enable_ultimate_points"<!-- IF not S_ENABLE_ULTIMATE_POINTS --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
+			<dd><label><input type="radio" class="radio" id="enable_ultimate_points" name="enable_ultimate_points"<!-- IF S_ENABLE_ULTIMATE_POINTS --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="enable_ultimate_points"<!-- IF not S_ENABLE_ULTIMATE_POINTS --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
 		</dl>
 		<dl>
 			<dt><label for="ultimate_points_invite">{L_ULTIMATE_POINTS_INVITE}:</label><br /><span>{L_ULTIMATE_POINTS_INVITE_EXPLAIN}</span></dt>
@@ -261,7 +344,7 @@
 		<legend>{L_CASH_SETTINGS}</legend>
 		<dl>
 			<dt><label for="enable_cash">{L_CASH_ENABLE}:</label></dt>
-			<dd><input type="radio" class="radio" id="enable_cash" name="enable_cash"<!-- IF S_ENABLE_CASH --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="enable_cash"<!-- IF not S_ENABLE_CASH --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
+			<dd><label><input type="radio" class="radio" id="enable_cash" name="enable_cash"<!-- IF S_ENABLE_CASH --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="enable_cash"<!-- IF not S_ENABLE_CASH --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
 		</dl>
 		<dl>
 			<dt><label for="cash_invite">{L_CASH_INVITE}:</label><br /><span>{L_CASH_INVITE_EXPLAIN}</span></dt>
@@ -274,26 +357,17 @@
 	</fieldset>
 <!-- ENDIF -->
 
-<!-- #### END PLUGINS #### -->
+<!-- ENDIF -->
 
-<fieldset id="message_settings">
-	<legend>{L_MESSAGES}</legend>
-	<!-- BEGIN explain -->
-		<div id="div_explain_{explain.EXPLAIN_TYPE}" style="display: <!-- IF explain.S_FIRST_ROW -->block<!-- ELSE -->none<!-- ENDIF -->;"><p>{explain.EXPLAIN_TEXT}</p></div>
-	<!-- END explain -->
-	<select style="margin-bottom: 4px;" id="message_type" name="message_type" onchange="display_options_handle(message_lang.options[message_lang.selectedIndex].value, this.options[this.selectedIndex].value);">{S_SELECT_MESSAGE}</select>
-	<select style="margin-bottom: 4px;" id="message_lang" name="message_lang" onchange="display_options_handle(this.options[this.selectedIndex].value, message_type.options[message_type.selectedIndex].value);">{S_SELECT_LANGUAGE}</select><br />
-	
-	<!-- BEGIN message -->
-		<div id="div_{message.MESSAGE_TYPE}_{message.LANGUAGE}" style="display: {message.S_STYLE_DISPLAY};"><textarea style="width: 500px; height: 150px;" name="{message.MESSAGE_TYPE}_{message.LANGUAGE}" id="{message.MESSAGE_TYPE}_{message.LANGUAGE}" class="inputbox">{message.MESSAGE}</textarea></div>
-	<!-- END message -->
+<fieldset>
+	<legend>{L_ACP_SUBMIT_CHANGES}</legend>
+
+	<p class="submit-buttons">
+		<input class="button1" name="submit" type="submit" value="{L_SUBMIT}" />
+		<input class="button2" name="reset" type="reset" value="{L_RESET}" />
+	</p>
+	{S_FORM_TOKEN}
 </fieldset>
-
-<p class="submit-buttons">
-	<input class="button1" name="submit" type="submit" value="{L_SUBMIT}" />
-	<input class="button2" name="reset" type="reset" value="{L_RESET}" />
-</p>
-{S_FORM_TOKEN}
 
 </form>
 

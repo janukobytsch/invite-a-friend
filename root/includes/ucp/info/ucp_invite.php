@@ -1,10 +1,10 @@
 <?php
-/** 
-* @author Bycoja bycoja@web.de
+/**
 *
+* @author Bycoja bycoja@web.de
 * @package ucp
-* @version $Id: ucp_invite.php 054 2009-11-28 14:41:59GMT Bycoja $
-* @copyright (c) 2008 Bycoja
+* @version $Id ucp_invite 0.6.0 2010-04-02 01:37:02GMT Bycoja $
+* @copyright (c) 2010 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
@@ -27,9 +27,9 @@ class ucp_invite_info
 		return array(
 			'filename'	=> 'ucp_invite',
 			'title'    	=> 'UCP_INVITE',
-			'version' 	=> '0.5.4',
+			'version' 	=> '0.6.0',
 			'modes'    	=> array(
-				'invite'	=> array('title' => 'UCP_INVITE_INVITE', 'auth' => '', 'cat' => array('UCP_INVITE')),
+				'invite'	=> array('title' => 'UCP_INVITE_INVITE', 'auth' => 'acl_u_send_invite', 'cat' => array('UCP_INVITE')),
 			),
 		);
 	}

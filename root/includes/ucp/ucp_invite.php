@@ -1,10 +1,10 @@
 <?php
-/** 
-* @author Bycoja bycoja@web.de
+/**
 *
+* @author Bycoja bycoja@web.de
 * @package ucp
-* @version $Id: ucp_invite.php 054 2009-11-28 14:41:59GMT Bycoja $
-* @copyright (c) 2008 Bycoja
+* @version $Id ucp_invite 0.6.0 2010-04-02 01:37:02GMT Bycoja $
+* @copyright (c) 2010 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
@@ -19,8 +19,6 @@ if (!defined('IN_PHPBB'))
 
 /**
 * ucp_invite
-* Send invitations to friends
-*
 * @package ucp
 */
 class ucp_invite
@@ -33,14 +31,18 @@ class ucp_invite
 
 		include($phpbb_root_path . 'includes/functions_invite.' . $phpEx);
 
-		// General vars
-		$invite				= new invite();
-		$submit				= (isset($_POST['submit'])) ? true : false;
-		$error 				= array();
-		$queue				= false;
-		
+		$user->add_lang(array('mods/info_acp_invite', 'acp/email'));
+
+		$invite	= new invite();
+		$submit	= (isset($_POST['submit'])) ? true : false;
+		$error 	= array();
+		$queue	= false;
+
 		$confirm_id			= request_var('confirm_id', '');
 		$s_hidden_fields	= ($confirm_id) ? array('confirm_id' => $confirm_id) : array();
+
+		$form_key = 'ucp_invite';
+		add_form_key($form_key);
 
 		// Authorised?
 		if (!$invite->config['enable'])
@@ -52,12 +54,18 @@ class ucp_invite
 		    trigger_error('NOT_AUTHORISED');
 		}
 
+		// Oops?
+		if (!$config['email_enable'])
+		{
+			trigger_error('EMAIL_DISABLED');
+		}
+
 		$email_data	= array(
 			'message_type'			=> $INVITE_MESSAGE_TYPE['invite'],
 			'method'				=> EMAIL,
 			'method_user_id'		=> $user->data['user_id'],
-			'invite_language'		=> ($invite->config['invite_language_select']) ? utf8_normalize_nfc(request_var('form_invite_language_select', $user->data['user_lang'], true)) : $user->data['user_lang'],
-			
+			'invite_language'		=> ($invite->config['invite_language_select'] == 'opt') ? utf8_normalize_nfc(request_var('form_invite_language_select', $user->data['user_lang'], true)) : (($invite->config['invite_language_select'] == 'user') ? $user->data['user_lang'] : $invite->config['invite_language_select']),
+			'priority'				=> ($invite->config['invite_priority_flag'] == MAIL_LOW_PRIORITY + 1) ? request_var('form_priority', 0) : $invite->config['invite_priority_flag'], // MAIL_LOW_PRIORITY + 1 equals optional
 			'subject'				=> utf8_normalize_nfc(request_var('form_subject', '', true)),
 			'message'				=> utf8_normalize_nfc(request_var('form_message', '', true)),
 			'register_email'		=> utf8_normalize_nfc(request_var('form_register_email', '', true)),
@@ -68,8 +76,8 @@ class ucp_invite
 			'invite_user_id'		=> $user->data['user_id'],
 			'invite_session_ip'		=> $user->data['session_ip'],
 			'invite_time'			=> time(),
-			'invite_zebra'			=> request_var('form_invite_zebra', 0, true),
-			
+			'invite_zebra'			=> request_var('form_invite_zebra', 0),
+
 			// CAPTCHA
 			'confirm_code'			=> request_var('confirm_code', ''),
 			'confirm_id'			=> request_var('confirm_id', ''),
@@ -78,64 +86,81 @@ class ucp_invite
 		// Other message types
 		foreach ($INVITE_MESSAGE_TYPE as $string => $int)
 		{
-			$email_data['invite_' . $string] = request_var('form_invite_' . $string, 0, true);
-			$email_data['invite_' . $string . '_method'] = request_var('form_invite_' . $string . '_method', 0, true);
+			$email_data['invite_' . $string] = request_var('form_invite_' . $string, 0);
+			$email_data['invite_' . $string . '_method'] = request_var('form_invite_' . $string . '_method', 0);
 		}
 
-		// Wait until we can send another email?
-		$sql 			= 'SELECT COUNT(log_id) AS invite_num FROM ' . INVITE_LOG_TABLE . ' WHERE invite_user_id = ' . $user->data['user_id'];
-		$result 		= $db->sql_query($sql);
-		$invite_total	= (int) $db->sql_fetchfield('invite_num');
-		$db->sql_freeresult();
-
-		if ($invite_total)
+		if ($user->data['user_invitations'])
 		{
-			$last_day		= time() - 86400;
-
-			// Queue
-			$sql 			= 'SELECT MAX(invite_time) AS max_time FROM ' . INVITE_LOG_TABLE . ' WHERE invite_user_id = ' . $user->data['user_id'];
-			$result 		= $db->sql_query($sql);
-			$last_invite	= (int) $db->sql_fetchfield('max_time');
+			// Wait until we can send another invitation?
+			$sql = 'SELECT MAX(invite_time) AS max_time FROM ' . INVITE_LOG_TABLE . ' WHERE invite_user_id = ' . $user->data['user_id'];
+			$result = $db->sql_query($sql);
+			$last_invite = (int) $db->sql_fetchfield('max_time');
 			$db->sql_freeresult();
 
 			if ((time() - $last_invite) < $invite->config['queue_time'])
 			{
-				$queue		= true;
-				$error[] 	= $user->lang['QUEUE_QUEUE'];
+				$queue			= true;
+				$queue_time_m	= floor(($invite->config['queue_time'] - (time() - $last_invite)) / 60);
+				$queue_time_s	= ($invite->config['queue_time'] - (time() - $last_invite)) % 60;
+				$error[] 		= sprintf($user->lang['QUEUE_QUEUE'], $queue_time_m, $queue_time_s);
 			}
 
-			// User topics
-			$sql 			= 'SELECT COUNT(topic_id) AS user_topics FROM ' . TOPICS_TABLE . ' WHERE topic_poster = ' . $user->data['user_id'];
-			$result 		= $db->sql_query($sql);
-			$user_topics	= (int) $db->sql_fetchfield('user_topics');
-			$db->sql_freeresult();
+			/**
+			* Limitation settings
+			* @todo user specified periods
+			*/
+			$limit_enabled = false;
+			$limit_periods = array('limit_daily', 'limit_total');
+			$limit_criteria = array('posts', 'topics', 'memberdays', 'registrations');
 
-			// Other limits
-			$sql 			= 'SELECT COUNT(log_id) AS invite_num FROM ' . INVITE_LOG_TABLE . ' WHERE invite_user_id = ' . $user->data['user_id'] . ' AND invite_time >= ' . $last_day;
-			$result 		= $db->sql_query($sql);
-			$invite_day		= (int) $db->sql_fetchfield('invite_num');
-			$db->sql_freeresult();
-
-			$limit_ary		= array(
-				'limit_invite_user'	=> $invite_total,
-				'limit_invite_day'	=> $invite_day,
-			);
-
-			foreach ($limit_ary as $k => $v)
+			foreach ($limit_periods as $k => $v)
 			{
-				// Don't divide by zero
-				$additional_invite_p = ($invite->config[$k . '_posts'] == 0) ? 0 : floor($user->data['user_posts'] / $invite->config[$k . '_posts']);
-				$additional_invite_t = ($invite->config[$k . '_topics'] == 0) ? 0 : floor($user_topics / $invite->config[$k . '_topics']);
-
-				if ($invite->config[$k] == 0 && $invite->config[$k . '_posts'] == 0)
+				if ($invite->config['enable_' . $v])
 				{
-					continue;
+					$limit_enabled = true;
 				}
+			}
 
-				if ($v >= $invite->config[$k] + $additional_invite_p + $additional_invite_t)
+			if ($limit_enabled)
+			{
+				// Number of invitations within the last 24 hours
+				$last_day = time() - 86400;
+				$sql = 'SELECT COUNT(log_id) AS invitations_today FROM ' . INVITE_LOG_TABLE . ' WHERE invite_user_id = ' . $user->data['user_id'] . ' AND invite_time >= ' . $last_day;
+				$result = $db->sql_query($sql);
+				$user->data['user_invitations_limit_daily'] = (int) $db->sql_fetchfield('invitations_today');
+				$db->sql_freeresult();
+
+				// Total number of invitations
+				$user->data['user_invitations_limit_total'] = $user->data['user_invitations'];
+
+				// User topics
+				$sql = 'SELECT COUNT(topic_id) AS user_topics FROM ' . TOPICS_TABLE . ' WHERE topic_poster = ' . $user->data['user_id'];
+				$result = $db->sql_query($sql);
+				$user->data['user_topics'] = (int) $db->sql_fetchfield('user_topics');
+				$db->sql_freeresult();
+
+				// Days of membership
+				$user->data['user_memberdays'] = floor((time() - $user->data['user_regdate']) / 86400);
+
+				foreach ($limit_periods as $k => $v)
 				{
-					$queue		= true;
-					$error[]	= $user->lang['QUEUE_' . strtoupper($k)];
+					if ($invite->config['enable_' . $v])
+					{
+						$user->data['user_' . $v] = (int) $invite->config[$v . '_basic'];
+
+						foreach ($limit_criteria as $ck => $cv)
+						{
+							// Don't divide by zero
+							$user->data['user_' . $v] += ($invite->config[$v . '_' . $cv] == 0) ? 0 : floor($user->data['user_' . $cv] / $invite->config[$v . '_' . $cv]) * $invite->config[$v . '_' . $cv . '_invitations'];
+						}
+
+						if ($user->data['user_invitations_' . $v] >= $user->data['user_' . $v])
+						{
+							$queue = true;
+							$error[] = sprintf($user->lang['INVITATION_' . strtoupper($v)], $user->data['user_' . $v]);
+						}
+					}
 				}
 			}
 		}
@@ -155,6 +180,11 @@ class ucp_invite
 		// Do the job ...
 		if ($submit && !$queue)
 		{
+			if (!check_form_key('ucp_invite'))
+			{
+				$error[] = 'FORM_INVALID';
+			}
+
 			// Fix language vars defined in ucp.php
 			$email_data['email'] = $email_data['register_email'];
 
@@ -166,7 +196,6 @@ class ucp_invite
 				'subject'				=> array('string', false, $invite->config['subject_min_chars'], $invite->config['subject_max_chars']),
 				'message'				=> array('string', false, $invite->config['message_min_chars'], $invite->config['message_max_chars']),
 			);
-
 			$error = validate_data($email_data, $check_ary);
 
 			// Fix language vars defined in ucp.php
@@ -197,20 +226,20 @@ class ucp_invite
 				}
 			}
 
-			// Oops?
-			if (!$config['email_enable'])
-			{
-				$error[] = $user->lang['EMAIL_DISABLED'];
-			}
-
 			if (!sizeof($error))
 			{
-				$send_message	= $invite->message_handle($email_data, true, false);
+				$send_message = $invite->message_handle($email_data, true, false);
 
 				// Email successfully sent to friend?
-				meta_refresh(2, append_sid("{$phpbb_root_path}index.$phpEx"));
-
-				$message = ($send_message) ? $user->lang['EMAIL_SENT_SUCCESS'] : $user->lang['EMAIL_SENT_FAILURE'];
+				if ($send_message)
+				{
+					meta_refresh(2, append_sid("{$phpbb_root_path}index.$phpEx"));
+					$message = $user->lang['EMAIL_SENT_SUCCESS'];
+				}
+				else
+				{
+					$message = '<span class="error">' . $user->lang['EMAIL_SENT_FAILURE'] . '</span>';
+				}
 				$message .=  '<br /><br />' . sprintf($user->lang['RETURN_INDEX'], '<a href="' . append_sid("{$phpbb_root_path}index.$phpEx") . '">', '</a>');
 				trigger_error($message);
 			}
@@ -241,13 +270,17 @@ class ucp_invite
 			'FORM_LANGUAGE_SELECT'	=> language_select($email_data['invite_language']),
 			'FORM_CONFIRM_IMG'		=> $confirm_image,
 
+			'S_MAIL_LOW_PRIORITY'	=> MAIL_LOW_PRIORITY,
+			'S_MAIL_NORMAL_PRIORITY'=> MAIL_NORMAL_PRIORITY,
+			'S_MAIL_HIGH_PRIORITY'	=> MAIL_HIGH_PRIORITY,
 			'S_VALUE_EMAIL'			=> EMAIL,
 			'S_VALUE_PM'			=> PM,
 			'S_CONFIRM_CODE'		=> ($queue) ? false : $invite->config['invite_confirm_code'],
 			'S_DISABLE'				=> ($queue) ? true : false,
 
+			'S_DISPLAY_PRIORITY'	=> ($invite->config['invite_priority_flag'] == MAIL_LOW_PRIORITY + 1) ? true : false, // MAIL_LOW_PRIORITY + 1 equals optional
 			'S_DISPLAY_ZEBRA'		=> ($invite->config['zebra'] == OPTIONAL) ? true : false,
-			'S_DISPLAY_LANGUAGE'	=> ($invite->config['invite_language_select']) ? true : false,
+			'S_DISPLAY_LANGUAGE'	=> ($invite->config['invite_language_select'] == 'opt') ? true : false,
 			'S_HIDDEN_FIELDS'		=> $s_hidden_fields,
 		));
 
@@ -268,8 +301,8 @@ class ucp_invite
 			}
 
 			$template->assign_vars(array(
-				'S_DISPLAY_' . strtoupper($string)				=> ($invite->config[$string] == OPTIONAL) ? true : false,
-				'S_DISPLAY_' . strtoupper($string) . '_METHOD'	=> ($invite->config[$string . '_method'] == OPTIONAL) ? true : false,
+				'S_DISPLAY_' . strtoupper($string)				=> (!$invite->config[$string]) ? false : (($invite->config[$string] == OPTIONAL) ? true : false),
+				'S_DISPLAY_' . strtoupper($string) . '_METHOD'	=> (!$invite->config[$string]) ? false : (($invite->config[$string . '_method'] == OPTIONAL) ? true : false),
 			));
 		}
 

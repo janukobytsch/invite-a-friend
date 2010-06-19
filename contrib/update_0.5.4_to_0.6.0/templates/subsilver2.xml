@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<!--For security purposes, please check: http
+://www.phpbb.com/mods/ for the latest version of this MOD. Although MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD. No support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
+	<header>
+		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+
+		<title lang="en">Invite A Friend</title>
+		<description lang="en">Invite A Friend is an addition to phpBB3 including invitation features. It enables your users to draw their friends' attention to your board by sending them an invitation e-mail with a registration key attached. Invite A Friend is highly configurable and you cannot only decide whether the attached key is required to register or not, but you can also keep track of who invited whom, limit the amount of invitations and add more social features. Supports Ultimate Points and Cash Mod.</description>
+		<author-notes lang="en">For further information and bug reports please visit <![CDATA[http://www.phpbb.com/community/viewtopic.php?f=70&t=1224005]]></author-notes>
+
+		<author-group>
+			<author>
+				<realname></realname>
+				<email>bycoja@web.de</email>
+				<username>Bycoja</username>
+				<homepage>http://bycoja.bplaced.net</homepage>
+			</author>
+		</author-group>
+
+		<mod-version>0.6.0</mod-version>
+
+		<installation>
+			<level>intermediate</level>
+			<time>1200</time>
+			<target-version>3.0.7-PL1</target-version>
+		</installation>
+
+		<history>
+			<entry>
+				<date>2010-04-02</date>
+				<rev-version>0.6.0 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Advanced profile statistics (percent of total invitations, etc.)</change>
+					<change>[Added] Search for specific actions within the invitation log</change>
+					<change>[Added] Display statistics in memberlist</change>
+					<change>[Added] Search for members by invitation related criteria</change>
+					<change>[Added] Log administrator actions for the invitation log</change>
+					<change>[Added] Advanced limitation options</change>
+					<change>[Added] Invitation mail priority settings</change>
+					<change>[Added] Advanced invitation language settings</change>
+					<change>[Added] Templates module in the ACP</change>
+					<change>[Added] Templates for subjects</change>
+					<change>[Added] List of possible wildcards in templates</change>
+					<change>[Added] Turkish translation (thanks to muiketi)</change>
+					<change>[Added] AutoMOD support</change>
+					<change>[Added] Unified MOD Install Library (UMIL) support</change>
+					<change>[Changed] List of invited users in profile has been removed as you can search for members now</change>
+					<change>[Improved] Translations for better understanding</change>
+					<change>[Improved] Show queue time in the related error message</change>
+					<change>[Improved] Show invitation limit in the related error message</change>
+					<change>[Improved] Invitation form looks more appealing now</change>
+					<change>[Improved] Database queries to increase performance</change>
+					<change>[Fixed] Encode usernames in the registration url</change>
+					<change>[Fixed] Disable the whole modification will actually disable it now</change>
+					<change>[Fixed] Identify users-to-be related to invitations by e-mail-addresses</change>
+					<change>[Fixed] Search for specific username in the invitation log</change>
+					<change>[Fixed] Mutated vowels in e-mails</change>
+					<change>[Fixed] Display an error if the invitation could not be sent</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2009-11-28</date>
+				<rev-version>0.5.4 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Usage of cookies</change>
+					<change>[Added] Profile field: "Invited by"</change>
+					<change>[Added] Autohide key input field</change>
+					<change>[Added] Extended group options</change>
+					<change>[Fixed] User in the same group twice</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2009-11-24</date>
+				<rev-version>0.5.3 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Ultimate Points support</change>
+					<change>[Added] Identify invited users by e-mail address</change>
+					<change>[Added] Several checks for unexpected cases</change>
+					<change>[Changed] Improved key generation</change>
+					<change>[Changed] Code cleanup</change>
+					<change>[Changed] MOD description</change>
+					<change>[Fixed] Broken CAPTCHAs</change>
+					<change>[Fixed] Template system</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2009-05-20</date>
+				<rev-version>0.5.2 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Add users, who enter a registration key, to the selected group</change>
+					<change>[Changed] Create registration keys (even if keys are disabled) to identify friends</change>
+					<change>[Changed] Removed constant 'REGISTER_KEY_DISABLED'</change>
+					<change>[Fixed] Report #020: Messenger vars not parsed in PM</change>
+					<change>[Fixed] Report #019: Missing language vars</change>
+					<change>[Fixed] Report #018: E-mail already taken</change>
+					<change>[Fixed] Report #016: CAPTCHA</change>
+					<change>[Fixed] Report #016: function install(), messages</change>
+					<change>[Fixed] Report #015: function install(), permissions</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2009-04-12</date>
+				<rev-version>0.5.1 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Account activation</change>
+					<change>[Added] Limitation: Topics</change>
+					<change>[Added] Automatically create sql tables, install permissions, ...</change>
+					<change>[Added] Automatically add messages referring to installed languages</change>
+					<change>[Fixed] Report #013: COPPA Bug</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2009-04-08</date>
+				<rev-version>0.5.0 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Compatibility with 'Advanced Points System'</change>
+					<change>[Added] Many options (CAPTCHA, Limitation, ..)</change>
+					<change>[Improved] Rewrote some code</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2008-10-10</date>
+				<rev-version>0.2.2 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Compatibility with 'Cash Mod'</change>
+					<change>[Added] Highly improved log</change>
+					<change>[Added] UCP Module</change>
+					<change>[Fixed] Report #009: [phpBB Debug] Undefined variable: new_user_row</change>
+					<change>[Fixed] Report #008: [phpBB Debug] Undefined variable: invitation_data</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2008-10-06</date>
+				<rev-version>0.2.1 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Optional registration-key</change>
+					<change>[Added] Prohibit multiple registrations</change>
+					<change>[Fixed] Report #007: Empty {USERNAME}</change>
+					<change>[Fixed] Report #006: Missing var</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2008-10-05</date>
+				<rev-version>0.2.0 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Confirmation e-mail</change>
+					<change>[Added] New settings</change>
+					<change>[Added] Log</change>
+					<change>[Fixed] Report #005: Invite yourself</change>
+					<change>[Fixed] Report #004: phpBB Debug</change>
+					<change>[Fixed] Report #003: ACP: Edit Mail</change>
+					<change>[Fixed] Report #002: 'Invite a friend' shown in navigation</change>
+					<change>[Fixed] Report #001: Registration-keys</change>
+				</changelog>
+			</entry>
+		</history>
+
+		<link-group>
+			<link type="parent" href="../update.xml" lang="en">update.xml</link>
+		</link-group>
+	</header>
+
+	<action-group>
+		<copy>
+			<file from="/root/styles/subsilver2/template/ucp_invite_invite.html" to="/styles/subsilver2/template/ucp_invite_invite.html" />
+		</copy>
+
+		<open src="styles/prosilver/template/memberlist_body.html">
+			<edit>
+				<find><![CDATA[<!-- IF S_SHOW_GROUP --><!-- INCLUDE memberlist_group.html --><!-- ENDIF -->]]></find>
+				<action type="after-add"><![CDATA[<!-- IF S_ENABLE_INVITE_FILTER and S_INVITE_FILTER --><h2 class="solo">{PAGE_TITLE_INVITE_SEARCH}</h2><!-- ENDIF -->]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[	<th nowrap="nowrap" width="15%"><a href="{U_SORT_JOINED}">{L_JOINED}</a></th>]]></find>
+				<action type="after-add"><![CDATA[	<!-- IF U_SORT_INVITER --><th nowrap="nowrap" width="<!-- IF not U_SORT_INVITE and not U_SORT_REGISTER -->15<!-- ELSE -->10<!-- ENDIF -->%"><a href="{U_SORT_INVITER}">{L_DISPLAY_INVITER}</a></th><!-- ENDIF -->
+	<!-- IF U_SORT_INVITE --><th nowrap="nowrap" width="5%"><a href="{U_SORT_INVITE}">{L_DISPLAY_INVITE}</a></th><!-- ENDIF -->
+	<!-- IF U_SORT_REGISTER --><th nowrap="nowrap" width="5%"><a href="{U_SORT_REGISTER}">{L_DISPLAY_REGISTER}</a></th><!-- ENDIF -->]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[				<td colspan="8"><b class="gensmall">{L_GROUP_LEADER}</b></td>]]></find>
+				<action type="replace-with"><![CDATA[				<td colspan="{S_TABLE_COLSPAN_SUBSILVER}"><b class="gensmall">{L_GROUP_LEADER}</b></td>]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[				<td colspan="8"><b class="gensmall">{L_GROUP_MEMBERS}</b></td>]]></find>
+				<action type="replace-with"><![CDATA[				<td colspan="{S_TABLE_COLSPAN_SUBSILVER}"><b class="gensmall">{L_GROUP_MEMBERS}</b></td>]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[		<td class="genmed" align="center" nowrap="nowrap">&nbsp;{memberrow.JOINED}&nbsp;</td>]]></find>
+				<action type="after-add"><![CDATA[		<!-- IF U_SORT_INVITER --><td class="gen" align="center"><!-- IF memberrow.POSTER_INVITE_INVITER -->{memberrow.POSTER_INVITE_INVITER}<!-- ENDIF --></td><!-- ENDIF -->
+		<!-- IF U_SORT_INVITE --><td class="gen" align="center">{memberrow.POSTER_INVITE_INVITE}</td><!-- ENDIF -->
+		<!-- IF U_SORT_REGISTER --><td class="gen" align="center">{memberrow.POSTER_INVITE_REGISTER}</td><!-- ENDIF -->]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[		<td class="row1" colspan="<!-- IF S_IN_SEARCH_POPUP -->9<!-- ELSE -->8<!-- ENDIF -->" align="center">]]></find>
+				<action type="replace-with"><![CDATA[		<td class="row1" colspan="{S_TABLE_COLSPAN_SUBSILVER}" align="center">]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[	<td class="cat" colspan="<!-- IF S_IN_SEARCH_POPUP -->9<!-- ELSE -->8<!-- ENDIF -->" align="center"><!-- IF S_IN_SEARCH_POPUP and not S_SELECT_SINGLE --><input class="btnlite" type="submit" value="{L_SELECT_MARKED}" /><!-- ELSE --><span class="gensmall">{L_SELECT_SORT_METHOD}:</span>&nbsp;<select name="sk">{S_MODE_SELECT}</select>&nbsp; <span class="gensmall">{L_ORDER}</span>&nbsp;<select name="sd">{S_ORDER_SELECT}</select>&nbsp; <input type="submit" name="submit" value="{L_SUBMIT}" class="btnlite" /><!-- ENDIF --></td>]]></find>
+				<action type="replace-with"><![CDATA[	<td class="cat" colspan="{S_TABLE_COLSPAN_SUBSILVER}" align="center"><!-- IF S_IN_SEARCH_POPUP and not S_SELECT_SINGLE --><input class="btnlite" type="submit" value="{L_SELECT_MARKED}" /><!-- ELSE --><span class="gensmall">{L_SELECT_SORT_METHOD}:</span>&nbsp;<select name="sk">{S_MODE_SELECT}</select>&nbsp; <span class="gensmall">{L_ORDER}</span>&nbsp;<select name="sd">{S_ORDER_SELECT}</select>&nbsp; <input type="submit" name="submit" value="{L_SUBMIT}" class="btnlite" /><!-- ENDIF --></td>]]></action>
+			</edit>
+		</open>
+
+		<open src="styles/prosilver/template/memberlist_search.html">
+			<edit>
+				<find><![CDATA[	<td class="row1"><b class="genmed">{L_AIM}:</b></td>
+	<td class="row2"><input class="post" type="text" name="aim" value="{AIM}" /></td>
+</tr>]]></find>
+				<action type="after-add"><![CDATA[<!-- IF S_INVITE_SEARCH_ALLOWED -->
+<!-- IF U_SORT_INVITER or U_SORT_INVITE or U_SORT_REGISTER -->
+<tr>
+	<!-- IF U_SORT_INVITER -->
+	<td class="row1"><b class="genmed">{L_DISPLAY_INVITER}:</b></td>
+	<td class="row2"><input class="post" type="text" name="ui" id="ui" value="{INVITER}" /></td>
+	<!-- ENDIF -->
+	<!-- IF U_SORT_INVITE -->
+	<td class="row1"><b class="genmed">{L_DISPLAY_INVITE}:</b></td>
+	<td class="row2"><select name="invite_select">{S_INVITE_OPTIONS}</select> <input class="post" type="text" name="invite" id="invite" value="{INVITE}" /></td>
+	<!-- ENDIF -->
+	<!-- IF U_SORT_INVITER and U_SORT_INVITE and U_SORT_REGISTER --></tr><tr><!-- ENDIF -->
+	<!-- IF U_SORT_REGISTER -->
+	<td class="row1"><b class="genmed">{L_DISPLAY_REGISTER}:</b></td>
+	<td class="row2"><select name="register_select">{S_REGISTER_OPTIONS}</select> <input class="post" type="text" name="register" id="register" value="{REGISTER}" /></td>
+	<!-- ENDIF -->
+	<!-- IF U_SORT_INVITER and U_SORT_INVITE and U_SORT_REGISTER --><td colspan="2" class="row1">&nbsp;</td><!-- ENDIF -->
+	<!-- IF U_SORT_INVITER and not U_SORT_INVITE and not U_SORT_REGISTER --><td colspan="2" class="row1">&nbsp;</td><!-- ENDIF -->
+	<!-- IF not U_SORT_INVITER and not U_SORT_INVITE and U_SORT_REGISTER --><td colspan="2" class="row1">&nbsp;</td><!-- ENDIF -->
+	<!-- IF not U_SORT_INVITER and U_SORT_INVITE and not U_SORT_REGISTER --><td colspan="2" class="row1">&nbsp;</td><!-- ENDIF -->
+</tr>
+<!-- ENDIF -->
+<!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+
+		<open src="styles/subsilver2/template/memberlist_view.html">
+			<edit>
+				<find><![CDATA[			<!-- IF S_P_DISPLAY_INVITE -->
+				<tr>
+					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_DISPLAY_INVITE}: </td>
+					<td width="100%"><b class="gen">{POSTER_INVITE_INVITE}</b></td>
+				</tr>
+			<!-- ENDIF -->
+			<!-- IF S_P_DISPLAY_REGISTER -->
+				<tr>
+					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_DISPLAY_REGISTER}: </td>
+					<td width="100%"><b class="gen">{POSTER_INVITE_REGISTER}</b></td>
+				</tr>
+			<!-- ENDIF -->
+			<!-- IF POSTER_INVITE_NAME and S_P_DISPLAY_NAME -->
+				<tr>
+					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_DISPLAY_NAME}: </td>
+					<td width="100%"><b class="gen">{POSTER_INVITE_NAME}</b></td>
+				</tr>
+			<!-- ENDIF -->]]></find>
+				<action type="replace-with"><![CDATA[			<!-- IF S_P_DISPLAY_INVITE -->
+				<tr>
+					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_DISPLAY_INVITE}: </td>
+					<td width="100%"><b class="gen">{POSTER_INVITE_INVITE}</b><!-- IF U_USER_ADMIN --><br /><span class="genmed">[ <a href="{U_USER_ADMIN_INVITATIONS}">{L_USER_ADMIN_INVITATIONS}</a> ]</span><!-- ENDIF --><!-- IF INVITATIONS_PCT --><br /><span class="genmed">[{INVITATIONS_PCT} / {INVITATIONS_DAY}]</span><!-- ENDIF --></td>
+				</tr>
+			<!-- ENDIF -->
+			<!-- IF S_P_DISPLAY_REGISTER -->
+				<tr>
+					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_DISPLAY_REGISTER}: </td>
+					<td width="100%"><b class="gen">{POSTER_INVITE_REGISTER}</b><!-- IF U_USER_ADMIN --><br /><span class="genmed">[ <a href="{U_USER_ADMIN_REGISTRATIONS}">{L_USER_ADMIN_REGISTRATIONS}</a> ]</span><!-- ENDIF -->
+					<!-- IF REGISTRATIONS_PCT --><br />[{REGISTRATIONS_PCT} / {REGISTRATIONS_DAY}/<br />{REGISTRATIONS_SUCCESS_RATE}]<!-- ENDIF --><!-- IF S_DISPLAY_REGISTRATION_SEARCH --><br /><span class="genmed"><a href="{U_SEARCH_REGISTRATIONS}">{L_SEARCH_USER_REGISTRATIONS}</a></span><!-- ENDIF --></td>
+				</tr>
+			<!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+
+		<open src="styles/subsilver2/template/viewtopic_body.html">
+			<edit>
+				<find><![CDATA[					<!-- IF postrow.POSTER_INVITE_NAME and S_T_DISPLAY_NAME --><br /><b>{L_DISPLAY_NAME}:</b> {postrow.POSTER_INVITE_NAME}<!-- ENDIF -->]]></find>
+				<action type="replace-with"><![CDATA[]]></action>
+			</edit>
+		</open>
+
+		<open src="styles/subsilver2/template/ucp_register.html">
+			<edit>
+				<find><![CDATA[<!-- IF S_COPPA --><input type="hidden" value="{REGISTER_KEY}" name="key" class="button2" />&nbsp;<!-- ENDIF -->]]></find>
+				<action type="replace-with"><![CDATA[		<!-- IF not S_REGISTER_KEY_EMPTY --><input type="hidden" value="{REGISTER_KEY}" name="key" class="button2" /><!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+
+		<diy-instructions lang="en">Purge the cache.</diy-instructions>
+	</action-group>
+</mod>

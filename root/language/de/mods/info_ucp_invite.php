@@ -1,14 +1,15 @@
 <?php
 /**
-* @author Bycoja bycoja@web.de
-* info_acp_invite [Deutsch — Du]
 *
+* info_acp_invite [Deutsch - Du]
+*
+* @author Bycoja bycoja@web.de
 * @package language
-* @version $Id: info_ucp_invite.php 054 2009-11-28 14:41:59GMT Bycoja $
-* @copyright (c) 2008 Bycoja
+* @version $Id info_ucp_invite 0.6.0 2010-04-02 01:37:02GMT Bycoja $
+* @copyright (c) 2010 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
-* Deutsche Übersetzung durch den Autor:
+* German tranlation by:
 * Bycoja
 */
 
@@ -39,29 +40,28 @@ $lang = array_merge($lang, array(
 	'UCP_INVITE'					=> 'Freunde einladen',
 	'UCP_INVITE_INVITE'				=> 'Einladung schreiben',
 	'UCP_INVITE_DESCRIPTION'		=> 'Sendet eine E-Mail an einen Freund und macht ihn auf dieses Forum aufmerksam.',
-
-	'RECIPIENT_EMAIL'				=> 'E-Mail-Adresse des Freundes',
-	'RECIPIENT_NAME'				=> 'Name des Freundes',
-	'SEND_CONFIRM'					=> 'Bestätigung senden',
-	'SEND_CONFIRM_METHOD'			=> 'Bestätigung empfangen als',
-	'INVITE_ZEBRA'					=> 'Zur Freundesliste hinzufügen',
-	'OPTIONAL'						=> 'Optional',
-
-	'INVITE_NO_REGISTER_KEY'		=> 'Falls du keinen Registrierungs-Schlüssel angibst: ',
 	'REGISTER_KEY'					=> 'Registrierungs-Schlüssel',
 	'REGISTER_KEY_EXPLAIN'			=> 'Von einem Benutzer des Boards per E-Mail erhalten.',
-	'REGISTER_KEY_DISABLED'			=> 'Zur Zeit wird kein Registrierungs-Schlüssel benötigt.',
 
-	'QUEUE_QUEUE'					=> 'Du musst bis zum Versenden der nächsten Nachricht noch eine Weile warten.',
-	'QUEUE_LIMIT_INVITE_DAY'		=> 'Du hast das Tageslimit erreicht und kannst heute keine weiteren Einladungen versenden.',
-	'QUEUE_LIMIT_INVITE_USER'		=> 'Du hast das Benutzerlimit erreicht und kannst keine weiteren Einladungen versenden.',
-	'INVITE_DISABLED'				=> 'Das Einladen von Freunden wurde von der Board-Administration deaktiviert.',
-	'INVITE_YOURSELF'				=> 'Du kannst dich nicht mit von dir versendeten Registrierungs-Schlüsseln registrieren.',
-	'INVITE_TO_YOUR_EMAIL'			=> 'Du kannst dich nicht selbst einladen.',
+	// Invitation form
+	'RECIPIENT_EMAIL'				=> 'E-Mail-Adresse des Freundes',
+	'RECIPIENT_NAME'				=> 'Name des Freundes',
+	'MESSAGE_EXPLAIN'				=> 'Erzähle deinem Freund, warum er dieses Board unbedingt besuchen muss.',
+	'SEND_CONFIRMATION'				=> 'Bestätigung empfangen',
+	'SEND_CONFIRMATION_METHOD'		=> 'Bestätigung empfangen als',
+	'INVITATION_ZEBRA'				=> 'Eingeladenen Benutzer zur Freundesliste hinzufügen',
+	'OPTIONAL'						=> 'Optional',
 
-	'EMAIL_DISABLED'				=> 'Die E-Mail-Funktionalität des Boards ist deaktiviert.',
+	// Error messages
+	'EMAIL_DISABLED'				=> 'Du kannst keine Einladung versenden, da die E-Mail-Funktionalität des Boards ist deaktiviert.',
 	'EMAIL_SENT_FAILURE'			=> 'Beim Versenden der E-Mail ist ein Fehler aufgetreten.',
 	'EMAIL_SENT_SUCCESS'			=> 'Die E-Mail wurde erfolgreich versendet.',
+	'INVITE_DISABLED'				=> 'Das Einladen von Freunden wurde von der Board-Administration deaktiviert.',
+	'QUEUE_QUEUE'					=> 'Du musst %d:%02d Minuten bis zum Versenden der nächsten Einladung warten.',
+	'INVITATION_LIMIT_DAILY'		=> 'Du hast das Tageslimit von %d Einladungen erreicht und kannst heute keine weiteren Einladungen versenden.',
+	'INVITATION_LIMIT_TOTAL'		=> 'Du hast das Gesamtlimit von %d Einladungen erreicht und kannst keine weiteren Einladungen versenden.',
+	'INVITE_YOURSELF'				=> 'Du kannst dich nicht mit von dir versendeten Registrierungs-Schlüsseln registrieren.',
+	'INVITE_TO_YOUR_EMAIL'			=> 'Du kannst dich nicht selbst einladen.',
 	'INVITE_MULTIPLE'				=> 'Die angegebene E-Mail-Adresse hat bereits eine Einladung erhalten.',
 	'REGISTER_KEY_INVALID'			=> 'Der angegebene Registrierungs-Schlüssel ist ungültig.',
 	'REGISTER_KEY_INVALID_OPTIONAL'	=> 'Der angegebene Registrierungs-Schlüssel ist ungültig, lasse ihn stattdessen aus.',
