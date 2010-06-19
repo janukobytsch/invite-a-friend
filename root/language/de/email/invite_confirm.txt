@@ -1,4 +1,6 @@
-Hallo {RECIPIENT},
-diese Nachricht wurde dir zur BestÃ¤tigung der Einladung deines Freundes gesendet.
+Hallo {INVITE_USERNAME},
+diese Nachricht wird dir zur Bestätigung der Registrierung des Benutzers "{REGISTER_USERNAME}" auf
+{U_BOARD}
+geschickt, den du zuvor eingeladen hast.
 
-Dieser hat sich auf {U_BOARD} unter dem Benutzernamen '{NEW_USER_USERNAME}' angemeldet; hier gelangst du zu seinem Profil: {U_NEW_USER_PROFILE}
+Du kannst sein Profil hier ansehen, wenn du möchtest: {REGISTER_USER_PROFILE}

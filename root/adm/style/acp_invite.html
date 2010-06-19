@@ -206,6 +206,24 @@
 
 <!-- #### PLUGINS #### -->
 
+<!-- IF S_ULTIMATE_POINTS_INSTALLED -->
+	<fieldset id="ultimate_points_settings">
+		<legend>{L_ULTIMATE_POINTS_SETTINGS}</legend>
+		<dl>
+			<dt><label for="enable_ultimate_points">{L_ULTIMATE_POINTS_ENABLE}:</label></dt>
+			<dd><input type="radio" class="radio" id="enable_ultimate_points" name="enable_ultimate_points"<!-- IF S_ENABLE_ULTIMATE_POINTS --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="enable_ultimate_points"<!-- IF not S_ENABLE_ULTIMATE_POINTS --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
+		</dl>
+		<dl>
+			<dt><label for="ultimate_points_invite">{L_ULTIMATE_POINTS_INVITE}:</label><br /><span>{L_ULTIMATE_POINTS_INVITE_EXPLAIN}</span></dt>
+			<dd><input size="5" maxlength="5" type="text" id="ultimate_points_invite" name="ultimate_points_invite" value="{S_ULTIMATE_POINTS_INVITE}" /></dd>
+		</dl>
+		<dl>
+			<dt><label for="ultimate_points_register">{L_ULTIMATE_POINTS_REGISTER}:</label><br /><span>{L_ULTIMATE_POINTS_REGISTER_EXPLAIN}</span></dt>
+			<dd><input size="5" maxlength="5" type="text" id="ultimate_points_register" name="ultimate_points_register" value="{S_ULTIMATE_POINTS_REGISTER}" /></dd>
+		</dl>
+	</fieldset>
+<!-- ENDIF -->
+
 <!-- IF S_CASH_INSTALLED -->
 	<fieldset id="cash_settings">
 		<legend>{L_CASH_SETTINGS}</legend>
@@ -220,24 +238,6 @@
 		<dl>
 			<dt><label for="cash_register">{L_CASH_REGISTER}:</label><br /><span>{L_CASH_REGISTER_EXPLAIN}</span></dt>
 			<dd><input size="5" maxlength="5" type="text" id="cash_register" name="cash_register" value="{S_CASH_REGISTER}" />&nbsp;&nbsp;<select name="cash_id_register" id="cash_id_register">{S_CASH_CURRENCY_REGISTER}</select></dd>
-		</dl>
-	</fieldset>
-<!-- ENDIF -->
-
-<!-- IF S_POINTS_INSTALLED -->
-	<fieldset id="points_settings">
-		<legend>{L_POINTS_SETTINGS}</legend>
-		<dl>
-			<dt><label for="enable_points">{L_POINTS_ENABLE}:</label></dt>
-			<dd><input type="radio" class="radio" id="enable_points" name="enable_points"<!-- IF S_ENABLE_POINTS --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="enable_points"<!-- IF not S_ENABLE_POINTS --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
-		</dl>
-		<dl>
-			<dt><label for="points_invite">{L_POINTS_INVITE}:</label><br /><span>{L_POINTS_INVITE_EXPLAIN}</span></dt>
-			<dd><input size="5" maxlength="5" type="text" id="points_invite" name="points_invite" value="{S_POINTS_INVITE}" /></dd>
-		</dl>
-		<dl>
-			<dt><label for="points_register">{L_POINTS_REGISTER}:</label><br /><span>{L_POINTS_REGISTER_EXPLAIN}</span></dt>
-			<dd><input size="5" maxlength="5" type="text" id="points_register" name="points_register" value="{S_POINTS_REGISTER}" /></dd>
 		</dl>
 	</fieldset>
 <!-- ENDIF -->

@@ -1,194 +1,208 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
-<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<?xml-stylesheet type="text/xsl" href="contrib/modx.prosilver.en.xsl"?>
 <!--For security purposes, please check: http
 ://www.phpbb.com/mods/ for the latest version of this MOD. Although MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD. No support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
-<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.2.xsd">
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.3.xsd">
 	<header>
 		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
-	
+
 		<title lang="en">Invite A Friend</title>
-		<description lang="en">This mods enables your users to send e-mails to their friends and advice them of your board. Also enables registration-keys which have to/can be entered to register and are obtained by 'Invite a friend' e-mails.</description>
-		<author-notes lang="en">Report bugs to http://bycoja.by.funpic.de/bugtracker/viewcat.php?c=2]</author-notes>
-		
+		<description lang="en">Invite A Friend is an addition to phpBB3, that enables your users to advise their friends of your board. Each invitation sent per email is attached a key, which may (or not) be required to register and keeps track of successful registrations. Furthermore you are given the ability to limit the amount of invitations every user can send in several ways. Supports Ultimate Points and Cash Mod.</description>
+		<author-notes lang="en">Support and bug reports: <![CDATA[http://www.phpbb.com/community/viewtopic.php?f=70&t=1224005]]></author-notes>
+
 		<author-group>
 			<author>
 				<realname></realname>
 				<email>bycoja@web.de</email>
 				<username>Bycoja</username>
-				<homepage>http://bycoja.by.funpic.de/</homepage>
-				<contributions-group></contributions-group>
+				<homepage>http://bycoja.bplaced.net</homepage>
 			</author>
 		</author-group>
-		
-		<mod-version>0.5.2</mod-version>
-		
+
+		<mod-version>0.5.3</mod-version>
+
 		<installation>
 			<level>easy</level>
 			<time>720</time>
-			<target-version>3.0.4</target-version>
+			<target-version>3.0.6</target-version>
 		</installation>
 
-	<history>
-		<entry>
-			<date>2009-05-20</date>
-			<rev-version>0.5.2 [Beta]</rev-version>
-			<changelog lang="en">
-				<change>[Added] Add users, who enter a registration key, to the selected group</change>
-				<change>[Changed] Create registration keys (even if keys are disabled) to identify friends</change>
-				<change>[Changed] Removed constant 'REGISTER_KEY_DISABLED'</change>
-				<change>[Fixed] Report #020: Messenger vars not parsed in PM</change>
-				<change>[Fixed] Report #019: Missing language vars</change>
-				<change>[Fixed] Report #018: E-mail already taken</change>
-				<change>[Fixed] Report #016: CAPTCHA</change>
-				<change>[Fixed] Report #016: function install(), messages</change>
-				<change>[Fixed] Report #015: function install(), permissions</change>
-			</changelog>
-		</entry>
-		<entry>
-			<date>2009-04-12</date>
-			<rev-version>0.5.1 [Beta]</rev-version>
-			<changelog lang="en">
-				<change>[Added] Account activation</change>
-				<change>[Added] Limitation: Topics</change>
-				<change>[Added] Automatically create sql tables, install permissions, ...</change>
-				<change>[Added] Automatically add messages referring to installed languages</change>
-				<change>[Fixed] Report #013: COPPA Bug</change>
-			</changelog>
-		</entry>
-		<entry>
-			<date>2009-04-08</date>
-			<rev-version>0.5.0 [Beta]</rev-version>
-			<changelog lang="en">
-				<change>[Added] Compatibility with 'Advanced Points System'</change>
-				<change>[Added] Many options (CAPTCHA, Limitation, ..)</change>
-				<change>[Improved] Rewrote some code</change>
-			</changelog>
-		</entry>
-		<entry>
-			<date>2008-10-10</date>
-			<rev-version>0.2.2 [Beta]</rev-version>
-			<changelog lang="en">
-				<change>[Added] Compatibility with 'Cash Mod'</change>
-				<change>[Added] Highly improved log</change>
-				<change>[Added] UCP Module</change>
-				<change>[Fixed] Report #009: [phpBB Debug] Undefined variable: new_user_row</change>
-				<change>[Fixed] Report #008: [phpBB Debug] Undefined variable: invitation_data</change>
-			</changelog>
-		</entry>
-		<entry>
-			<date>2008-10-06</date>
-			<rev-version>0.2.1 [Beta]</rev-version>
-			<changelog lang="en">
-				<change>[Added] Optional registration-key</change>
-				<change>[Added] Prohibit multiple registrations</change>
-				<change>[Fixed] Report #007: Empty {USERNAME}</change>
-				<change>[Fixed] Report #006: Missing var</change>
-			</changelog>
-		</entry>
-		<entry>
-			<date>2008-10-05</date>
-			<rev-version>0.2.0 [Beta]</rev-version>
-			<changelog lang="en">
-				<change>[Added] Confirmation e-mail</change>
-				<change>[Added] New settings</change>
-				<change>[Added] Log</change>
-				<change>[Fixed] Report #005: Invite yourself</change>
-				<change>[Fixed] Report #004: phpBB Debug</change>
-				<change>[Fixed] Report #003: ACP: Edit Mail</change>
-				<change>[Fixed] Report #002: 'Invite a friend' shown in navigation</change>
-				<change>[Fixed] Report #001: Registration-keys</change>
-			</changelog>
-		</entry>
-	</history>
-	
-	<link-group>
-		<link type="template" href="templates/subsilver2.xml" lang="en">subsilver2</link>
-	</link-group>
-</header>
+		<history>
+			<entry>
+				<date>2009-11-24</date>
+				<rev-version>0.5.3 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Ultimate Points support</change>
+					<change>[Added] Identify invited users by e-mail address</change>
+					<change>[Added] Several checks for unexpected cases</change>
+					<change>[Changed] Improved key generation</change>
+					<change>[Changed] Code cleanup</change>
+					<change>[Changed] MOD description</change>
+					<change>[Fixed] Broken CAPTCHAs</change>
+					<change>[Fixed] Template system</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2009-05-20</date>
+				<rev-version>0.5.2 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Add users, who enter a registration key, to the selected group</change>
+					<change>[Changed] Create registration keys (even if keys are disabled) to identify friends</change>
+					<change>[Changed] Removed constant 'REGISTER_KEY_DISABLED'</change>
+					<change>[Fixed] Report #020: Messenger vars not parsed in PM</change>
+					<change>[Fixed] Report #019: Missing language vars</change>
+					<change>[Fixed] Report #018: E-mail already taken</change>
+					<change>[Fixed] Report #016: CAPTCHA</change>
+					<change>[Fixed] Report #016: function install(), messages</change>
+					<change>[Fixed] Report #015: function install(), permissions</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2009-04-12</date>
+				<rev-version>0.5.1 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Account activation</change>
+					<change>[Added] Limitation: Topics</change>
+					<change>[Added] Automatically create sql tables, install permissions, ...</change>
+					<change>[Added] Automatically add messages referring to installed languages</change>
+					<change>[Fixed] Report #013: COPPA Bug</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2009-04-08</date>
+				<rev-version>0.5.0 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Compatibility with 'Advanced Points System'</change>
+					<change>[Added] Many options (CAPTCHA, Limitation, ..)</change>
+					<change>[Improved] Rewrote some code</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2008-10-10</date>
+				<rev-version>0.2.2 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Compatibility with 'Cash Mod'</change>
+					<change>[Added] Highly improved log</change>
+					<change>[Added] UCP Module</change>
+					<change>[Fixed] Report #009: [phpBB Debug] Undefined variable: new_user_row</change>
+					<change>[Fixed] Report #008: [phpBB Debug] Undefined variable: invitation_data</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2008-10-06</date>
+				<rev-version>0.2.1 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Optional registration-key</change>
+					<change>[Added] Prohibit multiple registrations</change>
+					<change>[Fixed] Report #007: Empty {USERNAME}</change>
+					<change>[Fixed] Report #006: Missing var</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2008-10-05</date>
+				<rev-version>0.2.0 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Confirmation e-mail</change>
+					<change>[Added] New settings</change>
+					<change>[Added] Log</change>
+					<change>[Fixed] Report #005: Invite yourself</change>
+					<change>[Fixed] Report #004: phpBB Debug</change>
+					<change>[Fixed] Report #003: ACP: Edit Mail</change>
+					<change>[Fixed] Report #002: 'Invite a friend' shown in navigation</change>
+					<change>[Fixed] Report #001: Registration-keys</change>
+				</changelog>
+			</entry>
+		</history>
 
-<action-group>
-	<copy>
-		<file from="/root/includes/invite/schemas/mysql_40_schema.sql" to="includes/invite/schemas/mysql_40_schema.sql" />
-		<file from="/root/includes/invite/schemas/mysql_41_schema.sql" to="includes/invite/schemas/mysql_41_schema.sql" />
-		<file from="/root/includes/invite/messages/de/invite.txt" to="includes/invite/messages/de/invite.txt" />
-		<file from="/root/includes/invite/messages/de/confirm.txt" to="includes/invite/messages/de/confirm.txt" />
-		<file from="/root/includes/invite/messages/en/invite.txt" to="includes/invite/messages/en/invite.txt" />
-		<file from="/root/includes/invite/messages/en/confirm.txt" to="includes/invite/messages/en/confirm.txt" />
-		<file from="/root/includes/acp/acp_invite.php" to="/includes/acp/acp_invite.php" />
-		<file from="/root/includes/acp/info/acp_invite.php" to="/includes/acp/info/acp_invite.php" />
-		<file from="/root/includes/acp/acp_invite.php" to="/includes/acp/acp_invite.php" />
-		<file from="/root/adm/style/acp_invite.html" to="/adm/style/acp_invite.html" />
-		<file from="/root/adm/style/acp_invite_log.html" to="/adm/style/acp_invite_log.html" />
-		<file from="/root/includes/functions_invite.php" to="/includes/functions_invite.php" />
-		<file from="/root/includes/ucp/ucp_invite.php" to="/includes/ucp/ucp_invite.php" />
-		<file from="/root/includes/ucp/info/ucp_invite.php" to="/includes/ucp/info/ucp_invite.php" />
-		<file from="/root/language/de/mods/info_acp_invite.php" to="/language/de/mods/info_acp_invite.php" />
-		<file from="/root/language/en/mods/info_acp_invite.php" to="/language/en/mods/info_acp_invite.php" />
-		<file from="/root/language/de/mods/info_ucp_invite.php" to="/language/de/mods/info_ucp_invite.php" />
-		<file from="/root/language/en/mods/info_ucp_invite.php" to="/language/en/mods/info_ucp_invite.php" />
-		<file from="/root/styles/prosilver/template/ucp_invite_invite.html" to="/styles/prosilver/template/ucp_invite_invite.html" />
-	</copy>
+		<link-group>
+			<link type="template" href="templates/subsilver2.xml" lang="en">Subsilver2</link>
+		</link-group>
+	</header>
 
-	<open src="includes/constants.php">
-	    <edit>
-	        <find><![CDATA[// Additional tables]]></find>
-	        <action type="after-add"><![CDATA[define('INVITE_CONFIG_TABLE',			$table_prefix . 'invite_config');
-define('INVITE_LOG_TABLE',				$table_prefix . 'invite_log');
-define('INVITE_MESSAGE_TABLE',			$table_prefix . 'invite_message');
-define('LOG_INVITE', 					4);]]></action>
-	    </edit>
-	</open>
-	
-	<open src="includes/functions.php">
-		<edit>
-			<find><![CDATA[case 'critical':
+	<action-group>
+		<copy>
+			<file from="/root/includes/invite/schemas/mysql_40_schema.sql" to="includes/invite/schemas/mysql_40_schema.sql" />
+			<file from="/root/includes/invite/schemas/mysql_41_schema.sql" to="includes/invite/schemas/mysql_41_schema.sql" />
+			<file from="/root/includes/acp/info/acp_invite.php" to="/includes/acp/info/acp_invite.php" />
+			<file from="/root/includes/acp/acp_invite.php" to="/includes/acp/acp_invite.php" />
+			<file from="/root/adm/style/acp_invite.html" to="/adm/style/acp_invite.html" />
+			<file from="/root/adm/style/acp_invite_log.html" to="/adm/style/acp_invite_log.html" />
+			<file from="/root/includes/functions_invite.php" to="/includes/functions_invite.php" />
+			<file from="/root/includes/ucp/info/ucp_invite.php" to="/includes/ucp/info/ucp_invite.php" />
+			<file from="/root/includes/ucp/ucp_invite.php" to="/includes/ucp/ucp_invite.php" />
+			<file from="/root/language/de/mods/info_acp_invite.php" to="/language/de/mods/info_acp_invite.php" />
+			<file from="/root/language/de/mods/info_ucp_invite.php" to="/language/de/mods/info_ucp_invite.php" />
+			<file from="/root/language/de/email/invite_invite.txt" to="/language/de/email/invite_invite.txt" />
+			<file from="/root/language/de/email/invite_confirm.txt" to="/language/de/email/invite_confirm.txt" />
+			<file from="/root/language/en/mods/info_acp_invite.php" to="/language/en/mods/info_acp_invite.php" />
+			<file from="/root/language/en/mods/info_ucp_invite.php" to="/language/en/mods/info_ucp_invite.php" />
+			<file from="/root/language/en/email/invite_invite.txt" to="/language/en/email/invite_invite.txt" />
+			<file from="/root/language/en/email/invite_confirm.txt" to="/language/en/email/invite_confirm.txt" />
+			<file from="/root/styles/prosilver/template/ucp_invite_invite.html" to="/styles/prosilver/template/ucp_invite_invite.html" />
+		</copy>
+
+		<open src="includes/constants.php">
+			<comment lang="en">Please note that you may have to use another digit for LOG_INVITE, if 4 is already taken.</comment>
+			<edit>
+				<find><![CDATA[// Additional tables]]></find>
+				<action type="after-add"><![CDATA[define('INVITE_CONFIG_TABLE',		$table_prefix . 'invite_config');
+define('INVITE_LOG_TABLE',			$table_prefix . 'invite_log');
+define('LOG_INVITE', 				4);]]></action>
+			</edit>
+		</open>
+
+		<open src="includes/functions.php">
+			<edit>
+				<find><![CDATA[		case 'critical':
 			$sql_ary['log_type'] = LOG_CRITICAL;
 		break;]]></find>
-	        <action type="after-add"><![CDATA[case 'invite':
+				<action type="after-add"><![CDATA[		case 'invite':
 			$sql_ary['log_type'] = LOG_INVITE;
 		break;]]></action>
-	    </edit>
-		
-		<edit>
-			<find><![CDATA[define('HEADER_INC', true);]]></find>
-	        <action type="after-add"><![CDATA[include_once($phpbb_root_path . 'includes/functions_invite.' . $phpEx);
+			</edit>
+			
+			<edit>
+				<find><![CDATA[	define('HEADER_INC', true);]]></find>
+				<action type="after-add"><![CDATA[	include_once($phpbb_root_path . 'includes/functions_invite.' . $phpEx);
+
 	$invite	= new invite();
 	$invite->header_template();]]></action>
-	    </edit>
-	</open>
-	
-	<open src="includes/functions_admin.php">
-		<edit>
-			<find><![CDATA[case 'critical':
+			</edit>
+		</open>
+
+		<open src="includes/functions_admin.php">
+			<edit>
+				<find><![CDATA[		case 'critical':
 			$log_type = LOG_CRITICAL;
 			$sql_forum = '';
 		break;]]></find>
-	        <action type="after-add"><![CDATA[case 'invite':
+				<action type="after-add"><![CDATA[		case 'invite':
 			$log_type = LOG_INVITE;
 			$sql_forum = '';
 		break;]]></action>
-	    </edit>
-	</open>
-	
-	<open src="includes/ucp/ucp_register.php">
-	    <edit>
-			<find><![CDATA[include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);]]></find>
-	        <action type="after-add"><![CDATA[include($phpbb_root_path . 'includes/functions_invite.' . $phpEx);
+			</edit>
+		</open>
+
+		<open src="includes/ucp/ucp_register.php">
+			<edit>
+				<find><![CDATA[		include($phpbb_root_path . 'includes/functions_profile_fields.' . $phpEx);]]></find>
+				<action type="after-add"><![CDATA[		include($phpbb_root_path . 'includes/functions_invite.' . $phpEx);
 		$user->add_lang('mods/info_ucp_invite');
-		
+
 		$invite			= new invite();
 		$register_key	= request_var('key', '', true);
 		$url_key 		= ($register_key) ? 'key=' . $register_key . '&amp;' : '';]]></action>
-	    </edit>
-		
-		<edit>
-			<find><![CDATA[if ($coppa === false && $config['coppa_enable'])
+			</edit>
+
+				<edit>
+					<find><![CDATA[			if ($coppa === false && $config['coppa_enable'])
 			{
 				$now = getdate();
 				$coppa_birthday = $user->format_date(mktime($now['hours'] + $user->data['user_dst'], $now['minutes'], $now['seconds'], $now['mon'], $now['mday'] - 1, $now['year'] - 13), $user->lang['DATE_FORMAT']);
 				unset($now);
 
 				$template->assign_vars(array(
+					'S_LANG_OPTIONS'	=> (sizeof($lang_row) > 1) ? language_select($user_lang) : '',
 					'L_COPPA_NO'		=> sprintf($user->lang['UCP_COPPA_BEFORE'], $coppa_birthday),
 					'L_COPPA_YES'		=> sprintf($user->lang['UCP_COPPA_ON_AFTER'], $coppa_birthday),
 
@@ -203,6 +217,7 @@ define('LOG_INVITE', 					4);]]></action>
 			else
 			{
 				$template->assign_vars(array(
+					'S_LANG_OPTIONS'	=> (sizeof($lang_row) > 1) ? language_select($user_lang) : '',
 					'L_TERMS_OF_USE'	=> sprintf($user->lang['TERMS_OF_USE_CONTENT'], $config['sitename'], generate_board_url()),
 
 					'S_SHOW_COPPA'		=> false,
@@ -212,13 +227,14 @@ define('LOG_INVITE', 					4);]]></action>
 					)
 				);
 			}]]></find>
-	        <action type="replace-with"><![CDATA[if ($coppa === false && $config['coppa_enable'])
+					<action type="replace-with"><![CDATA[			if ($coppa === false && $config['coppa_enable'])
 			{
 				$now = getdate();
 				$coppa_birthday = $user->format_date(mktime($now['hours'] + $user->data['user_dst'], $now['minutes'], $now['seconds'], $now['mon'], $now['mday'] - 1, $now['year'] - 13), $user->lang['DATE_FORMAT']);
 				unset($now);
 
 				$template->assign_vars(array(
+					'S_LANG_OPTIONS'	=> (sizeof($lang_row) > 1) ? language_select($user_lang) : '',
 					'L_COPPA_NO'		=> sprintf($user->lang['UCP_COPPA_BEFORE'], $coppa_birthday),
 					'L_COPPA_YES'		=> sprintf($user->lang['UCP_COPPA_ON_AFTER'], $coppa_birthday),
 
@@ -233,6 +249,7 @@ define('LOG_INVITE', 					4);]]></action>
 			else
 			{
 				$template->assign_vars(array(
+					'S_LANG_OPTIONS'	=> (sizeof($lang_row) > 1) ? language_select($user_lang) : '',
 					'L_TERMS_OF_USE'	=> sprintf($user->lang['TERMS_OF_USE_CONTENT'], $config['sitename'], generate_board_url()),
 
 					'S_SHOW_COPPA'		=> false,
@@ -242,14 +259,13 @@ define('LOG_INVITE', 					4);]]></action>
 					)
 				);
 			}
-			
 			$template->assign_vars(array('REGISTER_KEY'		=> $register_key));]]></action>
-	    </edit>
-		
-		<edit>
-			<find><![CDATA[// DNSBL check]]></find>
-	        <action type="before-add"><![CDATA[// Handle keys
-			if ($invite->config['enable'])
+			</edit>
+
+			<edit>
+				<find><![CDATA[			// DNSBL check]]></find>
+				<action type="before-add"><![CDATA[			// Handle keys
+			if ($invite->config['enable'] && !($invite->email_is_invited($data['email'])))
 			{
 				if ($invite->config['enable_key'] == 1)
 				{
@@ -270,11 +286,11 @@ define('LOG_INVITE', 					4);]]></action>
 			{
 				$error[] 	= $user->lang['INVITE_YOURSELF'];
 			}]]></action>
-	    </edit>
-		
-		<edit>
-			<find><![CDATA[$user_row = array(]]></find>
-	        <action type="before-add"><![CDATA[if (!empty($register_key) && $invite->valid_key($register_key, false))
+			</edit>
+
+			<edit>
+				<find><![CDATA[				$user_row = array(]]></find>
+				<action type="before-add"><![CDATA[				if (!empty($register_key) && $invite->valid_key($register_key, false))
 				{
 					if ($invite->config['invite_require_activation'] == USER_ACTIVATION_NONE)
 					{
@@ -283,7 +299,7 @@ define('LOG_INVITE', 					4);]]></action>
 						$user_inactive_reason = 0;
 						$user_inactive_time = 0;
 					}
-					
+
 					if (($invite->config['invite_require_activation'] == USER_ACTIVATION_SELF ||
 						$invite->config['invite_require_activation'] == USER_ACTIVATION_ADMIN) && $config['email_enable'])
 					{
@@ -297,15 +313,16 @@ define('LOG_INVITE', 					4);]]></action>
 						$user_inactive_time = time();
 					}
 				}]]></action>
-	    </edit>
-		
-		<edit>
-			<find><![CDATA[$user_id = user_add($user_row, $cp_data);]]></find>
-	        <action type="after-add"><![CDATA[$invite->register_user($register_key, $user_id);]]></action>
-	    </edit>
-		
-		<edit>
-			<find><![CDATA[else if ($config['require_activation'] == USER_ACTIVATION_SELF && $config['email_enable'])
+			</edit>
+
+			<edit>
+				<find><![CDATA[				// Register user...
+				$user_id = user_add($user_row, $cp_data);]]></find>
+				<action type="after-add"><![CDATA[				$invite->register_user($register_key, $user_id);]]></action>
+			</edit>
+
+			<edit>
+				<find><![CDATA[				else if ($config['require_activation'] == USER_ACTIVATION_SELF && $config['email_enable'])
 				{
 					$message = $user->lang['ACCOUNT_INACTIVE'];
 					$email_template = 'user_welcome_inactive';
@@ -315,7 +332,7 @@ define('LOG_INVITE', 					4);]]></action>
 					$message = $user->lang['ACCOUNT_INACTIVE_ADMIN'];
 					$email_template = 'admin_welcome_inactive';
 				}]]></find>
-	        <action type="replace-with"><![CDATA[else if (!empty($register_key) && $invite->valid_key($register_key, false) && $invite->config['invite_require_activation'] == USER_ACTIVATION_NONE)
+				<action type="replace-with"><![CDATA[				else if (!empty($register_key) && $invite->valid_key($register_key, false) && $invite->config['invite_require_activation'] == USER_ACTIVATION_NONE)
 				{
 					$message = $user->lang['ACCOUNT_ADDED'];
 					$email_template = 'user_welcome';
@@ -332,16 +349,16 @@ define('LOG_INVITE', 					4);]]></action>
 					$message = $user->lang['ACCOUNT_INACTIVE_ADMIN'];
 					$email_template = 'admin_welcome_inactive';
 				}]]></action>
-	    </edit>
-		
-		<edit>
-			<find><![CDATA[if ($config['require_activation'] == USER_ACTIVATION_ADMIN)]]></find>
-	        <action type="replace-with"><![CDATA[if (($config['require_activation'] == USER_ACTIVATION_ADMIN) ||
+			</edit>
+
+			<edit>
+				<find><![CDATA[					if ($config['require_activation'] == USER_ACTIVATION_ADMIN)]]></find>
+				<action type="replace-with"><![CDATA[					if (($config['require_activation'] == USER_ACTIVATION_ADMIN) ||
 						(!empty($register_key) && $invite->valid_key($register_key, false) && $invite->config['invite_require_activation'] == USER_ACTIVATION_ADMIN))]]></action>
-	    </edit>
-		
-		<edit>
-			<find><![CDATA[switch ($config['require_activation'])
+			</edit>
+
+			<edit>
+				<find><![CDATA[		switch ($config['require_activation'])
 		{
 			case USER_ACTIVATION_SELF:
 				$l_reg_cond = $user->lang['UCP_EMAIL_ACTIVATE'];
@@ -351,11 +368,11 @@ define('LOG_INVITE', 					4);]]></action>
 				$l_reg_cond = $user->lang['UCP_ADMIN_ACTIVATE'];
 			break;
 		}]]></find>
-	        <action type="replace-with"><![CDATA[if ($invite->config['display_registration'])
+				<action type="replace-with"><![CDATA[		if ($invite->config['display_registration'])
 		{
 			$l_reg_cond .= ($invite->config['invite_require_activation'] == USER_ACTIVATION_NONE && $config['require_activation'] != USER_ACTIVATION_NONE) ? $user->lang['INVITE_NO_REGISTER_KEY'] : '';
 		}
-		
+
 		switch ($config['require_activation'])
 		{
 			case USER_ACTIVATION_SELF:
@@ -366,99 +383,101 @@ define('LOG_INVITE', 					4);]]></action>
 				$l_reg_cond .= $user->lang['UCP_ADMIN_ACTIVATE'];
 			break;
 		}]]></action>
-	    </edit>
-		
-		<edit>
-			<find><![CDATA['S_UCP_ACTION'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=register'),]]></find>
-	        <action type="after-add"><![CDATA['REGISTER_KEY'				=> $register_key,
+			</edit>
+
+			<edit>
+				<find><![CDATA[			'S_UCP_ACTION'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'mode=register'),]]></find>
+				<action type="replace-with"><![CDATA[			'S_UCP_ACTION'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", $url_key . 'mode=register'),
+
+			'REGISTER_KEY'				=> $register_key,
 			'S_DISPLAY_REGISTER_KEY'	=> (!$invite->config['enable']) ? false : (($invite->config['display_registration']) ? true : false),
 			'S_ENABLE_KEY_OPTIONAL'		=> (!$invite->config['enable']) ? false : (($invite->config['enable_key'] == OPTIONAL) ? true : false),]]></action>
-	    </edit>
-	</open>
-	
-	<open src="memberlist.php">
-		<edit>
-			<find><![CDATA[// Inactive reason/account?]]></find>
-	        <action type="before-add"><![CDATA[include_once($phpbb_root_path . 'includes/functions_invite.' . $phpEx);
-		
+			</edit>
+		</open>
+
+		<open src="memberlist.php">
+			<edit>
+				<find><![CDATA[		// Inactive reason/account?]]></find>
+				<action type="before-add"><![CDATA[		// Invitation
+		include_once($phpbb_root_path . 'includes/functions_invite.' . $phpEx);
+			
 		$invite		= new invite();
 		$invite_row = $invite->profile_fields(array(), $user_id);
 		$template->assign_vars($invite_row);]]></action>
-	    </edit>
-	</open>
-	
-	<open src="viewtopic.php">
-		<edit>
-			<find><![CDATA[if (isset($cp_row['row']) && sizeof($cp_row['row']))]]></find>
-	        <action type="before-add"><![CDATA[include_once($phpbb_root_path . 'includes/functions_invite.' . $phpEx);
+			</edit>
+		</open>
+
+		<open src="viewtopic.php">
+			<edit>
+				<find><![CDATA[	if (isset($cp_row['row']) && sizeof($cp_row['row']))]]></find>
+				<action type="before-add"><![CDATA[	// Invitation
+	include_once($phpbb_root_path . 'includes/functions_invite.' . $phpEx);
+
 	$invite	= new invite();
 	$postrow = $invite->profile_fields($postrow, $poster_id);]]></action>
-	    </edit>
-	</open>
-	
-	<open src="styles/prosilver/template/overall_header.html">
-		<edit>
-			<find><![CDATA[<a href="{U_SEARCH_SELF}">{L_SEARCH_SELF}</a>]]></find>
-	        <action type="after-add"><![CDATA[<!-- IF S_DISPLAY_INVITE --> &bull; <a href="{U_INVITE_A_FRIEND}">{L_ACP_INVITE}</a><!-- ENDIF -->]]></action>
-	    </edit>
-	</open>
-	
-	<open src="styles/prosilver/template/viewtopic_body.html">
-		<edit>
-			<find><![CDATA[<!-- IF postrow.POSTER_FROM --><dd><strong>{L_LOCATION}:</strong> {postrow.POSTER_FROM}</dd><!-- ENDIF -->]]></find>
-	        <action type="after-add"><![CDATA[<!-- IF S_T_DISPLAY_INVITE --><br /><dd><strong>{L_DISPLAY_INVITE}:</strong> {postrow.POSTER_INVITE_INVITE}</dd><!-- ENDIF -->
+			</edit>
+		</open>
+
+		<open src="styles/prosilver/template/overall_header.html">
+			<edit>
+				<find><![CDATA[					<a href="{U_SEARCH_SELF}">{L_SEARCH_SELF}</a>]]></find>
+				<action type="after-add"><![CDATA[					<!-- IF S_DISPLAY_INVITE --> &bull; <a href="{U_INVITE_A_FRIEND}">{L_ACP_INVITE}</a><!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+
+		<open src="styles/prosilver/template/viewtopic_body.html">
+			<edit>
+				<find><![CDATA[		<!-- IF postrow.POSTER_FROM --><dd><strong>{L_LOCATION}:</strong> {postrow.POSTER_FROM}</dd><!-- ENDIF -->]]></find>
+				<action type="after-add"><![CDATA[		<!-- IF S_T_DISPLAY_INVITE --><br /><dd><strong>{L_DISPLAY_INVITE}:</strong> {postrow.POSTER_INVITE_INVITE}</dd><!-- ENDIF -->
 		<!-- IF S_T_DISPLAY_REGISTER --><dd><strong>{L_DISPLAY_REGISTER}:</strong> {postrow.POSTER_INVITE_REGISTER}</dd><!-- ENDIF -->
 		<!-- IF postrow.POSTER_INVITE_NAME and S_T_DISPLAY_NAME --><dd><strong>{L_DISPLAY_NAME}:</strong> {postrow.POSTER_INVITE_NAME}</dd><!-- ENDIF -->]]></action>
-	    </edit>
-	</open>
-	
-	<open src="styles/prosilver/template/memberlist_view.html">
-		<edit>
-			<find><![CDATA[<!-- IF S_SHOW_ACTIVITY and POSTS -->
+			</edit>
+		</open>
+
+		<open src="styles/prosilver/template/memberlist_view.html">
+			<edit>
+				<find><![CDATA[			<!-- IF S_SHOW_ACTIVITY and POSTS -->
 				<dt>{L_ACTIVE_IN_FORUM}:</dt> <dd><!-- IF ACTIVE_FORUM --><strong><a href="{U_ACTIVE_FORUM}">{ACTIVE_FORUM}</a></strong><br />({ACTIVE_FORUM_POSTS} / {ACTIVE_FORUM_PCT})<!-- ELSE --> - <!-- ENDIF --></dd>
 				<dt>{L_ACTIVE_IN_TOPIC}:</dt> <dd><!-- IF ACTIVE_TOPIC --><strong><a href="{U_ACTIVE_TOPIC}">{ACTIVE_TOPIC}</a></strong><br />({ACTIVE_TOPIC_POSTS} / {ACTIVE_TOPIC_PCT})<!-- ELSE --> - <!-- ENDIF --></dd>
 			<!-- ENDIF -->]]></find>
-	        <action type="after-add"><![CDATA[<!-- IF S_P_DISPLAY_INVITE --><br /><dt>{L_DISPLAY_INVITE}:</dt> <dd>{POSTER_INVITE_INVITE}</dd><!-- ENDIF -->
+				<action type="after-add"><![CDATA[			<!-- IF S_P_DISPLAY_INVITE --><br /><dt>{L_DISPLAY_INVITE}:</dt> <dd>{POSTER_INVITE_INVITE}</dd><!-- ENDIF -->
 			<!-- IF S_P_DISPLAY_REGISTER --><dt>{L_DISPLAY_REGISTER}:</dt> <dd>{POSTER_INVITE_REGISTER}</dd><!-- ENDIF -->
 			<!-- IF POSTER_INVITE_NAME and S_P_DISPLAY_NAME --><dt>{L_DISPLAY_NAME}:</dt> <dd>{POSTER_INVITE_NAME}</dd><!-- ENDIF -->]]></action>
-	    </edit>
-	</open>
-	
-	<open src="styles/prosilver/template/ucp_register.html">
-	    <edit>
-	        <find><![CDATA[<dl>
+			</edit>
+		</open>
+
+		<open src="styles/prosilver/template/ucp_register.html">
+			<edit>
+				<find><![CDATA[	<dl>
 		<dt><label for="username">{L_USERNAME}:</label><br /><span>{L_USERNAME_EXPLAIN}</span></dt>
 		<dd><input type="text" tabindex="1" name="username" id="username" size="25" value="{USERNAME}" class="inputbox autowidth" title="{L_USERNAME}" /></dd>
 	</dl>]]></find>
-	        <action type="after-add"><![CDATA[<!-- IF S_DISPLAY_REGISTER_KEY -->
-		<dl>
-			<dt><label for="key">{L_REGISTER_KEY}:</label><br /><span>{L_REGISTER_KEY_EXPLAIN}</span></dt>
-			<dd><input type="text" tabindex="1" name="key" id="key" size="25" value="{REGISTER_KEY}" class="inputbox autowidth" title="{L_REGISTER_KEY}" /><!-- IF S_ENABLE_KEY_OPTIONAL -->&nbsp; ({L_OPTIONAL})<!-- ENDIF --></dd>
-		</dl>
-	<!-- ENDIF -->]]></action>
-	    </edit>
-		
-		<edit>
-	        <find><![CDATA[{S_HIDDEN_FIELDS}]]></find>
-	        <action type="after-add"><![CDATA[<!-- IF S_COPPA --><input type="hidden" value="{REGISTER_KEY}" name="key" class="button2" />&nbsp;<!-- ENDIF -->]]></action>
-	    </edit>
-	</open>
-	
-	<open src="styles/prosilver/template/ucp_agreement.html">
-	    <edit>
-			<find><![CDATA[{S_HIDDEN_FIELDS}]]></find>
-	        <action type="before-add"><![CDATA[<input type="hidden" value="{REGISTER_KEY}" name="key" class="button2" />]]></action>
-		</edit>
-	</open>
-	
-	<diy-instructions lang="en">
-		1. Browse to your SYSTEM-tab -> Administration Control Panel
-		2. Select "Invite A Friend" from the dropdown menu and click "Add Module".
-		   A notice saying that "Invite A Friend" was successfully installed and can be found by clicking GENERAL-tab should appear.
-		3. Delete /includes/invite folder from your server.
-		
-		Have fun with Invite A Friend.</diy-instructions>
+				<action type="after-add"><![CDATA[<!-- IF S_DISPLAY_REGISTER_KEY -->
+	<tr>
+		<td class="row1"><b class="genmed">{L_REGISTER_KEY}<!-- IF S_ENABLE_KEY_OPTIONAL -->&nbsp; ({L_OPTIONAL})<!-- ENDIF -->: </b><br /><span class="gensmall">{L_REGISTER_KEY_EXPLAIN}</span></td>
+		<td class="row2"><input class="post" type="text" name="key" size="25" value="{REGISTER_KEY}" /></td>
+	</tr>
+<!-- ENDIF -->]]></action>
+			</edit>
 
-</action-group>
+			<edit>
+				<find><![CDATA[		{S_HIDDEN_FIELDS}]]></find>
+				<action type="after-add"><![CDATA[		<!-- IF S_COPPA --><input type="hidden" value="{REGISTER_KEY}" name="key" class="button2" />&nbsp;<!-- ENDIF -->]]></action>
+			</edit>
+		</open>
 
+		<open src="styles/prosilver/template/ucp_agreement.html">
+			<edit>
+				<find><![CDATA[			{S_HIDDEN_FIELDS}]]></find>
+				<action type="before-add"><![CDATA[			<input type="hidden" value="{REGISTER_KEY}" name="key" class="button2" />]]></action>
+			</edit>
+		</open>
+
+		<diy-instructions lang="en">1. Browse to your SYSTEM-tab -> Administration Control Panel
+2. Select "Invite A Friend" from the dropdown menu and click "Add Module".
+A notice saying that "Invite A Friend" was successfully installed and can be found by clicking GENERAL-tab should appear.
+3. Delete /includes/invite folder from your server.
+
+Have fun with Invite A Friend. :)</diy-instructions>
+	</action-group>
 </mod>

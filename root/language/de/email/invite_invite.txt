@@ -1,0 +1,10 @@
+Hallo {RECIPIENT},
+diese Nachricht wird dir von deinem Freund "{INVITE_USERNAME}" geschickt,
+um dich auf folgende Webseite aufmerksam zu machen:
+{U_BOARD}
+
+Du kannst dich hier registrieren, wenn du möchtest: {URL_REGISTER_KEY}
+
+Dein Freund lässt dir folgende Nachricht zukommen:
+-------------------------------------------
+{MESSAGE}

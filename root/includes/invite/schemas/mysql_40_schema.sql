@@ -9,13 +9,6 @@ CREATE TABLE phpbb_invite_config (
 	PRIMARY KEY  (`config_name`)
 );
 
-# Table: 'phpbb_invite_message'
-CREATE TABLE phpbb_invite_message (
-	`language_iso` blob NOT NULL,
-	`message_type` tinyint(1) unsigned NOT NULL default '0',
-	`message` mediumblob NOT NULL
-);
-
 # Table: 'phpbb_invite_log'
 CREATE TABLE phpbb_invite_log (
 	`log_id` mediumint(8) unsigned NOT NULL auto_increment,

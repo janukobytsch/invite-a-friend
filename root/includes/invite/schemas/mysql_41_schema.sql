@@ -9,13 +9,6 @@ CREATE TABLE phpbb_invite_config (
 	PRIMARY KEY  (`config_name`)
 ) CHARACTER SET `utf8` COLLATE `utf8_bin`;
 
-# Table: 'phpbb_invite_message'
-CREATE TABLE phpbb_invite_message (
-	`language_iso` varchar(30) binary NOT NULL default '',
-	`message_type` tinyint(1) unsigned NOT NULL default '0',
-	`message` mediumtext NOT NULL
-) CHARACTER SET `utf8` COLLATE `utf8_bin`;
-
 # Table: 'phpbb_invite_log'
 CREATE TABLE phpbb_invite_log (
 	`log_id` mediumint(8) unsigned NOT NULL auto_increment,

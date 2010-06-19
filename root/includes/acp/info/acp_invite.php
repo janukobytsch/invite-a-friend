@@ -3,8 +3,8 @@
 * @author Bycoja bycoja@web.de
 *
 * @package acp
-* @version $Id: acp_invite.php 5.0.2 2009-04-15 22:35:59GMT Bycoja $
-* @copyright (c) 2008-2009 Bycoja
+* @version $Id: acp_invite.php 053 2009-11-24 22:35:59GMT Bycoja $
+* @copyright (c) 2008 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
@@ -22,7 +22,7 @@ if (!defined('IN_PHPBB'))
 */
 class acp_invite_info
 {
-	var $version 	= '0.5.2';
+	var $version 	= '0.5.3';
 	var $module		= array(
 		'acp_settings'	=> 'ACP_INVITE',
 		'acp_log'		=> 'ACP_INVITE_LOG',
@@ -152,9 +152,9 @@ class acp_invite_info
 			'cash_id_invite'			=> 1,
 			'cash_register'				=> 20,
 			'cash_id_register'			=> 1,
-			'enable_points'				=> 0,
-			'points_invite'				=> 5,
-			'points_register'			=> 20,
+			'enable_ultimate_points'	=> 0,
+			'ultimate_points_invite'	=> 5,
+			'ultimate_points_register'	=> 20,
 		);
 		
 		foreach ($config_ary as $k => $v)
@@ -166,38 +166,6 @@ class acp_invite_info
 		
 			$sql = 'INSERT INTO ' . INVITE_CONFIG_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
 			$db->sql_query($sql);
-		}
-		
-		// INVITE_MESSAGE_TABLE
-		$message_ary 	= array();
-		$message_langs	= array('en', 'de',);
-		
-		foreach ($message_langs as $k => $iso)  
-		{
-			$message_ary[$iso][] = @file_get_contents("{$phpbb_root_path}includes/invite/messages/$iso/invite.txt");
-			$message_ary[$iso][] = @file_get_contents("{$phpbb_root_path}includes/invite/messages/$iso/confirm.txt");
-		}
-		
-		foreach ($message_ary as $iso => $message_type_ary)
-		{
-			$sql = 'SELECT lang_id FROM ' . LANG_TABLE . "
-				WHERE lang_iso = '" . $iso . "'";
-			$result = $db->sql_query($sql);
-		
-			if ($db->sql_fetchrow($result))
-			{
-				foreach ($message_type_ary as $message_type => $text)
-				{
-					$sql_ary = array(
-						'language_iso'	=> $iso,
-						'message_type'	=> $message_type,
-						'message'		=> $text,
-					);
-					
-					$sql_mtype = 'INSERT INTO ' . INVITE_MESSAGE_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
-					$db->sql_query($sql_mtype);
-				}
-			}
 		}
 	}
 	
@@ -353,7 +321,7 @@ class acp_invite_info
 			$module->update_module_data($ucp_invite_module_data, true);
 		}
 	}
-	/*
+	
 	function delete_folder()
 	{
 		global $phpbb_root_path;
@@ -400,7 +368,7 @@ class acp_invite_info
 			@rmdir($path);
 		}
 	}
-	*/
+	
 	function upgrade()
 	{
 	}

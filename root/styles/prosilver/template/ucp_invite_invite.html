@@ -40,28 +40,12 @@
 					</fieldset>
 				<!-- ENDIF -->
 			</dd>
-		</dl>
+		</dl><br />
+		<!-- IF CAPTCHA_TEMPLATE -->
+			<!-- DEFINE $CAPTCHA_TAB_INDEX = 8 -->
+			<!-- INCLUDE {CAPTCHA_TEMPLATE} -->
+		<!-- ENDIF -->
 	</fieldset>
-	
-	<!-- IF S_CONFIRM_CODE -->
-		<span class="corners-bottom"><span></span></span></div>
-	</div><br/>
-	
-	<div class="panel">
-		<div class="inner"><span class="corners-top"><span></span></span>
-		
-		<h3>{L_INVITE_CONFIRMATION}</h3>
-		<p>{L_INVITE_CONFIRM_EXPLAIN}</p>
-		
-		<fieldset class="fields2">
-		<dl>
-			<dt><label for="form_confirm_code">{L_CONFIRM_CODE}:</label></dt>
-			<dd>{FORM_CONFIRM_IMG}</dd>
-			<dd><input type="text" name="form_confirm_code" id="form_confirm_code" size="8" maxlength="8" class="inputbox narrow" title="{L_CONFIRM_CODE}" /></dd>
-			<dd>{L_CONFIRM_CODE_EXPLAIN}</dd>
-		</dl>
-		</fieldset>
-	<!-- ENDIF -->
 
 	<span class="corners-bottom"><span></span></span></div>
 </div>

@@ -4,8 +4,8 @@
 * info_acp_invite [British English]
 *
 * @package language
-* @version $Id: info_acp_invite.php 5.0.2 2009-04-15 22:35:59GMT Bycoja $
-* @copyright (c) 2008-2009 Bycoja
+* @version $Id: info_acp_invite.php 053 2009-11-24 22:35:59GMT Bycoja $
+* @copyright (c) 2008 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 * Englische Übersetzung durch den Autor:
@@ -47,7 +47,7 @@ $lang = array_merge($lang, array(
 	'ACP_INVITE_LOG'					=> 'Invitation log',
 	'ACP_INVITE_LOG_EXPLAIN'			=> 'This lists all actions relating to the invitations which users can send to their friends.',
 	'JAVASCRIPT_NOTICE'					=> 'If you don’t activate <b>JavaScript</b>, you won’t be able to use all settings.',
-	
+
 	'ACC_TRANSFER'						=> 'Transfer',
 	'OPTIONAL'							=> 'Optional',
 	'INVITE_INVITE'						=> 'Invitation',
@@ -55,7 +55,7 @@ $lang = array_merge($lang, array(
 	'VIEWTOPIC'							=> 'Topic',
 	'MEMBERLIST_VIEW'					=> 'Profile',
 	'INVITE_INFO'						=> 'Details',
-	
+
 	'SETTINGS_ENABLE'							=> 'Enable »Invite A Friend«',
 	'SETTINGS_ENABLE_KEY'						=> 'Enable registration keys',
 	'SETTINGS_ENABLE_KEY_EXPLAIN'				=> 'A registration key, which is obtained by a user of this board, is required in order to register.',
@@ -73,7 +73,7 @@ $lang = array_merge($lang, array(
 	'SETTINGS_INVITE_YOURSELF_EXPLAIN'			=> 'Users can register with registration keys they sent to themselves.',
 	'SETTINGS_INVITE_LANGUAGE_SELECT'			=> 'Select language',
 	'SETTINGS_INVITE_LANGUAGE_SELECT_EXPLAIN'	=> 'The sender can select the invitation’s language.',
-	
+
 	'SETTINGS_QUEUE_TIME'						=> 'Queue',
 	'SETTINGS_QUEUE_TIME_EXPLAIN'				=> 'Users have to wait the here entered period of time in order to send another invitation.',
 	'SETTINGS_MESSAGE_CHARS'					=> 'Message length',
@@ -82,13 +82,13 @@ $lang = array_merge($lang, array(
 	'SETTINGS_SUBJECT_CHARS_EXPLAIN'			=> 'Minimum and maximum number of characters in subjects.',
 	'SETTINGS_MESSAGE_INVITE_EXPLAIN'			=> 'The invitations users send to their friends will be embed into the following message.',
 	'SETTINGS_MESSAGE_CONFIRM_EXPLAIN'			=> 'The following message will be send to the user if an invited friend registers.',
-	
+
 	'SETTINGS_LIMIT_INVITE'						=> 'Limit invitations',
 	'SETTINGS_LIMIT_INVITE_EXPLAIN'				=> '1st: The max. number of invitations is entered here (basic value).<br/>2nd: 1st value increases every x posts by 1 invitation.<br/>3rd: 1st value increases every x topics by 1 invitation.<br/>(0 = no limitation)',
 	'INVITE_DAILY'								=> 'Daily',
 	'INVITE_TOTAL'								=> 'Total',
 	'INVITATIONS'								=> 'Invitations',
-	
+
 	'DISPLAY_OPTIONS'							=> 'Display options',
 	'SETTINGS_DISPLAY_NAVIGATION'				=> 'Display link in navigation',
 	'SETTINGS_DISPLAY_NAVIGATION_EXPLAIN'		=> 'A link to the User Control Panel (Compose invitation) is displayed in the navigation.',
@@ -99,31 +99,31 @@ $lang = array_merge($lang, array(
 	'DISPLAY_INVITE'							=> 'Invitations sent',
 	'DISPLAY_REGISTER'							=> 'Registered friends',
 	'DISPLAY_NAME'								=> 'Registered friends (names)',
-	
+
+	'ERROR_EMAIL_DISABLED'						=> 'E-mails have been disabled, so you cannot send any invitations.<br /><br /><a href="%s">» Activate E-mail-functionality</a>',
 	'ERROR_INVITE_SETTINGS'						=> 'You have to fill in all fields correctly.',
 	'ERROR_MESSAGE_INVITE'						=> 'You have to fill in all invitations.',
 	'ERROR_MESSAGE_CONFIRM'						=> 'You have to fill in all confirmations.',
-	
+
 	'LOG_INVITE_SETTINGS_UPDATED'				=> '<strong>Altered ’Invite a friend’ settings</strong>',
 	'LOG_INVITE_INVITE'							=> '<strong>Invitation sent</strong><br/>» to „%1$s“',
 	'LOG_INVITE_CONFIRM'						=> '<strong>Confirmation sent</strong><br/>» to „%1$s“ in order to confirm the registration of „%2$s“',
 	'LOG_INVITE_REGISTER'						=> '<strong>Registration key used</strong><br/>» to register user „%1$s“',
 	'LOG_INVITE_ZEBRA'							=> '<strong>User „%2$s“ added as friend</strong><br/>» of „%1$s“',
-	
+
 	//Plugins
-	'CASH_SETTINGS'					=> 'Cash settings',
-	'CASH_ENABLE'					=> 'Enable cash',
-	'CASH_INVITE'					=> 'Cash per invitation',
-	'CASH_INVITE_EXPLAIN'			=> 'The amount of cash allocated per invitation.',
-	'CASH_REGISTER'					=> 'Cash per registration',
-	'CASH_REGISTER_EXPLAIN'			=> 'The amount of cash allocated per invited friend, who registers a new account.',
+	'ULTIMATE_POINTS_SETTINGS'			=> 'Ultimate Points settings',
+	'ULTIMATE_POINTS_ENABLE'			=> 'Enable Ultimate Points',
+	'ULTIMATE_POINTS_INVITE'			=> 'Ultimate points per invitation',
+	'ULTIMATE_POINTS_INVITE_EXPLAIN'	=> 'The amount of ultimate points allocated per invitation.',
+	'ULTIMATE_POINTS_REGISTER'			=> 'Ultimate points per registration',
+	'ULTIMATE_POINTS_REGISTER_EXPLAIN'	=> 'The amount of ultimate points allocated per invited friend, who registers a new account.',
 
-	'POINTS_SETTINGS'				=> 'Points settings',
-	'POINTS_ENABLE'					=> 'Enable points',
-	'POINTS_INVITE'					=> 'Points per invitation',
-	'POINTS_INVITE_EXPLAIN'			=> 'The amount of points allocated per invitation.',
-	'POINTS_REGISTER'				=> 'Points per registration',
-	'POINTS_REGISTER_EXPLAIN'		=> 'The amount of points allocated per invited friend, who registers a new account.',
-
+	'CASH_SETTINGS'						=> 'Cash settings',
+	'CASH_ENABLE'						=> 'Enable cash',
+	'CASH_INVITE'						=> 'Cash per invitation',
+	'CASH_INVITE_EXPLAIN'				=> 'The amount of cash allocated per invitation.',
+	'CASH_REGISTER'						=> 'Cash per registration',
+	'CASH_REGISTER_EXPLAIN'				=> 'The amount of cash allocated per invited friend, who registers a new account.',
 ));
 ?>

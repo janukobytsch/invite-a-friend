@@ -4,8 +4,8 @@
 * info_acp_invite [Deutsch — Du]
 *
 * @package language
-* @version $Id: info_ucp_invite.php 5.0.2 2009-04-15 22:35:59GMT Bycoja $
-* @copyright (c) 2008-2009 Bycoja
+* @version $Id: info_ucp_invite.php 053 2009-11-24 22:35:59GMT Bycoja $
+* @copyright (c) 2008 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 * Deutsche Übersetzung durch den Autor:
@@ -39,30 +39,27 @@ $lang = array_merge($lang, array(
 	'UCP_INVITE'					=> 'Freunde einladen',
 	'UCP_INVITE_INVITE'				=> 'Einladung schreiben',
 	'UCP_INVITE_DESCRIPTION'		=> 'Sendet eine E-Mail an einen Freund und macht ihn auf dieses Forum aufmerksam.',
-	
+
 	'RECIPIENT_EMAIL'				=> 'E-Mail-Adresse des Freundes',
 	'RECIPIENT_NAME'				=> 'Name des Freundes',
 	'SEND_CONFIRM'					=> 'Bestätigung senden',
 	'SEND_CONFIRM_METHOD'			=> 'Bestätigung empfangen als',
 	'INVITE_ZEBRA'					=> 'Zur Freundesliste hinzufügen',
 	'OPTIONAL'						=> 'Optional',
-	
-	'INVITE_CONFIRM'				=> 'Bestätigung - Freunde einladen',
-	'INVITE_CONFIRMATION'			=> 'Bestätigung der Einladung',
-	'INVITE_CONFIRM_EXPLAIN'		=> 'Um automatisiertes Versenden von Einladungen zu unterbinden, musst du einen Bestätigungscode angeben. Der Code ist in dem Bild unterhalb dieses Textes enthalten. Wenn du nur über ein eingeschränktes Sehvermögen verfügst oder aus einem anderen Grund den Code nicht lesen kannst, kontaktiere bitte die Board-Administration.',
-	
+
 	'INVITE_NO_REGISTER_KEY'		=> 'Falls du keinen Registrierungs-Schlüssel angibst: ',
 	'REGISTER_KEY'					=> 'Registrierungs-Schlüssel',
 	'REGISTER_KEY_EXPLAIN'			=> 'Von einem Benutzer des Boards per E-Mail erhalten.',
 	'REGISTER_KEY_DISABLED'			=> 'Zur Zeit wird kein Registrierungs-Schlüssel benötigt.',
-	
+
 	'QUEUE_QUEUE'					=> 'Du musst bis zum Versenden der nächsten Nachricht noch eine Weile warten.',
 	'QUEUE_LIMIT_INVITE_DAY'		=> 'Du hast das Tageslimit erreicht und kannst heute keine weiteren Einladungen versenden.',
 	'QUEUE_LIMIT_INVITE_USER'		=> 'Du hast das Benutzerlimit erreicht und kannst keine weiteren Einladungen versenden.',
 	'INVITE_DISABLED'				=> 'Das Einladen von Freunden wurde von der Board-Administration deaktiviert.',
 	'INVITE_YOURSELF'				=> 'Du kannst dich nicht mit von dir versendeten Registrierungs-Schlüsseln registrieren.',
 	'INVITE_TO_YOUR_EMAIL'			=> 'Du kannst dich nicht selbst einladen.',
-	
+
+	'EMAIL_DISABLED'				=> 'Die E-Mail-Funktionalität des Boards ist deaktiviert.',
 	'EMAIL_SENT_FAILURE'			=> 'Beim Versenden der E-Mail ist ein Fehler aufgetreten.',
 	'EMAIL_SENT_SUCCESS'			=> 'Die E-Mail wurde erfolgreich versendet.',
 	'INVITE_MULTIPLE'				=> 'Die angegebene E-Mail-Adresse hat bereits eine Einladung erhalten.',
@@ -74,6 +71,9 @@ $lang = array_merge($lang, array(
 	'TOO_LONG_REGISTER_REAL_NAME'	=> 'Der angegebene Name ist zu lang.',
 	'TOO_LONG_SUBJECT'				=> 'Der angegebene Betreff ist zu lang.',
 	'TOO_LONG_MESSAGE'				=> 'Die angegebene Nachricht ist zu lang.',
-	
+
+	// CAPTCHA
+	'POST_CONFIRM_EXPLAIN'			=> 'Um automatisiertes Versenden von Einladungen zu unterbinden, musst du einen Bestätigungscode angeben. Der Code ist in dem Bild unterhalb dieses Textes enthalten. Wenn du nur über ein eingeschränktes Sehvermögen verfügst oder aus einem anderen Grund den Code nicht lesen kannst, kontaktiere bitte die Board-Administration.',
+
 ));
 ?>
