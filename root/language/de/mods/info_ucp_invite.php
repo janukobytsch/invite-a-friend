@@ -1,13 +1,15 @@
 <?php
 /**
 * @author Bycoja bycoja@web.de
-* info_acp_invite [Deutsch]
+* info_acp_invite [Deutsch — Du]
 *
 * @package language
-* @version $Id: info_acp_invite.php 9017 2009-02-28 12:24:11Z Bycoja $
-* @copyright (c) 2008 Bycoja
+* @version $Id: info_ucp_invite.php 5.0.1 2009-04-12 22:35:59GMT Bycoja $
+* @copyright (c) 2008-2009 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
+* Deutsche Übersetzung durch den Autor:
+* Bycoja
 */
 
 /**
@@ -49,6 +51,7 @@ $lang = array_merge($lang, array(
 	'INVITE_CONFIRMATION'			=> 'Bestätigung der Einladung',
 	'INVITE_CONFIRM_EXPLAIN'		=> 'Um automatisiertes Versenden von Einladungen zu unterbinden, musst du einen Bestätigungscode angeben. Der Code ist in dem Bild unterhalb dieses Textes enthalten. Wenn du nur über ein eingeschränktes Sehvermögen verfügst oder aus einem anderen Grund den Code nicht lesen kannst, kontaktiere bitte die Board-Administration.',
 	
+	'INVITE_NO_REGISTER_KEY'		=> 'Falls du keinen Registrierungs-Schlüssel angibst: ',
 	'REGISTER_KEY'					=> 'Registrierungs-Schlüssel',
 	'REGISTER_KEY_EXPLAIN'			=> 'Von einem Benutzer des Boards per E-Mail erhalten.',
 	'REGISTER_KEY_DISABLED'			=> 'Zur Zeit wird kein Registrierungs-Schlüssel benötigt.',

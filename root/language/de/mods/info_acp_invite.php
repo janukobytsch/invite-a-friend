@@ -1,13 +1,15 @@
 <?php
 /**
 * @author Bycoja bycoja@web.de
-* info_acp_invite [Deutsch]
+* info_acp_invite [Deutsch — Du]
 *
 * @package language
-* @version $Id: info_acp_invite.php 9017 2009-02-28 12:24:11Z Bycoja $
-* @copyright (c) 2008 Bycoja
+* @version $Id: info_acp_invite.php 5.0.1 2009-04-12 22:35:59GMT Bycoja $
+* @copyright (c) 2008-2009 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
+* Deutsche Übersetzung durch den Autor:
+* Bycoja
 */
 
 /**
@@ -39,11 +41,13 @@ $lang = array_merge($lang, array(
 ));
 
 $lang = array_merge($lang, array(
+	'ACP_INVITE_INSTALLED'				=> '»Freunde einladen« wurde erfolgreich installiert und kann unter dem Reiter "Allgemein" aufgerufen werden.<br/><br/>%s»Freunde einladen« aufrufen%s',
 	'ACP_INVITE'						=> 'Freunde einladen',
 	'ACP_INVITE_EXPLAIN'				=> 'Hier kannst du die Einstellungen bezüglich der E-Mails, mit denen Benutzer Freunde werben können, vornehmen.',
 	'ACP_INVITE_LOG'					=> 'Einladungs-Protokoll',
 	'ACP_INVITE_LOG_EXPLAIN'			=> 'Diese Liste zeigt alle Vorgänge, die mit den von Benutzern versendeten Einladungen in Verbindung stehen. Du kannst dir auch detaillierte Informationen zu einzelnen Benutzern anzeigen lassen.',
 	
+	'ACC_TRANSFER'						=> 'Übernehmen',
 	'OPTIONAL'							=> 'Optional',
 	'INVITE_INVITE'						=> 'Einladung',
 	'INVITE_CONFIRM'					=> 'Bestätigung',
@@ -58,6 +62,7 @@ $lang = array_merge($lang, array(
 	'SETTINGS_CONFIRM_EXPLAIN'					=> 'Sendet eine E-Mail zur Bestätigung an einen Benutzer, wenn sich der eingeladene Freund registriert.',
 	'SETTINGS_ZEBRA'							=> 'Freundesliste',
 	'SETTINGS_ZEBRA_EXPLAIN'					=> 'Eingeladene Freunde automatisch zur Freundesliste hinzufügen.',
+	'SETTINGS_INVITE_ACC_ACTIVATION_EXPLAIN'	=> 'Diese Einstellung legt fest, ob Benutzer, die bei der Registrierung einen Registrierungs-Schlüssel angeben, sofortigen Zugang zum Board haben. Du kannst auch die Registrierungs-Einstellung übernehmen.',
 	'SETTINGS_INVITE_CONFIRM_CODE'				=> 'CAPTCHA verwenden',
 	'SETTINGS_INVITE_CONFIRM_CODE_EXPLAIN'		=> 'Um automatisiertes Versenden von Einladungen zu unterbinden, muss beim Versenden ein Bestätigungscode eingegeben werden.',
 	'SETTINGS_INVITE_MULTIPLE'					=> 'Mehrfache Einladung',
@@ -77,7 +82,7 @@ $lang = array_merge($lang, array(
 	'SETTINGS_MESSAGE_CONFIRM_EXPLAIN'			=> 'Die Nachricht, die an einen Benutzer versendet wird, wenn sich ein geworbener Freund registriert.',
 	
 	'SETTINGS_LIMIT_INVITE'						=> 'Beschränkung der Einladungen',
-	'SETTINGS_LIMIT_INVITE_EXPLAIN'				=> 'Ein Benutzer kann maximal die im 1. Feld angegebene Anzahl Einladungen versenden. Diese Anzahl erhöht sich alle x (2. Feld) Beiträge um 1 Einladung; 0 = keine Beschränkung',
+	'SETTINGS_LIMIT_INVITE_EXPLAIN'				=> '1. Feld: Die maximale Anzahl versendeter Einladungen (Grundwert).<br/>2. Feld: 1. Wert erhöht sich alle x Beiträge um 1 Einladung.<br/>3. Feld: 1. Wert erhöht sich alle x Themen um 1 Einladung.<br/>(0 = keine Beschränkung)',
 	'INVITE_DAILY'								=> 'Täglich',
 	'INVITE_TOTAL'								=> 'Insgesamt',
 	'INVITATIONS'								=> 'Einladungen',

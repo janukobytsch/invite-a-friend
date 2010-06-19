@@ -1,10 +1,10 @@
 <?php
-/**
+/** 
 * @author Bycoja bycoja@web.de
 *
 * @package phpBB3
-* @version $Id: functions_invite.php 9166 2009-02-20 16:43:22Z Bycoja $
-* @copyright (c) 2008 Bycoja
+* @version $Id: functions_invite.php 5.0.1 2009-04-12 22:35:59GMT Bycoja $
+* @copyright (c) 2008-2009 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
@@ -17,16 +17,14 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-define('LOG_ENTRIES_PER_PAGE', 	20);
-
-define('EMAIL', 	0);
-define('PM', 		1);
-define('OPTIONAL', 	2);
-
 define('REGISTER_KEY_DISABLED',		'key_disabled');
 define('REGISTER_KEY_CHARSET',		'abcdefghijkmnpqrstuvwxyz123456789ABCDEFGHIJKLMNPQRSTUVWXYZ');
 define('REGISTER_KEY_MIN_CHARS',	12);
 define('REGISTER_KEY_MAX_CHARS',	18);
+define('LOG_ENTRIES_PER_PAGE', 	20);
+define('EMAIL', 	0);
+define('PM', 		1);
+define('OPTIONAL', 	2);
 
 $INVITE_MESSAGE_TYPE = array(
 	'invite'	=> 0,
@@ -53,6 +51,22 @@ class invite
 	 */
 	function invite()
 	{
+		global $db;
+		
+		// If the module hasn't been added yet, the database tables don't exist
+		$sql = 'SELECT *
+			FROM ' . MODULES_TABLE . "
+			WHERE module_langname = 'ACP_INVITE'
+				AND module_class = 'acp'";
+		$result = $db->sql_query($sql);
+		$row 	= $db->sql_fetchrow($result);
+		$db->sql_freeresult($result);
+
+		if (!$row)
+		{
+			return;
+		}
+		
 		$this->get_config();
 	}
 	
@@ -457,7 +471,7 @@ class invite
 	/**
 	* function valid_key
 	*/
-	function valid_key($key)
+	function valid_key($key, $key_used = true)
 	{
 		global $db;
 		
@@ -478,7 +492,9 @@ class invite
 			return true;
 		}
 		
-		$sql 		= 'SELECT COUNT(log_id) AS valid FROM ' . INVITE_LOG_TABLE . " WHERE register_key = '" . $db->sql_escape($key) . "' AND register_key_used = 0";
+		$sql_add	= ($key_used) ? ' AND register_key_used = 0' : '';
+		
+		$sql 		= 'SELECT COUNT(log_id) AS valid FROM ' . INVITE_LOG_TABLE . " WHERE register_key = '" . $db->sql_escape($key) . "'$sql_add";
 		$result 	= $db->sql_query($sql);
 		$valid		= $db->sql_fetchfield('valid');
 		

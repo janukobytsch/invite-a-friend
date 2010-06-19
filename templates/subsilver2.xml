@@ -20,15 +20,26 @@
 			</author>
 		</author-group>
 		
-		<mod-version>0.5.0</mod-version>
+		<mod-version>0.5.1</mod-version>
 		
 		<installation>
 			<level>easy</level>
-			<time>600</time>
+			<time>720</time>
 			<target-version>3.0.4</target-version>
 		</installation>
 
 	<history>
+		<entry>
+			<date>2009-04-12</date>
+			<rev-version>0.5.1 [Beta]</rev-version>
+			<changelog lang="en">
+				<change>[Added] Account activation</change>
+				<change>[Added] Limitation: Topics</change>
+				<change>[Added] Automatically create sql tables, install permissions, ...</change>
+				<change>[Added] Automatically add messages referring to installed languages</change>
+				<change>[Fixed] Report #013: COPPA Bug</change>
+			</changelog>
+		</entry>
 		<entry>
 			<date>2009-04-08</date>
 			<rev-version>0.5.0 [Beta]</rev-version>
@@ -149,6 +160,13 @@
 	        <find><![CDATA[</table>]]></find>
 	        <action type="after-add"><![CDATA[<!-- IF S_COPPA --><input type="hidden" value="{REGISTER_KEY}" name="key" class="button2" />&nbsp;<!-- ENDIF -->]]></action>
 	    </edit>
+	</open>
+	
+	<open src="styles/subsilver2/template/ucp_agreement.html">
+	    <edit>
+			<find><![CDATA[{S_HIDDEN_FIELDS}]]></find>
+	        <action type="before-add"><![CDATA[<input type="hidden" value="{REGISTER_KEY}" name="key" class="button2" />]]></action>
+		</edit>
 	</open>
 	
 	<diy-instructions lang="en">Follow the diy-instructions in install.xml!</diy-instructions>

@@ -1,10 +1,10 @@
 <?php
-/**
+/** 
 * @author Bycoja bycoja@web.de
 *
 * @package ucp
-* @version $Id: ucp_profile.php 9016 2009-02-28 19:29:57Z Bycoja $
-* @copyright (c) 2008 Bycoja
+* @version $Id: ucp_invite.php 5.0.1 2009-04-12 22:35:59GMT Bycoja $
+* @copyright (c) 2008-2009 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
@@ -52,21 +52,6 @@ class ucp_invite
 		{
 		    trigger_error('NOT_AUTHORISED');
 		}
-		
-		// [+] Development
-		$cache_file		= array();
-		
-		$cache_file[] 	= $phpbb_root_path . 'cache/tpl_prosilver_ucp_invite_invite.html.' . $phpEx;
-		$cache_file[] 	= $phpbb_root_path . 'cache/tpl_subsilver2_ucp_invite_invite.html.' . $phpEx;
-		
-		foreach ($cache_file as $k => $v)
-		{
-			if (file_exists($v))
-			{
-				unlink($v);
-			}
-		}
-		// [-] Development
 		
 		$email_data	= array(
 			'message_type'			=> $INVITE_MESSAGE_TYPE['invite'],
@@ -120,6 +105,12 @@ class ucp_invite
 				$error[] 	= $user->lang['QUEUE_QUEUE'];
 			}
 			
+			// User topics
+			$sql 			= 'SELECT COUNT(topic_id) AS user_topics FROM ' . TOPICS_TABLE . ' WHERE topic_poster = ' . $user->data['user_id'];
+			$result 		= $db->sql_query($sql);
+			$user_topics	= (int) $db->sql_fetchfield('user_topics');
+			$db->sql_freeresult();
+			
 			// Other limits
 			$sql 			= 'SELECT COUNT(log_id) AS invite_num FROM ' . INVITE_LOG_TABLE . ' WHERE invite_user_id = ' . $user->data['user_id'] . ' AND invite_time >= ' . $last_day;
 			$result 		= $db->sql_query($sql);
@@ -134,14 +125,15 @@ class ucp_invite
 			foreach ($limit_ary as $k => $v)
 			{
 				// Don't divide by zero
-				$additional_invite = ($invite->config[$k . '_posts'] == 0) ? 0 : floor($user->data['user_posts'] / $invite->config[$k . '_posts']);
+				$additional_invite_p = ($invite->config[$k . '_posts'] == 0) ? 0 : floor($user->data['user_posts'] / $invite->config[$k . '_posts']);
+				$additional_invite_t = ($invite->config[$k . '_topics'] == 0) ? 0 : floor($user_topics / $invite->config[$k . '_topics']);
 				
 				if ($invite->config[$k] == 0 && $invite->config[$k . '_posts'] == 0)
 				{
 					continue;
 				}
 				
-				if ($v >= $invite->config[$k] + $additional_invite)
+				if ($v >= $invite->config[$k] + $additional_invite_p + $additional_invite_t)
 				{
 					$queue		= true;
 					$error[]	= $user->lang['QUEUE_' . strtoupper($k)];

@@ -1,13 +1,15 @@
 <?php
 /**
 * @author Bycoja bycoja@web.de
-* info_acp_invite [Deutsch]
+* info_acp_invite [British English]
 *
 * @package language
-* @version $Id: info_acp_invite.php 9017 2009-02-28 12:24:11Z Bycoja $
-* @copyright (c) 2008 Bycoja
+* @version $Id: info_ucp_invite.php 5.0.1 2009-04-12 22:35:59GMT Bycoja $
+* @copyright (c) 2008-2009 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
+* Englische Übersetzung durch den Autor:
+* Bycoja
 */
 
 /**
@@ -49,6 +51,7 @@ $lang = array_merge($lang, array(
 	'INVITE_CONFIRMATION'			=> 'Confirm invitation',
 	'INVITE_CONFIRM_EXPLAIN'		=> 'To prevent automated invitations the board requires you to enter a confirmation code. The code is displayed in the image you should see below. If you are visually impaired or cannot otherwise read this code please contact the Board Administrator.',
 	
+	'INVITE_NO_REGISTER_KEY'		=> 'If you don’t enter a registration key: ',
 	'REGISTER_KEY'					=> 'Registration key',
 	'REGISTER_KEY_EXPLAIN'			=> 'Obtained by a user of this board via e-mail.',
 	'REGISTER_KEY_DISABLED'			=> 'You don’t need a registration key in order to register at the moment.',

@@ -69,6 +69,13 @@
 		</dd>
 	</dl>
 	<dl>
+		<dt><label for="invite_require_activation">{L_ACC_ACTIVATION}:</label><br /><span>{L_SETTINGS_INVITE_ACC_ACTIVATION_EXPLAIN}</span></dt>
+		<dd>
+			<input type="radio" class="radio" id="invite_require_activation" name="invite_require_activation"<!-- IF S_INVITE_REQUIRE_ACTIVATION eq 3 --> checked="checked"<!-- ENDIF --> value="3"/>&nbsp;{L_ACC_TRANSFER}&nbsp;&nbsp;<input type="radio" class="radio" name="invite_require_activation"<!-- IF not S_INVITE_REQUIRE_ACTIVATION --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_ACC_NONE}
+			<!-- IF S_EMAIL_ENABLE -->&nbsp;&nbsp;<input type="radio" class="radio" name="invite_require_activation"<!-- IF S_INVITE_REQUIRE_ACTIVATION eq 1 --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_ACC_USER}&nbsp;&nbsp;<input type="radio" class="radio" name="invite_require_activation"<!-- IF S_INVITE_REQUIRE_ACTIVATION eq 2 --> checked="checked"<!-- ENDIF --> value="2"/>&nbsp;{L_ACC_ADMIN}<!-- ENDIF -->
+		</dd>
+	</dl>
+	<dl>
 		<dt><label for="invite_confirm_code">{L_SETTINGS_INVITE_CONFIRM_CODE}:</label><br /><span>{L_SETTINGS_INVITE_CONFIRM_CODE_EXPLAIN}</span></dt>
 		<dd><input type="radio" class="radio" id="invite_confirm_code" name="invite_confirm_code"<!-- IF S_INVITE_CONFIRM_CODE --> checked="checked"<!-- ENDIF --> value="1"/>&nbsp;{L_YES}&nbsp;&nbsp;<input type="radio" class="radio" name="invite_confirm_code"<!-- IF not S_INVITE_CONFIRM_CODE --> checked="checked"<!-- ENDIF --> value="0"/>&nbsp;{L_NO}</dd>
 	</dl>
@@ -107,19 +114,12 @@
 	<dl>
 		<dt><label for="limit_invite_day">{L_SETTINGS_LIMIT_INVITE}:</label><br /><span>{L_SETTINGS_LIMIT_INVITE_EXPLAIN}</span></dt>
 		<dd>
-			<table>
-			<tr><td>{L_INVITE_DAILY}:</td><td><input size="5" maxlength="5" type="text" id="limit_invite_day" name="limit_invite_day" value="{S_LIMIT_INVITE_DAY}" />&nbsp;{L_INVITATIONS}&nbsp;&nbsp;<input size="5" maxlength="5" type="text" id="limit_invite_day_posts" name="limit_invite_day_posts" value="{S_LIMIT_INVITE_DAY_POSTS}" />&nbsp;{L_POSTS}</td></tr>
-			<tr><td>{L_INVITE_TOTAL}:</td><td><input size="5" maxlength="5" type="text" id="limit_invite_user" name="limit_invite_user" value="{S_LIMIT_INVITE_USER}" />&nbsp;{L_INVITATIONS}&nbsp;&nbsp;<input size="5" maxlength="5" type="text" id="limit_invite_user_posts" name="limit_invite_user_posts" value="{S_LIMIT_INVITE_USER_POSTS}" />&nbsp;{L_POSTS}</td></tr>
+			<table style="border: none; font-size: 1.15em;">
+			<tr><td><strong>{L_INVITE_DAILY}:</strong></td><td><input size="5" maxlength="5" type="text" id="limit_invite_day" name="limit_invite_day" value="{S_LIMIT_INVITE_DAY}" />&nbsp;{L_INVITATIONS}&nbsp;&nbsp;<input size="5" maxlength="5" type="text" id="limit_invite_day_posts" name="limit_invite_day_posts" value="{S_LIMIT_INVITE_DAY_POSTS}" />&nbsp;{L_POSTS}&nbsp;&nbsp;<input size="5" maxlength="5" type="text" id="limit_invite_day_topics" name="limit_invite_day_topics" value="{S_LIMIT_INVITE_DAY_TOPICS}" />&nbsp;{L_TOPICS}</td></tr>
+			<tr><td><strong>{L_INVITE_TOTAL}:</strong></td><td><input size="5" maxlength="5" type="text" id="limit_invite_user" name="limit_invite_user" value="{S_LIMIT_INVITE_USER}" />&nbsp;{L_INVITATIONS}&nbsp;&nbsp;<input size="5" maxlength="5" type="text" id="limit_invite_user_posts" name="limit_invite_user_posts" value="{S_LIMIT_INVITE_USER_POSTS}" />&nbsp;{L_POSTS}&nbsp;&nbsp;<input size="5" maxlength="5" type="text" id="limit_invite_user_topics" name="limit_invite_user_topics" value="{S_LIMIT_INVITE_USER_TOPICS}" />&nbsp;{L_TOPICS}</td></tr>
 			</table>
 		</dd>
 	</dl>
-	<!-- <dl>
-		<dt><label for="limit_invite_group">{L_SETTINGS_LIMIT_INVITE_GROUP}:</label><br /><span>{L_SETTINGS_LIMIT_INVITE_GROUP_EXPLAIN}</span></dt>
-		<dd>
-			<input size="5" maxlength="5" type="text" id="limit_invite_group" name="limit_invite_group" value="{S_LIMIT_INVITE_GROUP}" />
-			<select style="margin-left: 8px;" id="group_id" name="group_id">{S_SELECT_GROUPS}</select>
-		</dd>
-	</dl>-->
 </fieldset>
 
 <fieldset>

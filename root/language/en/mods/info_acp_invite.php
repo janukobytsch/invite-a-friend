@@ -1,13 +1,15 @@
 <?php
 /**
 * @author Bycoja bycoja@web.de
-* info_acp_invite [Deutsch]
+* info_acp_invite [British English]
 *
 * @package language
-* @version $Id: info_acp_invite.php 9017 2009-02-28 12:24:11Z Bycoja $
-* @copyright (c) 2008 Bycoja
+* @version $Id: info_acp_invite.php 5.0.1 2009-04-12 22:35:59GMT Bycoja $
+* @copyright (c) 2008-2009 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
+* Englische Übersetzung durch den Autor:
+* Bycoja
 */
 
 /**
@@ -39,11 +41,13 @@ $lang = array_merge($lang, array(
 ));
 
 $lang = array_merge($lang, array(
+	'ACP_INVITE_INSTALLED'				=> '»Invite A Friend« has been successfully installed and can be accessed in "General".<br/><br/>%sGo to »Invite A Friend«%s',
 	'ACP_INVITE'						=> 'Invite a friend',
 	'ACP_INVITE_EXPLAIN'				=> 'Here you can set all default settings for the e-mails which users can send to their friends.',
 	'ACP_INVITE_LOG'					=> 'Invitation log',
 	'ACP_INVITE_LOG_EXPLAIN'			=> 'This lists all actions relating to the invitations which users can send to their friends.',
 	
+	'ACC_TRANSFER'						=> 'Transfer',
 	'OPTIONAL'							=> 'Optional',
 	'INVITE_INVITE'						=> 'Invitation',
 	'INVITE_CONFIRM'					=> 'Confirmation',
@@ -58,6 +62,7 @@ $lang = array_merge($lang, array(
 	'SETTINGS_CONFIRM_EXPLAIN'					=> 'If an invited friend registers, a confirmation e-mail will be send to the appropriate user.',
 	'SETTINGS_ZEBRA'							=> 'Add friend',
 	'SETTINGS_ZEBRA_EXPLAIN'					=> 'If an invited friend registers, he will be added to the friendlist of the user who sent the invitation.',
+	'SETTINGS_INVITE_ACC_ACTIVATION_EXPLAIN'	=> 'This determines whether users, who enter a registration key, have immediate access to the board or if confirmation is required. You can also transfer this setting from »User registration settings«.',
 	'SETTINGS_INVITE_CONFIRM_CODE'				=> 'Use CAPTCHA',
 	'SETTINGS_INVITE_CONFIRM_CODE_EXPLAIN'		=> 'In order to prohibit sending invitations automatically a confirmation code has to be entered.',
 	'SETTINGS_INVITE_MULTIPLE'					=> 'Allow multiple invitations',
@@ -77,8 +82,7 @@ $lang = array_merge($lang, array(
 	'SETTINGS_MESSAGE_CONFIRM_EXPLAIN'			=> 'The following message will be send to the user if an invited friend registers.',
 	
 	'SETTINGS_LIMIT_INVITE'						=> 'Limit invitations',
-	
-	'SETTINGS_LIMIT_INVITE_EXPLAIN'				=> 'The maximum number of invitations per user is entered in the first input field. The number of maximum invitations increases every x (second input field) posts by one invitation; 0 = no limitation',
+	'SETTINGS_LIMIT_INVITE_EXPLAIN'				=> '1st: The max. number of invitations is entered here (basic value).<br/>2nd: 1st value increases every x posts by 1 invitation.<br/>3rd: 1st value increases every x topics by 1 invitation.<br/>(0 = no limitation)',
 	'INVITE_DAILY'								=> 'Daily',
 	'INVITE_TOTAL'								=> 'Total',
 	'INVITATIONS'								=> 'Invitations',

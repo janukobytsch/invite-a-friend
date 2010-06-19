@@ -3,10 +3,14 @@
 * @author Bycoja bycoja@web.de
 *
 * @package acp
-* @version $Id: acp_invite.php 9053 2009-02-20 18:07:59Z Bycoja $
-* @copyright (c) 2008 Bycoja
+* @version $Id: acp_invite.php 5.0.1 2009-04-12 22:35:59GMT Bycoja $
+* @copyright (c) 2008-2009 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
+*/
+
+/**
+* @ignore
 */
 if (!defined('IN_PHPBB'))
 {
@@ -15,9 +19,6 @@ if (!defined('IN_PHPBB'))
 
 /**
 * @package acp
-* @todo - BBCode bei Benachrichtigung durch PM?
-*             - Sender der Einladung hat keine eingetragene E-Mail für Bestätigung
-*             - Aktualisieren der Sprachen, um alte Nachrichten nicht weiterhin eintragen zu müssen
 */
 class acp_invite
 {
@@ -45,21 +46,6 @@ class acp_invite
 			$new_config[$k] = utf8_normalize_nfc(request_var($k, $v, true));
 		}
 		
-		// [+] Development
-		$cache_file		= array();
-		
-		$cache_file[] 	= $phpbb_root_path . 'cache/ctpl_admin_acp_invite.html.' . $phpEx;
-		$cache_file[] 	= $phpbb_root_path . 'cache/ctpl_admin_acp_invite_log.html.' . $phpEx;
-		
-		foreach ($cache_file as $k => $v)
-		{
-			if (file_exists($v))
-			{
-				unlink($v);
-			}
-		}
-		// [-] Development
-		
 		switch ($mode)
 		{
 			case 'settings':
@@ -86,7 +72,7 @@ class acp_invite
 							$sql_ary = array(
 								'language_iso'	=> $iso,
 								'message_type'	=> $int,
-								'message'		=> '',
+								'message'		=> $iso . '_' . $user->lang['INVITE_' . strtoupper(array_search($int, $INVITE_MESSAGE_TYPE))],
 							);
 							
 							$sql = 'INSERT INTO ' . INVITE_MESSAGE_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
@@ -100,6 +86,41 @@ class acp_invite
 					}
 				}
 				
+				/*
+				* Delete languages, which are not used anymore
+				* Not necessary as old languages are simply not displayed in language select
+				*
+				$lang_update		= (request_var('lang_update', '')) ? true : false;
+				
+				if ($lang_update)
+				{
+					$lang_database 	= array();
+					
+					$sql 			= 'SELECT DISTINCT language_iso FROM ' . INVITE_MESSAGE_TABLE;
+					$result			= $db->sql_query($sql);
+					
+					while ($row = $db->sql_fetchrow($result))
+					{
+						$lang_database[] = $row['language_iso'];
+					}
+					$db->sql_freeresult($result);
+					
+					foreach ($lang_database as $key => $iso)
+					{
+						$sql 		= 'SELECT COUNT(lang_id) AS check_exist FROM ' . LANG_TABLE . ' WHERE lang_iso = "' . $db->sql_escape($iso) . '"';
+						$result		= $db->sql_query($sql);
+						$lang_exist = (int) $db->sql_fetchfield('check_exist');
+						$db->sql_freeresult($result);
+						
+						if (!$lang_exist)
+						{
+							$sql 		= 'DELETE FROM ' . INVITE_MESSAGE_TABLE . ' WHERE language_iso = "' . $db->sql_escape($iso) . '"';
+							$result		= $db->sql_query($sql);
+						}
+					}
+				}
+				*/
+				
 				if ($submit)
 				{
 					$new_config['queue_time']= $queue_time_s + ($queue_time_m * 60);
@@ -112,8 +133,10 @@ class acp_invite
 						'subject_max_chars'			=> array('num', false, 1, 999),
 						'limit_invite_day'			=> array('num', true, 0, 99999),
 						'limit_invite_day_posts'	=> array('num', true, 0, 99999),
+						'limit_invite_day_topics'	=> array('num', true, 0, 99999),
 						'limit_invite_user'			=> array('num', true, 0, 99999),
 						'limit_invite_user_posts'	=> array('num', true, 0, 99999),
+						'limit_invite_user_topics'	=> array('num', true, 0, 99999),
 					);
 					$error = validate_data($new_config, $check_ary);
 					
@@ -210,7 +233,8 @@ class acp_invite
 					'S_VALUE_EMAIL'				=> EMAIL,
 					'S_VALUE_PM'				=> PM,
 					'S_VALUE_OPTIONAL'			=> OPTIONAL,
-					//'S_SELECT_GROUPS'			=> group_select_options(false, false, false),
+					
+					'S_EMAIL_ENABLE'			=> ($config['email_enable']) ? true : false,
 					'S_SELECT_LANGUAGE'			=> language_select($user->data['user_lang']),
 					'S_SELECT_MESSAGE'			=> $this->build_select('message', $INVITE_MESSAGE_TYPE),
 					'S_SELECT_PROFILE_LOCATION'	=> $this->build_select('profile_location'),
