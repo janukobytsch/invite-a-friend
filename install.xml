@@ -7,7 +7,9 @@
 		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
 
 		<title lang="en">Invite A Friend</title>
-		<description lang="en">Invite A Friend is an addition to phpBB3 including invitation features. It enables your users to draw their friends' attention to your board by sending them an invitation e-mail with a registration key attached. Invite A Friend is highly configurable and you cannot only decide whether the attached key is required to register or not, but you can also keep track of who invited whom, limit the amount of invitations and add more social features. Supports Ultimate Points and Cash Mod.</description>
+		<description lang="en">Invite A Friend is a phpBB3 Modification, which adds referral and invitation features to the phpBB board in order to have more influence on the registration process and increase the number of users.
+
+			This can either be accomplished by specifying a referral user or sending out invitations with a referral key attached. The referral key cannot only be required to make your board invitation-only but also helps to associate new users with the referring one adding a more social component to the phpBB board. Supporting Ultimate Points and Cash Mod.</description>
 		<author-notes lang="en">Update instructions from previous releases can be found within the contrib/updates folder.
 			For further information and bug reports please visit <![CDATA[http://www.phpbb.com/community/viewtopic.php?f=70&t=1224005]]>
 		</author-notes>
@@ -17,22 +19,43 @@
 				<realname>J. Jacoby</realname>
 				<email>bycoja@web.de</email>
 				<username>Bycoja</username>
-				<homepage>http://bycoja.bplaced.net</homepage>
 				<contributions-group>
 					<contributions status="current" position="Developer" />
 				</contributions-group>		
 			</author>
 		</author-group>
 
-		<mod-version>0.6.1</mod-version>
+		<mod-version>0.6.2</mod-version>
 
 		<installation>
 			<level>intermediate</level>
-			<time>1200</time>
+			<time>1500</time>
 			<target-version>3.0.7-PL1</target-version>
 		</installation>
 
 		<history>
+			<entry>
+				<date>2010-06-27</date>
+				<rev-version>0.6.2 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Possibility to specify a referral without being invited</change>
+					<change>[Added] User-specific invitation log in the UCP</change>
+					<change>[Added] Show pending registrations in the ACP and UCP logs</change>
+					<change>[Added] Possibility to disable keys which have already been sent out but not used yet</change>
+					<change>[Added] Period of time until a key expires / will be disabled automatically</change>
+					<change>[Added] Additional confirmation template which will be sent to the invited user</change>
+					<change>[Added] Possibility to send out multiple invitations at once</change>
+					<change>[Added] Invitation icon</change>
+					<change>[Changed] Moved the invitation link to the top right navigation</change>
+					<change>[Changed] Separated the registration key from the registration link in the invitation e-mail</change>
+					<change>[Changed] Disabled 'prevent abuse' by default after installing the MOD</change>
+					<change>[Improved] Invitation form tweaks</change>
+					<change>[Improved] Key generation</change>
+					<change>[Fixed] Installation errors in AutoMOD 1.0</change>
+					<change>[Fixed] Apply template changes made in the ACP correctly</change>
+					<change>[Fixed] Special characters in templates</change>
+				</changelog>
+			</entry>
 			<entry>
 				<date>2010-04-19</date>
 				<rev-version>0.6.1 [Beta]</rev-version>
@@ -188,35 +211,26 @@
 
 	<action-group>
 		<copy>
+			<file from="root/adm/style/acp_invite.html" to="adm/style/acp_invite.html" />
+			<file from="root/adm/style/acp_invite_log.html" to="adm/style/acp_invite_log.html" />
+			<file from="root/adm/style/acp_invite_templates.html" to="adm/style/acp_invite_templates.html" />
+			<file from="root/adm/mods/invite_check_version.php" to="adm/mods/invite_check_version.php" />
 			<file from="root/includes/functions_invite.php" to="includes/functions_invite.php" />
 			<file from="root/includes/acp/info/acp_invite.php" to="includes/acp/info/acp_invite.php" />
 			<file from="root/includes/acp/acp_invite.php" to="includes/acp/acp_invite.php" />
 			<file from="root/includes/ucp/info/ucp_invite.php" to="includes/ucp/info/ucp_invite.php" />
 			<file from="root/includes/ucp/ucp_invite.php" to="includes/ucp/ucp_invite.php" />
-			<file from="root/adm/mods/invite_check_version.php" to="adm/mods/invite_check_version.php" />
-			<file from="root/adm/style/acp_invite.html" to="adm/style/acp_invite.html" />
-			<file from="root/adm/style/acp_invite_log.html" to="adm/style/acp_invite_log.html" />
-			<file from="root/adm/style/acp_invite_templates.html" to="adm/style/acp_invite_templates.html" />
-			<file from="root/styles/prosilver/template/ucp_invite_invite.html" to="styles/prosilver/template/ucp_invite_invite.html" />
+			<file from="root/install/invitation.php" to="install/invitation.php" />
 			<file from="root/language/en/mods/info_acp_invite.php" to="language/en/mods/info_acp_invite.php" />
 			<file from="root/language/en/mods/info_ucp_invite.php" to="language/en/mods/info_ucp_invite.php" />
 			<file from="root/language/en/email/confirm_subject.txt" to="language/en/email/confirm_subject.txt" />
 			<file from="root/language/en/email/confirm_message.txt" to="language/en/email/confirm_message.txt" />
 			<file from="root/language/en/email/invite_subject.txt" to="language/en/email/invite_subject.txt" />
 			<file from="root/language/en/email/invite_message.txt" to="language/en/email/invite_message.txt" />
-			<file from="root/install/invitation.php" to="install/invitation.php" />
+			<file from="root/styles/prosilver/template/ucp_invite_invite.html" to="styles/prosilver/template/ucp_invite_invite.html" />
+			<file from="root/styles/prosilver/theme/images/icon_invitation.gif" to="styles/prosilver/theme/images/icon_invitation.gif" />
 			<file from="root/umil/*.*" to="umil/*.*" />
 		</copy>
-
-		<open src="includes/constants.php">
-			<comment lang="en">Please note that you may have to use another digit for LOG_INVITE, if 4 is already taken.</comment>
-			<edit>
-				<find><![CDATA[// Additional tables]]></find>
-				<action type="after-add"><![CDATA[define('INVITE_CONFIG_TABLE',		$table_prefix . 'invite_config');
-define('INVITE_LOG_TABLE',			$table_prefix . 'invite_log');
-define('LOG_INVITE', 				4);]]></action>
-			</edit>
-		</open>
 
 		<open src="memberlist.php">
 			<edit>
@@ -341,6 +355,16 @@ define('LOG_INVITE', 				4);]]></action>
 	$postrow = $invite->profile_fields($postrow, $poster_id);]]></action>
 			</edit>
 
+		</open>
+
+		<open src="includes/constants.php">
+			<comment lang="en">Please note that you have to use another digit for LOG_INVITE if 4 is already taken.</comment>
+			<edit>
+				<find><![CDATA[// Additional tables]]></find>
+				<action type="after-add"><![CDATA[define('INVITE_CONFIG_TABLE',		$table_prefix . 'invite_config');
+define('INVITE_LOG_TABLE',			$table_prefix . 'invite_log');
+define('LOG_INVITE', 				4);]]></action>
+			</edit>
 		</open>
 
 		<open src="includes/functions.php">
@@ -576,15 +600,6 @@ define('LOG_INVITE', 				4);]]></action>
 			</edit>
 		</open>
 
-		<open src="styles/prosilver/template/viewtopic_body.html">
-			<edit>
-				<find><![CDATA[		<!-- IF postrow.POSTER_FROM --><dd><strong>{L_LOCATION}:</strong> {postrow.POSTER_FROM}</dd><!-- ENDIF -->]]></find>
-				<action type="after-add"><![CDATA[		<!-- IF postrow.POSTER_INVITE_INVITER and S_T_DISPLAY_INVITER --><dd><strong>{L_DISPLAY_INVITER}:</strong> {postrow.POSTER_INVITE_INVITER}</dd><!-- ENDIF -->
-		<!-- IF S_T_DISPLAY_INVITE --><br /><dd><strong>{L_DISPLAY_INVITE}:</strong> {postrow.POSTER_INVITE_INVITE}</dd><!-- ENDIF -->
-		<!-- IF S_T_DISPLAY_REGISTER --><dd><strong>{L_DISPLAY_REGISTER}:</strong> {postrow.POSTER_INVITE_REGISTER}</dd><!-- ENDIF -->]]></action>
-			</edit>
-		</open>
-
 		<open src="styles/prosilver/template/ucp_register.html">
 			<edit>
 				<find><![CDATA[	<dl>
@@ -604,18 +619,55 @@ define('LOG_INVITE', 				4);]]></action>
 			</edit>
 		</open>
 
+		<open src="styles/prosilver/template/viewtopic_body.html">
+			<edit>
+				<find><![CDATA[		<!-- IF postrow.POSTER_FROM --><dd><strong>{L_LOCATION}:</strong> {postrow.POSTER_FROM}</dd><!-- ENDIF -->]]></find>
+				<action type="after-add"><![CDATA[		<!-- IF postrow.POSTER_INVITE_INVITER and S_T_DISPLAY_INVITER --><dd><strong>{L_DISPLAY_INVITER}:</strong> {postrow.POSTER_INVITE_INVITER}</dd><!-- ENDIF -->
+		<!-- IF S_T_DISPLAY_INVITE --><br /><dd><strong>{L_DISPLAY_INVITE}:</strong> {postrow.POSTER_INVITE_INVITE}</dd><!-- ENDIF -->
+		<!-- IF S_T_DISPLAY_REGISTER --><dd><strong>{L_DISPLAY_REGISTER}:</strong> {postrow.POSTER_INVITE_REGISTER}</dd><!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+
+		<open src="styles/prosilver/theme/bidi.css">
+			<edit>
+				<find><![CDATA[/* Icon images
+---------------------------------------- */
+.rtl .sitehome, .rtl .icon-faq, .rtl .icon-members, .rtl .icon-home, .rtl .icon-ucp, .rtl .icon-register, .rtl .icon-logout,]]></find>
+				<inline-edit>
+					<inline-find><![CDATA[.rtl .sitehome,]]></inline-find>
+					<inline-action type="after-add"><![CDATA[.rtl .icon-invitation,]]></inline-action>
+				</inline-edit>
+			</edit>
+		</open>
+
+		<open src="styles/prosilver/theme/buttons.css">
+			<edit>
+				<find><![CDATA[/* Icon images
+---------------------------------------- */
+.sitehome, .icon-faq, .icon-members, .icon-home, .icon-ucp, .icon-register, .icon-logout,]]></find>
+				<inline-edit>
+					<inline-find><![CDATA[.sitehome,]]></inline-find>
+					<inline-action type="after-add"><![CDATA[.icon-invitation,]]></inline-action>
+				</inline-edit>
+			</edit>
+		</open>
+
+		<open src="styles/prosilver/theme/colours.css">
+			<edit>
+				<find><![CDATA[.sitehome						{ background-image: url("{T_THEME_PATH}/images/icon_home.gif"); }]]></find>
+				<action type="after-add"><![CDATA[.icon-invitation				{ background-image: url("{T_THEME_PATH}/images/icon_invitation.gif"); }]]></action>
+			</edit>
+		</open>
+
 		<diy-instructions lang="en">When you are done with the file changes, please run the installation file at
 your_board_url/install/invitation.php
 
-Delete the install folder afterwards, go to your Administrator Control Panel
-and be sure that the settings and permissions added during the installation are as you would like them.
-
-Have fun.
-
+Delete the 'install' folder afterwards, go to your Administrator Control Panel
+and be sure that the settings and permissions added during the installation are as desired. Have fun.
 
 Note:
-You might want to install the templates for subsilver2 style or the one of the language packages as well.
-Related instructions are included in the contrib/templates or contrib/languages folder if not carried out yet.
-</diy-instructions>
+You might want to install the templates for subsilver2 style or another language package as well.
+Related instructions are included in the contrib/templates or contrib/languages folder.
+		</diy-instructions>
 	</action-group>
 </mod>
