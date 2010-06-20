@@ -479,14 +479,19 @@ class invite
 	}
 
 	/**
-	* function create_key
+	* function generate_key (adapted from DEV v1.0.0.)
+	* Generates a referral key using phpBB's generation function
+	*
+	* @return string $referral_key
 	*/
-	function create_key()
+	function generate_key()
 	{
-		$str_lenght	= rand(10, 16);
-		$rand_key = gen_rand_string($str_lenght);
+		$str_lenght		= 12;
 
-		return $rand_key; 
+		$rand_string 	= gen_rand_string($str_lenght);
+		$referral_key	= substr(md5($rand_string), rand(1, 20), $str_lenght);
+
+		return $referral_key; 
 	}
 
 	/**
