@@ -486,10 +486,11 @@ class invite
 	*/
 	function generate_key()
 	{
+		// Must be less than 32 characters due to md5 usage
 		$str_lenght		= 12;
 
 		$rand_string 	= gen_rand_string($str_lenght);
-		$referral_key	= substr(md5($rand_string), rand(1, 20), $str_lenght);
+		$referral_key 	= substr(md5($rand_string), rand(1, (32 - $str_lenght)), $str_lenght);
 
 		return $referral_key; 
 	}
