@@ -39,19 +39,19 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'UCP_INVITE'					=> 'Freunde einladen',
 	'UCP_INVITE_INVITE'				=> 'Einladung schreiben',
-	'UCP_INVITE_DESCRIPTION'		=> 'Sendet eine E-Mail an einen Freund und macht ihn auf dieses Forum aufmerksam.',
+	'UCP_INVITE_DESCRIPTION'		=> 'Sende eine E-Mail an deine Freunde und erzähle ihnen von diesem Board.',
 	'REGISTER_KEY'					=> 'Registrierungs-Schlüssel',
-	'REGISTER_KEY_EXPLAIN'			=> 'Von einem Benutzer des Boards per E-Mail erhalten.',
+	'REGISTER_KEY_EXPLAIN'			=> 'Von einem Benutzer des Boards erhalten.',
 
 	// Invitation form
 	'RECIPIENT_EMAIL'				=> 'E-Mail-Adresse des Freundes',
 	'RECIPIENT_NAME'				=> 'Name des Freundes',
 	'ADD_RECIPIENT'					=> 'Empfänger hinzufügen',
 	'DELETE_RECIPIENT'				=> 'Empfänger entfernen',
-	'MESSAGE_EXPLAIN'				=> 'Erzähle deinem Freund, warum er dieses Board unbedingt besuchen muss.',
-	'SEND_CONFIRMATION'				=> 'Bestätigung empfangen',
-	'SEND_CONFIRMATION_METHOD'		=> 'Bestätigung empfangen als',
-	'INVITATION_ZEBRA'				=> 'Eingeladenen Benutzer zur Freundesliste hinzufügen',
+	'MESSAGE_EXPLAIN'				=> 'Erzähle deinem Freund, was dir an diesem Board gefällt.',
+	'SEND_CONFIRMATION'				=> 'Eine Bestätigung erhalten',
+	'SEND_CONFIRMATION_METHOD'		=> 'Eine Bestätigung erhalten via',
+	'INVITATION_ZEBRA'				=> 'Eingeladenen Benutzer als Freund hinzufügen',
 	'OPTIONAL'						=> 'Optional',
 
 	// Error messages

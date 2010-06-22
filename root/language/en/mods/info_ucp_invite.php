@@ -51,7 +51,7 @@ $lang = array_merge($lang, array(
 	'MESSAGE_EXPLAIN'				=> 'Tell your friends why you like this board.',
 	'SEND_CONFIRMATION'				=> 'Receive a confirmation',
 	'SEND_CONFIRMATION_METHOD'		=> 'Receive a confirmation via',
-	'INVITATION_ZEBRA'				=> 'Add the invited user to your friends',
+	'INVITATION_ZEBRA'				=> 'Add the invited user as your friends',
 	'OPTIONAL'						=> 'Optional',
 
 	// Error messages

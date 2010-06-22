@@ -209,6 +209,9 @@
 	<action-group>
 		<copy>
 			<file from="root/styles/subsilver2/template/ucp_invite_invite.html" to="styles/subsilver2/template/ucp_invite_invite.html" />
+			<file from="root/styles/subsilver2/theme/images/contact_add.png" to="styles/subsilver2/theme/images/contact_add.png" />
+			<file from="root/styles/subsilver2/theme/images/contact_delete.png" to="styles/subsilver2theme/images/contact_delete.png" />
+			<file from="root/styles/subsilver2/theme/images/icon_invitation.gif" to="styles/subsilver2/theme/images/icon_invitation.gif" />
 		</copy>
 
 		<open src="styles/subsilver2/template/memberlist_body.html">

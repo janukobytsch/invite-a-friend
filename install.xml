@@ -231,6 +231,8 @@
 			<file from="root/language/en/email/invite_subject.txt" to="language/en/email/invite_subject.txt" />
 			<file from="root/language/en/email/invite_message.txt" to="language/en/email/invite_message.txt" />
 			<file from="root/styles/prosilver/template/ucp_invite_invite.html" to="styles/prosilver/template/ucp_invite_invite.html" />
+			<file from="root/styles/prosilver/theme/images/contact_add.png" to="styles/prosilver/theme/images/contact_add.png" />
+			<file from="root/styles/prosilver/theme/images/contact_delete.png" to="styles/prosilver/theme/images/contact_delete.png" />
 			<file from="root/styles/prosilver/theme/images/icon_invitation.gif" to="styles/prosilver/theme/images/icon_invitation.gif" />
 			<file from="root/umil/*.*" to="umil/*.*" />
 		</copy>
