@@ -665,8 +665,11 @@ define('LOG_INVITE', 				4);]]></action>
 			</edit>
 		</open>
 
+		<php-installer>install/invitation.php</php-installer>
+
 		<diy-instructions lang="en">When you are done with the file changes, please run the installation file at
-your_board_url/install/invitation.php
+BOARD_URL/install/invitation.php
+(If you are using AutoMOD 1.0, you can follow the installer link above)
 
 Delete the 'install' folder afterwards, go to your Administrator Control Panel
 and be sure that the settings and permissions added during the installation are as desired. Have fun.

@@ -37,7 +37,7 @@ if (empty($lang) || !is_array($lang))
 // in a url you again do not need to specify an order e.g., 'Click %sHERE%s' is fine
 
 $lang = array_merge($lang, array(
-	'UCP_INVITE'					=> 'Invite A Friend',
+	'UCP_INVITE'					=> 'Invitations',
 	'UCP_INVITE_INVITE'				=> 'Compose invitation',
 	'UCP_INVITE_DESCRIPTION'		=> 'Send an invitation e-mail to your friends and tell them about this board.',
 	'REGISTER_KEY'					=> 'Registration key',
