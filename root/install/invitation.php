@@ -3,7 +3,7 @@
 *
 * @author Bycoja bycoja@web.de
 * @package umil
-* @version $Id invitation.php 0.6.1 2010-04-16 01:37:02GMT Bycoja $
+* @version $Id invitation.php 0.6.2 2010-06-22 17:28:02GMT Bycoja $
 * @copyright (c) 2010 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -205,7 +205,9 @@ $versions = array(
 		'cache_purge' => array(
 			array(),
 			array('auth'),
+			array('imageset'),
 			array('template'),
+			array('theme'),
 		),
 
 		/*
@@ -270,7 +272,9 @@ if (isset($config[$version_config_name]))
 				'cache_purge' => array(
 					array(),
 					array('auth'),
+					array('imageset'),
 					array('template'),
+					array('theme'),
 				),
 
 				/*
@@ -422,6 +426,7 @@ function insert_data_060($action, $version)
 				$sql_ary[] = array('config_name' => 'message_max_chars', 		'config_value' => 1000);
 				$sql_ary[] = array('config_name' => 'subject_min_chars', 		'config_value' => 1);
 				$sql_ary[] = array('config_name' => 'subject_max_chars', 		'config_value' => 50);
+				$sql_ary[] = array('config_name' => 'multiple_recipients_max', 	'config_value' => 2);
 				$sql_ary[] = array('config_name' => 'confirm', 					'config_value' => 2);
 				$sql_ary[] = array('config_name' => 'confirm_method', 			'config_value' => 2);
 				$sql_ary[] = array('config_name' => 'zebra', 					'config_value' => 2);

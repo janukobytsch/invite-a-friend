@@ -7,7 +7,7 @@
 		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
 
 		<title lang="en">Invite A Friend</title>
-		<description lang="en">Installing the templates of Invite A Friend for subsilver2 style.</description>
+		<description lang="en">Installing the templates for the subsilver2 style.</description>
 		<author-notes lang="en">For further information and bug reports please visit <![CDATA[http://www.phpbb.com/community/viewtopic.php?f=70&t=1224005]]></author-notes>
 
 		<author-group>
@@ -15,22 +15,46 @@
 				<realname>J. Jacoby</realname>
 				<email>bycoja@web.de</email>
 				<username>Bycoja</username>
-				<homepage>http://bycoja.bplaced.net</homepage>
 				<contributions-group>
 					<contributions status="current" position="Developer" />
 				</contributions-group>		
 			</author>
 		</author-group>
 
-		<mod-version>0.6.1</mod-version>
+		<mod-version>0.6.2</mod-version>
 
 		<installation>
 			<level>intermediate</level>
-			<time>1200</time>
+			<time>1500</time>
 			<target-version>3.0.7-PL1</target-version>
 		</installation>
 
 		<history>
+			<entry>
+				<date>2010-06-27</date>
+				<rev-version>0.6.2 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Possibility to specify a referral user without being invited</change>
+					<change>[Added] User-specific invitation log (UCP)</change>
+					<change>[Added] Show pending registrations in the logs (ACP/UCP)</change>
+					<change>[Added] Possibility to disable keys which haven't been used yet</change>
+					<change>[Added] Key expiry time</change>
+					<change>[Added] Additional confirmation template which will be sent to the invited user</change>
+					<change>[Added] Possibility to send out multiple invitations at once</change>
+					<change>[Added] Charge for invitations (Ultimate Points System/Cash MOD)</change>
+					<change>[Added] Invitation icon</change>
+					<change>[Changed] Moved the invitation link to the top right navigation</change>
+					<change>[Changed] Separated the registration key from the registration link in the invitation e-mail</change>
+					<change>[Changed] Disabled the 'prevent abuse' setting by default</change>
+					<change>[Changed] Disabled the invitation form options by default</change>
+					<change>[Improved] Invitation form</change>
+					<change>[Improved] Key generation</change>
+					<change>[Fixed] Errors when installing with AutoMOD 1.0</change>
+					<change>[Fixed] Apply template changes made in the ACP correctly</change>
+					<change>[Fixed] Special characters in templates</change>
+					<change>[Fixed] Confirmation code display</change>
+				</changelog>
+			</entry>
 			<entry>
 				<date>2010-04-19</date>
 				<rev-version>0.6.1 [Beta]</rev-version>
@@ -305,9 +329,9 @@
 
 		<open src="styles/subsilver2/template/overall_header.html">
 			<edit>
-				<find><![CDATA[					<!-- ELSEIF S_REGISTER_ENABLED and not (S_SHOW_COPPA or S_REGISTRATION) --> &nbsp;<a href="{U_REGISTER}"><img src="{T_THEME_PATH}/images/icon_mini_register.gif" width="12" height="13" alt="*" /> {L_REGISTER}</a>
-					<!-- ENDIF -->]]></find>
-				<action type="after-add"><![CDATA[					<!-- IF S_DISPLAY_INVITE --> &nbsp;<a href="{U_INVITE_A_FRIEND}"><img src="{T_THEME_PATH}/images/icon_mini_message.gif" width="12" height="13" alt="*" /> {L_ACP_INVITE}</a><!-- ENDIF -->]]></action>
+				<find><![CDATA[				<!-- IF S_DISPLAY_SEARCH -->&nbsp; &nbsp;<a href="{U_SEARCH}"><img src="{T_THEME_PATH}/images/icon_mini_search.gif" width="12" height="13" alt="*" /> {L_SEARCH}</a><!-- ENDIF -->
+				<!-- IF not S_IS_BOT -->]]></find>
+				<action type="after-add"><![CDATA[					<!-- IF S_DISPLAY_INVITE -->&nbsp; &nbsp;<a href="{U_INVITE_A_FRIEND}"><img src="{T_THEME_PATH}/images/icon_mini_message.gif" width="12" height="13" alt="*" /> {L_INVITATION}</a><!-- ENDIF -->]]></action>
 			</edit>
 		</open>
 

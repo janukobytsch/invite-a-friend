@@ -5,7 +5,7 @@
 *
 * @author Bycoja bycoja@web.de
 * @package language
-* @version $Id info_acp_invite.php 0.6.1 2010-04-05 15:14:09GMT Bycoja $
+* @version $Id info_acp_invite.php 0.6.2 2010-06-22 17:28:02GMT Bycoja $
 * @copyright (c) 2010 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -53,6 +53,8 @@ $lang = array_merge($lang, array(
 	'ACP_INVITE_LOG_EXPLAIN'			=> 'This lists all actions relating to the invitations which users can send to their friends. Use the form below to search for specific data. You do not need to fill out all fields.',
 	'ACP_INVITE_DISPLAY_OPTIONS'		=> 'Display options',
 	'ACP_INVITE_LIMITATION_OPTIONS'		=> 'Limitation',
+	'INVITATION'						=> 'Invitation',
+	'INVITATION_EXPLAIN'				=> 'Send an invitation to your friends',
 
 	// Error messages
 	'ERROR_EMAIL_DISABLED'				=> 'E-mails have been disabled and you cannot send any invitations.<br /><br /><a href="%s">» Activate E-mail-functionality</a>',
@@ -154,6 +156,8 @@ $lang = array_merge($lang, array(
 	'SETTINGS_MESSAGE_CHARS_EXPLAIN'			=> 'Minimum and maximum number of characters in messages.',
 	'SETTINGS_SUBJECT_CHARS'					=> 'Subject length',
 	'SETTINGS_SUBJECT_CHARS_EXPLAIN'			=> 'Minimum and maximum number of characters in subjects.',
+	'SETTINGS_MULTIPLE_RECIPIENTS'				=> 'Multiple recipients',
+	'SETTINGS_MULTIPLE_RECIPIENTS_EXPLAIN'		=> 'Maximum number of people whom a invitation can be sent to at once.',
 	'SETTINGS_CONFIRM'							=> 'Send confirmation',
 	'SETTINGS_CONFIRM_EXPLAIN'					=> 'Send a confirmation message on successful invitations to the user whose invited friend registered.',
 	'SETTINGS_ZEBRA'							=> 'Add to friendlist',

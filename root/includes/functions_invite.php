@@ -3,7 +3,7 @@
 *
 * @author Bycoja bycoja@web.de
 * @package phpBB3
-* @version $Id functions_invite.php 0.6.1 2010-04-16 01:37:02GMT Bycoja $
+* @version $Id functions_invite.php 0.6.2 2010-06-22 17:28:02GMT Bycoja $
 * @copyright (c) 2010 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -32,7 +32,7 @@ $INVITE_MESSAGE_TYPE = array(
 */      
 class invite
 {
-	var $version = '0.6.1';
+	var $version = '0.6.2';
 	var $INVITE_MESSAGE_TYPE = array('invite' => 0, 'confirm' => 1,);
 
 	var $config;
@@ -489,8 +489,8 @@ class invite
 		// Must be less than 32 characters due to md5 usage
 		$str_lenght		= 12;
 
-		$rand_string 	= gen_rand_string($str_lenght);
-		$referral_key 	= substr(md5($rand_string), rand(1, (32 - $str_lenght)), $str_lenght);
+		$random_string 	= gen_rand_string($str_lenght);
+		$referral_key 	= substr(md5($random_string), rand(1, (32 - $str_lenght)), $str_lenght);
 
 		return $referral_key; 
 	}

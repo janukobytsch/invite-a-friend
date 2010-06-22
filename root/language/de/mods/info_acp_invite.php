@@ -5,7 +5,7 @@
 *
 * @author Bycoja bycoja@web.de
 * @package language
-* @version $Id info_acp_invite.php 0.6.1 2010-04-05 15:14:09GMT Bycoja $
+* @version $Id info_acp_invite.php 0.6.2 2010-06-22 17:28:02GMT Bycoja $
 * @copyright (c) 2010 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -53,6 +53,8 @@ $lang = array_merge($lang, array(
 	'ACP_INVITE_LOG_EXPLAIN'			=> 'Diese Liste zeigt alle Vorgänge, die mit den von Benutzern versendeten Einladungen in Verbindung stehen. Du kannst dir auch detaillierte Informationen zu einzelnen Benutzern anzeigen lassen, indem du das untenstehende Formular verwendest. Du musst nicht alle Felder ausfüllen.',
 	'ACP_INVITE_DISPLAY_OPTIONS'		=> 'Anzeige-Optionen',
 	'ACP_INVITE_LIMITATION_OPTIONS'		=> 'Beschränkung',
+	'INVITATION'						=> 'Einladung',
+	'INVITATION_EXPLAIN'				=> 'Sende eine Einladung an deine Freunde',
 
 	// Error messages
 	'ERROR_EMAIL_DISABLED'				=> 'Die E-Mail-Funktionalität ist deaktiviert, sodass keine Einladungen über das Board versendet werden können.<br /><br /><a href="%s">» Aktiviere E-Mail-Funktionalität</a>',
@@ -154,6 +156,8 @@ $lang = array_merge($lang, array(
 	'SETTINGS_MESSAGE_CHARS_EXPLAIN'			=> 'Die minimale und maximale Anzahl an Zeichen in der Nachricht.',
 	'SETTINGS_SUBJECT_CHARS'					=> 'Länge des Betreffs',
 	'SETTINGS_SUBJECT_CHARS_EXPLAIN'			=> 'Die minimale und maximale Anzahl an Zeichen im Betreff.',
+	'SETTINGS_MULTIPLE_RECIPIENTS'				=> 'Anzahl der Empfänger',
+	'SETTINGS_MULTIPLE_RECIPIENTS_EXPLAIN'		=> 'Die maximale Anzahl von Empfängern einer einzigen Einladung.',
 	'SETTINGS_CONFIRM'							=> 'Bestätigung senden',
 	'SETTINGS_CONFIRM_EXPLAIN'					=> 'Sendet eine Bestätigung an den einladenden Benutzer, sobald sich der Eingeladene registriert.',
 	'SETTINGS_ZEBRA'							=> 'Zur Freundesliste hinzufügen',

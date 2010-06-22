@@ -38,22 +38,25 @@
 				<date>2010-06-27</date>
 				<rev-version>0.6.2 [Beta]</rev-version>
 				<changelog lang="en">
-					<change>[Added] Possibility to specify a referral without being invited</change>
-					<change>[Added] User-specific invitation log in the UCP</change>
-					<change>[Added] Show pending registrations in the ACP and UCP logs</change>
-					<change>[Added] Possibility to disable keys which have already been sent out but not used yet</change>
-					<change>[Added] Period of time until a key expires / will be disabled automatically</change>
+					<change>[Added] Possibility to specify a referral user without being invited</change>
+					<change>[Added] User-specific invitation log (UCP)</change>
+					<change>[Added] Show pending registrations in the logs (ACP/UCP)</change>
+					<change>[Added] Possibility to disable keys which haven't been used yet</change>
+					<change>[Added] Key expiry time</change>
 					<change>[Added] Additional confirmation template which will be sent to the invited user</change>
 					<change>[Added] Possibility to send out multiple invitations at once</change>
+					<change>[Added] Charge for invitations (Ultimate Points System/Cash MOD)</change>
 					<change>[Added] Invitation icon</change>
 					<change>[Changed] Moved the invitation link to the top right navigation</change>
 					<change>[Changed] Separated the registration key from the registration link in the invitation e-mail</change>
-					<change>[Changed] Disabled 'prevent abuse' by default after installing the MOD</change>
-					<change>[Improved] Invitation form tweaks</change>
+					<change>[Changed] Disabled the 'prevent abuse' setting by default</change>
+					<change>[Changed] Disabled the invitation form options by default</change>
+					<change>[Improved] Invitation form</change>
 					<change>[Improved] Key generation</change>
-					<change>[Fixed] Installation errors in AutoMOD 1.0</change>
+					<change>[Fixed] Errors when installing with AutoMOD 1.0</change>
 					<change>[Fixed] Apply template changes made in the ACP correctly</change>
 					<change>[Fixed] Special characters in templates</change>
+					<change>[Fixed] Confirmation code display</change>
 				</changelog>
 			</entry>
 			<entry>
@@ -595,8 +598,9 @@ define('LOG_INVITE', 				4);]]></action>
 
 		<open src="styles/prosilver/template/overall_header.html">
 			<edit>
-				<find><![CDATA[					<a href="{U_SEARCH_SELF}">{L_SEARCH_SELF}</a>]]></find>
-				<action type="after-add"><![CDATA[					<!-- IF S_DISPLAY_INVITE --> &bull; <a href="{U_INVITE_A_FRIEND}">{L_ACP_INVITE}</a><!-- ENDIF -->]]></action>
+				<find><![CDATA[				<li class="icon-faq"><a href="{U_FAQ}" title="{L_FAQ_EXPLAIN}">{L_FAQ}</a></li>
+				<!-- IF not S_IS_BOT -->]]></find>
+				<action type="after-add"><![CDATA[					<!-- IF S_DISPLAY_INVITE --><li class="icon-faq icon-invitation"><a href="{U_INVITE_A_FRIEND}" title="{L_INVITATION_EXPLAIN}">{L_INVITATION}</a></li><!-- ENDIF -->]]></action>
 			</edit>
 		</open>
 

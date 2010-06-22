@@ -5,7 +5,7 @@
 *
 * @author Bycoja bycoja@web.de
 * @package language
-* @version $Id info_ucp_invite.php 0.6.1 2010-04-05 15:14:09GMT Bycoja $
+* @version $Id info_ucp_invite.php 0.6.2 2010-06-22 17:28:02GMT Bycoja $
 * @copyright (c) 2010 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -46,6 +46,8 @@ $lang = array_merge($lang, array(
 	// Invitation form
 	'RECIPIENT_EMAIL'				=> 'E-Mail-Adresse des Freundes',
 	'RECIPIENT_NAME'				=> 'Name des Freundes',
+	'ADD_RECIPIENT'					=> 'Empfänger hinzufügen',
+	'DELETE_RECIPIENT'				=> 'Empfänger entfernen',
 	'MESSAGE_EXPLAIN'				=> 'Erzähle deinem Freund, warum er dieses Board unbedingt besuchen muss.',
 	'SEND_CONFIRMATION'				=> 'Bestätigung empfangen',
 	'SEND_CONFIRMATION_METHOD'		=> 'Bestätigung empfangen als',
@@ -60,9 +62,13 @@ $lang = array_merge($lang, array(
 	'QUEUE_QUEUE'					=> 'Du musst %d:%02d Minuten bis zum Versenden der nächsten Einladung warten.',
 	'INVITATION_LIMIT_DAILY'		=> 'Du hast das Tageslimit von %d Einladungen erreicht und kannst heute keine weiteren Einladungen versenden.',
 	'INVITATION_LIMIT_TOTAL'		=> 'Du hast das Gesamtlimit von %d Einladungen erreicht und kannst keine weiteren Einladungen versenden.',
-	'INVITE_YOURSELF'				=> 'Du kannst dich nicht mit von dir versendeten Registrierungs-Schlüsseln registrieren.',
-	'INVITE_TO_YOUR_EMAIL'			=> 'Du kannst dich nicht selbst einladen.',
+	'INVITATION_LIMIT_DAILY_MULTI'	=> 'Du hast heute %d/%d Einladungen versendet und überschreitest das Tageslimit, wenn du %d Einladungen versendest.',
+	'INVITATION_LIMIT_TOTAL_MULTI'	=> 'Du hast insgesamt %d/%d Einladungen versendet und überschreitest das Gesamtlimit, wenn du %d Einladungen versendest.',
+	'REDUCE_RECIPIENTS'				=> 'Bitte verringere die Anzahl der Empfänger.',
+	'INVITE_YOURSELF'				=> 'Der Registrierungs-Schlüssel wurde von deinem Computer aus versendet. Um Missbrauch zu verhindern, darfst du ihn nicht verwenden.',
+	'INVITE_TO_YOUR_EMAIL'			=> 'Die angegebene E-Mail-Adresse wird bereits von dir verwendet. Du kannst dich nicht selbst einladen.',
 	'INVITE_MULTIPLE'				=> 'Die angegebene E-Mail-Adresse hat bereits eine Einladung erhalten.',
+	'INVITE_SAME_RECIPIENT'			=> 'Du kannst nicht mehrere Einladungen an die gleiche E-Mail-Adresse versenden.',
 	'REGISTER_KEY_INVALID'			=> 'Der angegebene Registrierungs-Schlüssel ist ungültig.',
 	'REGISTER_KEY_INVALID_OPTIONAL'	=> 'Der angegebene Registrierungs-Schlüssel ist ungültig, lasse ihn stattdessen aus.',
 	'TOO_SHORT_REGISTER_REAL_NAME'	=> 'Der angegebene Name ist zu kurz.',

@@ -153,17 +153,17 @@
 			<dt><label for="key_group">{L_SETTINGS_KEY_GROUP}:</label><br /><span>{L_SETTINGS_KEY_GROUP_EXPLAIN}</span></dt>
 			<dd><select id="key_group" name="key_group" style="margin-top: 5px;">{S_GROUP_SELECT}</select></dd>
 		</dl>
-	</dl>
+	
 	<dl id="toggle_key_group_default">
 			<dt><label for="key_group_default">{L_SETTINGS_KEY_GROUP_DEFAULT}:</label><br /><span>{L_SETTINGS_KEY_GROUP_DEFAULT_EXPLAIN}</span></dt>
 			<dd><label><input type="radio" class="radio" id="key_group_default" name="key_group_default"<!-- IF S_KEY_GROUP_DEFAULT --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="key_group_default"<!-- IF not S_KEY_GROUP_DEFAULT --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
 		</dl>
-	</dl>
+	
 	<dl id="toggle_remove_newly_registered">
 			<dt><label for="remove_newly_registered">{L_SETTINGS_REMOVE_NEWLY_REGISTERED}:</label><br /><span>{L_SETTINGS_REMOVE_NEWLY_REGISTERED_EXPLAIN}</span></dt>
 			<dd><label><input type="radio" class="radio" id="remove_newly_registered" name="remove_newly_registered"<!-- IF S_REMOVE_NEWLY_REGISTERED --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="remove_newly_registered"<!-- IF not S_REMOVE_NEWLY_REGISTERED --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
 		</dl>
-	</dl>
+	
 	<dl id="toggle_invite_require_activation">
 		<dt><label for="invite_require_activation">{L_ACC_ACTIVATION}:</label><br /><span>{L_SETTINGS_INVITE_ACC_ACTIVATION_EXPLAIN}</span></dt>
 		<dd><label><input type="radio" class="radio" id="invite_require_activation" name="invite_require_activation"<!-- IF S_INVITE_REQUIRE_ACTIVATION eq 3 --> checked="checked"<!-- ENDIF --> value="3" /> {L_ACC_TRANSFER}</label><label><input type="radio" class="radio" name="invite_require_activation"<!-- IF not S_INVITE_REQUIRE_ACTIVATION --> checked="checked"<!-- ENDIF --> value="0" /> {L_ACC_NONE}</label><!-- IF S_EMAIL_ENABLE --><label><input type="radio" class="radio" name="invite_require_activation"<!-- IF S_INVITE_REQUIRE_ACTIVATION eq 1 --> checked="checked"<!-- ENDIF --> value="1" /> {L_ACC_USER}</label><label><input type="radio" class="radio" name="invite_require_activation"<!-- IF S_INVITE_REQUIRE_ACTIVATION eq 2 --> checked="checked"<!-- ENDIF --> value="2" /> {L_ACC_ADMIN}</label><!-- ENDIF -->
@@ -215,9 +215,13 @@
 		<dd><input size="3" maxlength="3" type="text" id="subject_min_chars" name="subject_min_chars" value="{S_SUBJECT_MIN_CHARS}" /> {L_MIN_CHARS}&nbsp;&nbsp;<input size="3" maxlength="3" type="text" id="subject_max_chars" name="subject_max_chars" value="{S_SUBJECT_MAX_CHARS}" /> {L_MAX_CHARS}</dd>
 	</dl>
 	<dl>
+		<dt><label for="multiple_recipients_max">{L_SETTINGS_MULTIPLE_RECIPIENTS}:</label><br /><span>{L_SETTINGS_MULTIPLE_RECIPIENTS_EXPLAIN}</dt>
+		<dd><input size="3" maxlength="3" type="text" id="multiple_recipients_max" name="multiple_recipients_max" value="{S_MULTIPLE_RECIPIENTS_MAX}" /> {L_MAX_CHARS}</dd>
+	</dl>
+	<dl>
 		<dt><label for="confirm">{L_SETTINGS_CONFIRM}:</label><br /><span>{L_SETTINGS_CONFIRM_EXPLAIN}</span></dt>
 		<dd><label><input type="radio" class="radio" id="confirm" name="confirm"<!-- IF S_CONFIRM eq 1 --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="confirm"<!-- IF not S_CONFIRM --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label><label><input type="radio" class="radio" name="confirm"<!-- IF S_CONFIRM eq 2 --> checked="checked"<!-- ENDIF --> value="2" /> {L_OPTIONAL}</label>
-			<select style="margin-left: 8px;" id="confirm_method" name="confirm_method"><option value="{S_VALUE_EMAIL}"<!-- IF S_CONFIRM_METHOD eq S_VALUE_EMAIL --> selected="selected"<!-- ENDIF -->>{L_EMAIL}</option><option value="{S_VALUE_PM}"<!-- IF S_CONFIRM_METHOD eq S_VALUE_PM --> selected="selected"<!-- ENDIF -->>{L_PM}</option><option value="{S_VALUE_OPTIONAL}"<!-- IF S_CONFIRM_METHOD eq S_VALUE_OPTIONAL --> selected="selected"<!-- ENDIF -->>{L_OPTIONAL}</option></select>
+			<select style="margin-left: 8px;" id="confirm_method" name="confirm_method"><option value="{S_VALUE_EMAIL}"<!-- IF S_CONFIRM_METHOD eq S_VALUE_EMAIL --> selected="selected"<!-- ENDIF -->>{L_EMAIL}<option value="{S_VALUE_PM}"<!-- IF S_CONFIRM_METHOD eq S_VALUE_PM --> selected="selected"<!-- ENDIF -->>{L_PM}<option value="{S_VALUE_OPTIONAL}"<!-- IF S_CONFIRM_METHOD eq S_VALUE_OPTIONAL --> selected="selected"<!-- ENDIF -->>{L_OPTIONAL}</select>
 		</dd>
 	</dl>
 	<dl>
