@@ -490,7 +490,7 @@ class invite
 		$str_lenght		= 12;
 
 		$random_string 	= gen_rand_string($str_lenght);
-		$referral_key 	= substr(md5($random_string), rand(1, (32 - $str_lenght)), $str_lenght);
+		$referral_key 	= strtoupper(substr(md5($random_string), rand(1, (32 - $str_lenght)), $str_lenght));
 
 		return $referral_key; 
 	}
