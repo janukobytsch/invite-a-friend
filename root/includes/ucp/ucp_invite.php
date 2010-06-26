@@ -302,7 +302,6 @@ class ucp_invite
 					$sent = true;
 
 					// Email successfully sent to friend? Only check on last loop
-					// Check whether the next index is empty so we still get a notice
 					if ($i == ($recipient_count - 1))
 					{
 						if ($send_message)

@@ -46,6 +46,7 @@
 					<change>[Added] Additional confirmation template which will be sent to the invited user</change>
 					<change>[Added] Possibility to send out multiple invitations at once</change>
 					<change>[Added] Charge for invitations (Ultimate Points System/Cash MOD)</change>
+					<change>[Added] More permissions (Module acccess, ignore limit, ignore queue)</change>
 					<change>[Added] Invitation icon</change>
 					<change>[Changed] Moved the invitation link to the top right navigation</change>
 					<change>[Changed] Separated the registration key from the registration link in the invitation e-mail</change>
