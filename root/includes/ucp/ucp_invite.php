@@ -31,22 +31,33 @@ class ucp_invite
 		global $phpbb_admin_path, $phpbb_root_path, $phpEx;
 
 		include($phpbb_root_path . 'includes/functions_invite.' . $phpEx);
-
+		$invite	= new invite();
+		
 		$user->add_lang(array('mods/info_acp_invite', 'acp/email'));
 
-		$invite				= new invite();
 		$submit				= (isset($_POST['submit'])) ? true : false;
+		$remove_rc			= (isset($_REQUEST['remove_rc'])) ? true : false;
+		$add_rc				= (isset($_REQUEST['add_rc'])) ? true : false;
+
 		$disable_form		= false;
+		$sent				= false;
 		$error 				= array();
 		$email_ary 			= array();
-		$recipient_count	= (int) request_var('rc', 1);
-		$recipient_count	= ($recipient_count == 0) ? 1 : $recipient_count;
-		$recipient_count	= ($invite->config['multiple_recipients_max'] <= $recipient_count) ? $invite->config['multiple_recipients_max'] : $recipient_count;
+
+		// CAPTCHA
 		$confirm_id			= request_var('confirm_id', '');
 		$s_hidden_fields	= ($confirm_id) ? array('confirm_id' => $confirm_id) : array();
 
-		$form_key = 'ucp_invite';
-		add_form_key($form_key);
+		// Handle multiple recipients
+		$recipient_count	= (int) request_var('rc', 1);
+		$recipient_count	= ($add_rc) ? $recipient_count + 1 : $recipient_count;
+		$recipient_count	= ($remove_rc) ? $recipient_count - 1 : $recipient_count;
+		$recipient_count	= ($recipient_count < 1) ? 1 : $recipient_count;
+		$recipient_count	= ($invite->config['multiple_recipients_max'] <= $recipient_count) ? $invite->config['multiple_recipients_max'] : $recipient_count;
+
+		$s_hidden_fields['rc']	= $recipient_count;
+
+		add_form_key('ucp_invite');
 
 		// Authorised?
 		if (!$invite->config['enable'])
@@ -224,7 +235,7 @@ class ucp_invite
 			$email_ary[] = $form_register_email;
 
 			// No need to loop through the submit part...
-			if (sizeof($error) || empty($form_register_email))
+			if (sizeof($error))
 			{
 				continue;
 			}
@@ -241,9 +252,9 @@ class ucp_invite
 				// Validate index specific data
 				$check_ary = array(
 					'email' => array(
-						array('string', false, 0, 60),
+						array('string', false, 1, 60),
 						array('email')),
-					'register_real_name'	=> array('string', false, 1, 60),
+					'register_real_name' => array('string', false, 1, 60),
 				);
 				$error = validate_data($email_data, $check_ary);
 
@@ -288,8 +299,10 @@ class ucp_invite
 				if (!sizeof($error))
 				{
 					$send_message = $invite->message_handle($email_data, true, false);
+					$sent = true;
 
 					// Email successfully sent to friend? Only check on last loop
+					// Check whether the next index is empty so we still get a notice
 					if ($i == ($recipient_count - 1))
 					{
 						if ($send_message)
@@ -354,9 +367,7 @@ class ucp_invite
 			'S_RECIPIENTS_LIMIT'	=> ($invite->config['multiple_recipients_max'] <= $recipient_count) ? true : false,
 			'S_HIDDEN_FIELDS'		=> $s_hidden_fields,
 
-			'U_ACTION'				=> $this->u_action . '&amp;rc=' . $recipient_count,
-			'U_RECIPIENT_ADD'		=> $this->u_action . '&amp;rc=' . ($recipient_count + 1),
-			'U_RECIPIENT_DEL'		=> $this->u_action . '&amp;rc=' . ($recipient_count - 1),
+			'U_ACTION'				=> $this->u_action,
 		));
 
 		// Repeat the recipient block as many times as desired
