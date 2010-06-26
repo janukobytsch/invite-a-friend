@@ -51,7 +51,7 @@ $lang = array_merge($lang, array(
 	'MESSAGE_EXPLAIN'				=> 'Tell your friends why you like this board.',
 	'SEND_CONFIRMATION'				=> 'Receive a confirmation',
 	'SEND_CONFIRMATION_METHOD'		=> 'Receive a confirmation via',
-	'INVITATION_ZEBRA'				=> 'Add the invited user as your friends',
+	'INVITATION_ZEBRA'				=> 'Add the invited user as your friend',
 	'OPTIONAL'						=> 'Optional',
 
 	// Error messages
@@ -66,7 +66,7 @@ $lang = array_merge($lang, array(
 	'INVITATION_LIMIT_TOTAL_MULTI'	=> 'You have sent %d/%d invitations altogether and you are about to exceed the total limit when sending %d invitations.',
 	'REDUCE_RECIPIENTS'				=> 'Please reduce the number of recipients.',
 	'INVITE_YOURSELF'				=> 'The registration key appears to be sent from your computer. You must not use it in order to prevent abuse.',
-	'INVITE_TO_YOUR_EMAIL'			=> 'You are already using the entered e-mail address. You cannot invite yourself.',
+	'INVITE_TO_YOUR_EMAIL'			=> 'The entered e-mail address is being used by yourself.',
 	'INVITE_MULTIPLE'				=> 'The entered e-mail address already obtained an invitation.',
 	'INVITE_SAME_RECIPIENT'			=> 'You cannot send multiple invitations to the same e-mail address.',
 	'REGISTER_KEY_INVALID'			=> 'The registration key is invalid.',
