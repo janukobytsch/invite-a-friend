@@ -20,7 +20,7 @@
 	<!-- ENDIF -->
 	<tr<!-- IF S_ERROR_RECIPIENT_INDEX === recipient_row.INDEX --> style="color: #BC2A4D;"<!-- ENDIF -->>
 		<td class="row1" width="25%"><b class="genmed">{L_RECIPIENT_EMAIL}: </b></td>
-		<td class="row2"><input type="text" name="form_register_email_{recipient_row.INDEX}" id="form_register_email_{recipient_row.INDEX}" value="{recipient_row.FORM_REGISTER_EMAIL}" size="45" maxlength="60" class="inputbox autowidth" /><!-- IF not recipient_row.S_FIRST_ROW and recipient_row.S_LAST_ROW --> <input name="remove_rc" value="x" class="button2" type="submit" alt="{L_DELETE_RECIPIENT}" /><!-- ENDIF --><!-- IF not S_RECIPIENTS_LIMIT and recipient_row.S_LAST_ROW --> <input name="add_rc" value="+" class="button2" type="submit" alt="{L_ADD_RECIPIENT}" /><!-- ENDIF --></td>
+		<td class="row2"><input type="text" name="form_register_email_{recipient_row.INDEX}" id="form_register_email_{recipient_row.INDEX}" value="{recipient_row.FORM_REGISTER_EMAIL}" size="45" maxlength="60" class="inputbox autowidth" /><!-- IF not recipient_row.S_FIRST_ROW and recipient_row.S_LAST_ROW --> <input name="remove_rc" value="x" class="button2" type="submit" alt="{L_REMOVE}" /><!-- ENDIF --><!-- IF not S_RECIPIENTS_LIMIT and recipient_row.S_LAST_ROW --> <input name="add_rc" value="{L_ADD}" class="button2" type="submit" alt="{L_ADD}" /><!-- ENDIF --></td>
 	</tr>
 	<tr<!-- IF S_ERROR_RECIPIENT_INDEX === recipient_row.INDEX --> style="color: #BC2A4D;"<!-- ENDIF -->>
 		<td class="row1" width="25%"><b class="genmed">{L_RECIPIENT_NAME}: </b></td>
