@@ -25,7 +25,7 @@
 			</author>
 		</author-group>
 
-		<mod-version>0.6.2</mod-version>
+		<mod-version>0.7.0</mod-version>
 
 		<installation>
 			<level>intermediate</level>
@@ -36,24 +36,36 @@
 		<history>
 			<entry>
 				<date>2010-06-27</date>
-				<rev-version>0.6.2 [Beta]</rev-version>
+				<rev-version>0.7.0 [Beta]</rev-version>
 				<changelog lang="en">
-					<change>[Added] Possibility to specify a referral user without being invited</change>
-					<change>[Added] User-specific invitation log (UCP)</change>
-					<change>[Added] Show pending registrations in the logs (ACP/UCP)</change>
-					<change>[Added] Possibility to disable keys which haven't been used yet</change>
-					<change>[Added] Key expiry time</change>
-					<change>[Added] Additional confirmation template which will be sent to the invited user</change>
-					<change>[Added] Possibility to send out multiple invitations at once</change>
-					<change>[Added] Charge for invitations (Ultimate Points System/Cash MOD)</change>
-					<change>[Added] More permissions (Module acccess, ignore limit, ignore queue)</change>
+					<change>[Added] Referral features </change>
+					<change>[Added] More templates (including referral ones)</change>
+					<change>[Added] Templates can be sent to both the referring and the referred user</change>
+					<change>[Added] Multiple recipients</change>
+					<change>[Added] New permissions</change>
+					<change>[Added] Board statistics</change>
 					<change>[Added] Invitation icon</change>
+					<change>[Added] UCP Module: Invitation log (user-specific)</change>
+					<change>[Added] UCP Module: Pending registrations (user-specific)</change>
+					<change>[Added] ACP Module: Referral settings</change>
+					<change>[Added] ACP Module: Pending registrations</change>
+					<change>[Added] Possibility to disable keys which haven't been used yet</change>
+					<change>[Added] Possibility to make keys expire after a specific period</change>
+					<change>[Added] Role for invited users</change>
+					<change>[Added] More settings for providing advantage to invited users (making use of their new role)</change>
+					<change>[Added] More settings for customizing the invitation form</change>
+					<change>[Added] More settings for Ultimate Points System/Cash MOD</change>
 					<change>[Changed] Moved the invitation link to the top right navigation</change>
 					<change>[Changed] Separated the registration key from the registration link in the invitation e-mail</change>
 					<change>[Changed] Disabled the 'prevent abuse' setting by default</change>
-					<change>[Changed] Disabled the invitation form options by default</change>
-					<change>[Improved] Invitation form</change>
-					<change>[Improved] Key generation</change>
+					<change>[Changed] Disabled the options when composing invitations by default</change>
+					<change>[Changed] Invitation form</change>
+					<change>[Changed] Key generation</change>
+					<change>[Changed] Improved handling of suppored modifications</change>
+					<change>[Changed] Language vars (e.g. 'Registration keys' renamed to 'Referral keys')</change>
+					<change>[Changed] Moved all config data from phpbb_invite_config to phpbb_config</change>
+					<change>[Changed] Prefixed modification related vars with 'iaf_'</change>
+					<change>[Fixed] UMIL installation</change>
 					<change>[Fixed] Errors when installing with AutoMOD 1.0</change>
 					<change>[Fixed] Apply template changes made in the ACP correctly</change>
 					<change>[Fixed] Special characters in templates</change>
@@ -215,25 +227,36 @@
 
 	<action-group>
 		<copy>
-			<file from="root/adm/style/acp_invite.html" to="adm/style/acp_invite.html" />
-			<file from="root/adm/style/acp_invite_log.html" to="adm/style/acp_invite_log.html" />
-			<file from="root/adm/style/acp_invite_templates.html" to="adm/style/acp_invite_templates.html" />
-			<file from="root/adm/mods/invite_check_version.php" to="adm/mods/invite_check_version.php" />
-			<file from="root/includes/functions_invite.php" to="includes/functions_invite.php" />
-			<file from="root/includes/acp/info/acp_invite.php" to="includes/acp/info/acp_invite.php" />
-			<file from="root/includes/acp/acp_invite.php" to="includes/acp/acp_invite.php" />
-			<file from="root/includes/ucp/info/ucp_invite.php" to="includes/ucp/info/ucp_invite.php" />
-			<file from="root/includes/ucp/ucp_invite.php" to="includes/ucp/ucp_invite.php" />
-			<file from="root/install/invitation.php" to="install/invitation.php" />
-			<file from="root/language/en/mods/info_acp_invite.php" to="language/en/mods/info_acp_invite.php" />
-			<file from="root/language/en/mods/info_ucp_invite.php" to="language/en/mods/info_ucp_invite.php" />
-			<file from="root/language/en/email/confirm_subject.txt" to="language/en/email/confirm_subject.txt" />
-			<file from="root/language/en/email/confirm_message.txt" to="language/en/email/confirm_message.txt" />
-			<file from="root/language/en/email/invite_subject.txt" to="language/en/email/invite_subject.txt" />
-			<file from="root/language/en/email/invite_message.txt" to="language/en/email/invite_message.txt" />
-			<file from="root/styles/prosilver/template/ucp_invite_invite.html" to="styles/prosilver/template/ucp_invite_invite.html" />
-			<file from="root/styles/prosilver/theme/images/contact_add.png" to="styles/prosilver/theme/images/contact_add.png" />
-			<file from="root/styles/prosilver/theme/images/contact_delete.png" to="styles/prosilver/theme/images/contact_delete.png" />
+			<file from="root/adm/style/acp_iaf_invitation_settings.html" to="adm/style/acp_iaf_invitation_settings.html" />
+			<file from="root/adm/style/acp_iaf_referral_settings.html" to="adm/style/acp_iaf_referral_settings.html" />
+			<file from="root/adm/style/acp_iaf_templates.html" to="adm/style/acp_iaf_templates.html" />
+			<file from="root/adm/style/acp_iaf_log.html" to="adm/style/acp_iaf_log.html" />
+			<file from="root/adm/style/acp_iaf_pending_regs.html" to="adm/style/acp_iaf_pending_regs.html" />
+			<file from="root/adm/mods/iaf_check_version.php" to="adm/mods/iaf_check_version.php" />
+			<file from="root/includes/functions_iaf.php" to="includes/functions_iaf.php" />
+			<file from="root/includes/acp/info/acp_iaf.php" to="includes/acp/info/acp_iaf.php" />
+			<file from="root/includes/acp/acp_iaf.php" to="includes/acp/acp_iaf.php" />
+			<file from="root/includes/ucp/info/ucp_iaf.php" to="includes/ucp/info/ucp_iaf.php" />
+			<file from="root/includes/ucp/ucp_iaf.php" to="includes/ucp/ucp_iaf.php" />
+			<file from="root/install/install_iaf.php" to="install/install_iaf.php" />
+			<file from="root/language/en/mods/info_acp_iaf_invitation_settings.php" to="language/en/mods/info_acp_iaf_invitation_settings.php" />
+			<file from="root/language/en/mods/info_acp_iaf_referral_settings.php" to="language/en/mods/info_acp_iaf_referral_settings.php" />
+			<file from="root/language/en/mods/info_acp_iaf_templates.php" to="language/en/mods/info_acp_iaf_templates.php" />
+			<file from="root/language/en/mods/info_acp_iaf_log.php" to="language/en/mods/info_acp_iaf_log.php" />
+			<file from="root/language/en/mods/info_acp_iaf_pending_regs.php" to="language/en/mods/info_acp_iaf_pending_regs.php" />
+			<file from="root/language/en/mods/info_ucp_iaf_compose.php" to="language/en/mods/info_ucp_iaf_compose.php" />
+			<file from="root/language/en/mods/info_ucp_iaf_log.php" to="language/en/mods/info_ucp_iaf_log.php" />
+			<file from="root/language/en/mods/info_ucp_iaf_pending_regs.php" to="language/en/mods/info_ucp_iaf_pending_regs.php" />
+			<file from="root/language/en/mods/permissions_iaf.php" to="language/en/mods/permissions_iaf.php" />
+			<file from="root/language/en/mods/misc_iaf.php" to="language/en/mods/misc_iaf.php" />
+			<file from="root/language/en/email/iaf_invitation_0.txt" to="language/en/email/iaf_invitation_0.txt" />
+			<file from="root/language/en/email/iaf_successful_invitation_0.txt" to="language/en/email/iaf_successful_invitation_0.txt" />
+			<file from="root/language/en/email/iaf_successful_invitation_1.txt" to="language/en/email/iaf_successful_invitation_1.txt" />
+			<file from="root/language/en/email/iaf_referral_0.txt" to="language/en/email/iaf_referral_0.txt" />
+			<file from="root/language/en/email/iaf_referral_1.txt" to="language/en/email/iaf_referral_1.txt" />
+			<file from="root/styles/prosilver/template/ucp_iaf_compose.html" to="styles/prosilver/template/ucp_iaf_compose.html" />
+			<file from="root/styles/prosilver/template/ucp_iaf_log.html" to="styles/prosilver/template/ucp_iaf_log.html" />
+			<file from="root/styles/prosilver/template/ucp_iaf_pending_regs.html" to="styles/prosilver/template/ucp_iaf_pending_regs.html" />
 			<file from="root/styles/prosilver/theme/images/icon_invitation.gif" to="styles/prosilver/theme/images/icon_invitation.gif" />
 			<file from="root/umil/*.*" to="umil/*.*" />
 		</copy>
@@ -666,10 +689,10 @@ define('LOG_INVITE', 				4);]]></action>
 			</edit>
 		</open>
 
-		<php-installer>install/invitation.php</php-installer>
+		<php-installer>install/install_iaf.php</php-installer>
 
 		<diy-instructions lang="en">When you are done with the file changes, please run the installation file at
-BOARD_URL/install/invitation.php
+BOARD_URL/install/install_iaf.php
 (If you are using AutoMOD 1.0, you can follow the installer link above)
 
 Delete the 'install' folder afterwards, go to your Administrator Control Panel

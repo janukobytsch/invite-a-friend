@@ -2,11 +2,11 @@
 
 <form id="invite" action="{U_ACTION}" method="post">
 
-<h2>{L_UCP_INVITE_INVITE}</h2>
+<h2>{L_UCP_INVITATION_COMPOSE}</h2>
 
 <div class="panel">
 	<div class="inner"><span class="corners-top"><span></span></span>
-	<p>{L_UCP_INVITE_DESCRIPTION}</p><br />
+	<p>{L_UCP_INVITATION_COMPOSE_EXPLAIN}</p><br />
 	
 	<fieldset class="fields1">
 		<!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
@@ -22,6 +22,18 @@
 			</dl>
 			<!-- IF not recipient_row.S_FIRST_ROW and recipient_row.S_LAST_ROW --><br /><!-- ENDIF -->
 		<!-- END recipient_row -->
+		<dl>
+			<dt><label for="form_invite_email">{L_SENDER_EMAIL}:</label></dt>
+			<dd>
+				<input type="text" name="form_invite_email" id="form_invite_email" value="{FORM_INVITE_EMAIL}" size="45" maxlength="75" class="inputbox autowidth" />
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="form_invite_real_name">{L_SENDER_NAME}:</label></dt>
+			<dd>
+				<input type="text" name="form_invite_real_name" id="form_invite_real_name" value="{FORM_INVITE_REAL_NAME}" size="45" maxlength="75" class="inputbox autowidth" />
+			</dd>
+		</dl>
 		<dl>
 			<dt><label for="form_subject">{L_SUBJECT}:</label></dt>
 			<dd>

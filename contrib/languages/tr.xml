@@ -7,7 +7,7 @@
 		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
 
 		<title lang="en">Invite A Friend</title>
-		<description lang="en">Installing the Turkish language package for Invite A Friend.</description>
+		<description lang="en">Installing the turkish language package.</description>
 		<author-notes lang="en">For further information and bug reports please visit <![CDATA[http://www.phpbb.com/community/viewtopic.php?f=70&t=1224005]]></author-notes>
 
 		<author-group>
@@ -22,7 +22,7 @@
 			</author>
 		</author-group>
 
-		<mod-version>0.6.1</mod-version>
+		<mod-version>0.7.0</mod-version>
 
 		<installation>
 			<level>intermediate</level>
@@ -31,6 +31,43 @@
 		</installation>
 
 		<history>
+			<entry>
+				<date>2010-06-27</date>
+				<rev-version>0.7.0 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Referral features </change>
+					<change>[Added] More templates (including referral ones)</change>
+					<change>[Added] Templates can be sent to both the referring and the referred user</change>
+					<change>[Added] Multiple recipients</change>
+					<change>[Added] New permissions</change>
+					<change>[Added] Board statistics</change>
+					<change>[Added] Invitation icon</change>
+					<change>[Added] UCP Module: Invitation log (user-specific)</change>
+					<change>[Added] UCP Module: Pending registrations (user-specific)</change>
+					<change>[Added] ACP Module: Referral settings</change>
+					<change>[Added] ACP Module: Pending registrations</change>
+					<change>[Added] Possibility to disable keys which haven't been used yet</change>
+					<change>[Added] Possibility to make keys expire after a specific period</change>
+					<change>[Added] More settings for providing advantage to invited users</change>
+					<change>[Added] More settings for customizing the invitation form</change>
+					<change>[Added] More settings for Ultimate Points System/Cash MOD</change>
+					<change>[Changed] Moved the invitation link to the top right navigation</change>
+					<change>[Changed] Separated the registration key from the registration link in the invitation e-mail</change>
+					<change>[Changed] Disabled the 'prevent abuse' setting by default</change>
+					<change>[Changed] Disabled the options when composing invitations by default</change>
+					<change>[Changed] Invitation form</change>
+					<change>[Changed] Key generation</change>
+					<change>[Changed] Improved handling of suppored modifications</change>
+					<change>[Changed] Language vars (e.g. 'Registration keys' renamed to 'Referral keys')</change>
+					<change>[Changed] Moved all config data from phpbb_invite_config to phpbb_config</change>
+					<change>[Changed] Prefixed modification related vars with 'iaf_'</change>
+					<change>[Fixed] UMIL installation</change>
+					<change>[Fixed] Errors when installing with AutoMOD 1.0</change>
+					<change>[Fixed] Apply template changes made in the ACP correctly</change>
+					<change>[Fixed] Special characters in templates</change>
+					<change>[Fixed] Confirmation code display</change>
+				</changelog>
+			</entry>
 			<entry>
 				<date>2010-04-19</date>
 				<rev-version>0.6.1 [Beta]</rev-version>
@@ -184,12 +221,21 @@
 
 	<action-group>
 		<copy>
-			<file from="root/language/tr/mods/info_acp_invite.php" to="language/tr/mods/info_acp_invite.php" />
-			<file from="root/language/tr/mods/info_ucp_invite.php" to="language/tr/mods/info_ucp_invite.php" />
-			<file from="root/language/tr/email/confirm_subject.txt" to="language/tr/email/confirm_subject.txt" />
-			<file from="root/language/tr/email/confirm_message.txt" to="language/tr/email/confirm_message.txt" />
-			<file from="root/language/tr/email/invite_subject.txt" to="language/tr/email/invite_subject.txt" />
-			<file from="root/language/tr/email/invite_message.txt" to="language/tr/email/invite_message.txt" />
+			<file from="root/language/tr/mods/info_acp_iaf_invitation_settings.php" to="language/tr/mods/info_acp_iaf_invitation_settings.php" />
+			<file from="root/language/tr/mods/info_acp_iaf_referral_settings.php" to="language/tr/mods/info_acp_iaf_referral_settings.php" />
+			<file from="root/language/tr/mods/info_acp_iaf_templates.php" to="language/tr/mods/info_acp_iaf_templates.php" />
+			<file from="root/language/tr/mods/info_acp_iaf_log.php" to="language/tr/mods/info_acp_iaf_log.php" />
+			<file from="root/language/tr/mods/info_acp_iaf_pending_regs.php" to="language/tr/mods/info_acp_iaf_pending_regs.php" />
+			<file from="root/language/tr/mods/info_ucp_iaf_compose.php" to="language/tr/mods/info_ucp_iaf_compose.php" />
+			<file from="root/language/tr/mods/info_ucp_iaf_log.php" to="language/tr/mods/info_ucp_iaf_log.php" />
+			<file from="root/language/tr/mods/info_ucp_iaf_pending_regs.php" to="language/tr/mods/info_ucp_iaf_pending_regs.php" />
+			<file from="root/language/tr/mods/permissions_iaf.php" to="language/tr/mods/permissions_iaf.php" />
+			<file from="root/language/tr/mods/misc_iaf.php" to="language/tr/mods/misc_iaf.php" />
+			<file from="root/language/tr/email/iaf_invitation_0.txt" to="language/tr/email/iaf_invitation_0.txt" />
+			<file from="root/language/tr/email/iaf_successful_invitation_0.txt" to="language/tr/email/iaf_successful_invitation_0.txt" />
+			<file from="root/language/tr/email/iaf_successful_invitation_1.txt" to="language/tr/email/iaf_successful_invitation_1.txt" />
+			<file from="root/language/tr/email/iaf_referral_0.txt" to="language/tr/email/iaf_referral_0.txt" />
+			<file from="root/language/tr/email/iaf_referral_1.txt" to="language/tr/email/iaf_referral_1.txt" />
 		</copy>
 
 		<diy-instructions lang="en">Just copy the language files to the corresponding folder of your phpBB installation.</diy-instructions>

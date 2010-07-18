@@ -3,7 +3,7 @@
 *
 * @author Bycoja bycoja@web.de
 * @package acp
-* @version $Id acp_invite.php 0.6.1 2010-04-05 15:14:09GMT Bycoja $
+* @version $Id acp_iaf.php 0.7.0 2010-06-22 17:28:02GMT Bycoja $
 * @copyright (c) 2010 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -31,8 +31,7 @@ class acp_invite
 
 		include ($phpbb_root_path . 'includes/functions_user.' . $phpEx);
 		include ($phpbb_root_path . 'includes/functions_invite.' . $phpEx);
-
-		$user->add_lang(array('ucp', 'mods/info_acp_invite', 'acp/board', 'acp/email'));
+		$user->add_lang(array('mods/info_acp_invite', 'acp/board', 'acp/email'));
 
 		$invite	= new invite();
 		$action	= request_var('action', '');
@@ -51,15 +50,16 @@ class acp_invite
 		{
 			case 'settings':
 
-				$this->page_title = 'ACP_INVITE_SETTINGS';
+				$this->page_title = 'ACP_INVITATION_SETTINGS';
 				$this->tpl_name = 'acp_invite';
 
-				$queue_time_m = request_var('queue_time_m', floor($invite->config['queue_time'] / 60));
 				$queue_time_s = request_var('queue_time_s', $invite->config['queue_time'] % 60);
+				$queue_time_m = request_var('queue_time_m', floor($invite->config['queue_time'] % 3600 / 60));
+				$queue_time_h = request_var('queue_time_h', floor($invite->config['queue_time'] / 3600));
 
 				if ($submit)
 				{
-					$new_config['queue_time'] = $queue_time_s + ($queue_time_m * 60);
+					$new_config['queue_time'] = $queue_time_s + $queue_time_m * 60 + $queue_time_h * 3600;
 
 					$check_ary = array(
 						'queue_time'				=> array('num', true, 1, 9999999999),
@@ -120,6 +120,7 @@ class acp_invite
 					'S_SELECT_PROFILE_LOCATION'	=> $this->build_select('profile_location'),
 					'S_SELECT_PROFILE_TYPE'		=> $this->build_select('profile_type'),
 					'S_PRIORITY_OPTIONS'		=> $this->build_select('priority', '', $new_config['invite_priority_flag']),
+					'S_QUEUE_TIME_H'			=> $queue_time_h,
 					'S_QUEUE_TIME_M'			=> $queue_time_m,
 					'S_QUEUE_TIME_S'			=> $queue_time_s,
 
@@ -129,17 +130,18 @@ class acp_invite
 				if ($invite->ultimate_points_installed())
 				{
 					$template->assign_vars(array(
-						'S_ULTIMATE_POINTS_INSTALLED' => true,
+						'POINTS_NAME'					=> $config['points_name'],
+						'S_ULTIMATE_POINTS_INSTALLED' 	=> true,
 					));
 				}
 
 				if ($invite->cash_installed())
 				{
 					global $cash;
+					$user->add_lang('mods/cash_mod');
 
 					$template->assign_vars(array(
-						'S_CASH_INSTALLED' => true,
-
+						'S_CASH_INSTALLED' 			=> true,
 						'S_CASH_CURRENCY_INVITE'	=> $cash->get_currencies($invite->config['cash_id_invite'], true),
 						'S_CASH_CURRENCY_REGISTER'	=> $cash->get_currencies($invite->config['cash_id_register'], true),
 					));
@@ -328,6 +330,9 @@ class acp_invite
 				}
 
 			break;
+
+			default:
+			break;
 		}
 	}
 
@@ -417,7 +422,7 @@ class acp_invite
 		{
 			case 'general':
 				$wildcards['USER_SUBJECT'] = $wildcards['USER_MESSAGE'] = $user->lang['USER_DEFINED'];
-				$wildcards['REGISTRATION_KEY'] = $invite->create_key();
+				$wildcards['REGISTRATION_KEY'] = $invite->generate_key();
 				$wildcards['REGISTRATION_URL'] = generate_board_url() . '/ucp.' . $phpEx . '?mode=register&referral=' . urlencode($user->data['username']) . '&key=' . $wildcards['REGISTRATION_KEY'];
 				$wildcards['SITENAME'] = htmlspecialchars_decode($config['sitename']);
 				$wildcards['CONTACT_EMAIL'] = $config['board_contact'];

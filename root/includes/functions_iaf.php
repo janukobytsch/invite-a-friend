@@ -3,7 +3,7 @@
 *
 * @author Bycoja bycoja@web.de
 * @package phpBB3
-* @version $Id functions_invite.php 0.6.2 2010-06-22 17:28:02GMT Bycoja $
+* @version $Id functions_iaf.php 0.7.0 2010-06-22 17:28:02GMT Bycoja $
 * @copyright (c) 2010 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -17,10 +17,11 @@ if (!defined('IN_PHPBB'))
 	exit;
 }
 
-define('EMAIL', 	0);
-define('PM', 		1);
-define('OPTIONAL', 	2);
+define('EMAIL', 				0);
+define('PM', 					1);
+define('OPTIONAL', 				2);
 
+// Contains the different kinds of templates
 $INVITE_MESSAGE_TYPE = array(
 	'invite'	=> 0,
 	'confirm'	=> 1,
@@ -32,17 +33,44 @@ $INVITE_MESSAGE_TYPE = array(
 */      
 class invite
 {
-	var $version = '0.6.2';
-	var $INVITE_MESSAGE_TYPE = array('invite' => 0, 'confirm' => 1,);
+	var $version = '0.7.0';
 
+	// Contains the modification's config vars
 	var $config;
+
+	// Contains the invitation message
 	var $message;
+
+	// Contains the data about the inviting/referring user just like $user->data
 	var $invite_user;
+
+	// Contains the data about the registering user just like $user->data
 	var $register_user;
+
+	// Contains the different kinds of templates
+	var $INVITE_MESSAGE_TYPE = array(
+		'invite' => 0,
+		'confirm' => 1,
+	);
+
+	// Contains the supported plugins and their functions
+	var $plugins = array(
+		'ultimate_points' => array(
+			'checkout' 	=> array('call_func' => 'checkout', 'args' => 'user_id'),
+			'give' 		=> array('call_func' => 'give', 'args' => array('action', 'user_id')),
+			'charge' 	=> array('call_func' => 'charge', 'args' => 'user_id'),
+		),
+		'cash' => array(
+			'checkout' 	=> array('call_func' => 'checkout', 'args' => 'user_id'),
+			'give' 		=> array('call_func' => 'give', 'args' => array('action', 'user_id')),
+			'charge' 	=> array('call_func' => 'charge', 'args' => 'user_id'),
+		),
+	);
 
 	/**
 	* function invite
-	 */
+	* Constructor
+	*/
 	function invite()
 	{
 		global $db, $config;
@@ -72,7 +100,7 @@ class invite
 
 	/**
 	* function get_config
-	 */
+	*/
 	function get_config()
 	{
 		global $db;
@@ -164,7 +192,7 @@ class invite
 
 		if (!trim($template_file))
 		{
-			trigger_error('invite->get_template(): No template file set.', E_USER_ERROR);
+			trigger_error('invite->set_template(): No template file set.', E_USER_ERROR);
 		}
 
 		$template_lang 	= (!trim($template_lang)) ? basename($user->data['user_lang']) : $template_lang;
@@ -294,8 +322,9 @@ class invite
 			$user->data['user_id']	= $this->invite_user['user_id'];
 			add_log('invite', 'LOG_INVITE_' . strtoupper(array_search($data['message_type'], $this->INVITE_MESSAGE_TYPE)), $data['register_email']);
 
-			$this->give_cash('invite', $this->invite_user['user_id']);
-			$this->give_ultimate_points('invite', $this->invite_user['user_id']);
+			// Handle plugins
+			$this->handle_credit('give', 'invite', $this->invite_user['user_id']);
+			$this->handle_credit('charge', '', $this->invite_user['user_id']);
 
 			// Statistics
 			$sql 	= 'UPDATE ' . INVITE_CONFIG_TABLE . ' SET config_value = config_value + 1 WHERE config_name = "num_invitations"';
@@ -715,8 +744,7 @@ class invite
 		$sql 	= 'UPDATE ' . USERS_TABLE . ' SET user_registrations = user_registrations + 1 WHERE user_id = ' . (int) $this->invite_user['user_id'];
 		$result = $db->sql_query($sql);
 
-		$this->give_cash('register', $this->invite_user['user_id']);
-		$this->give_ultimate_points('register', $this->invite_user['user_id']);
+		$this->handle_credit('give', 'register', $this->invite_user['user_id']);
 
 		// Associate with the inviting user
 		$save_user_id = $user->data['user_id'];
@@ -850,126 +878,181 @@ class invite
 		{
 			return;
 		}
-		$user->add_lang('mods/info_acp_invite');
+		$user->add_lang('mods/info_ucp_invite');
 
 		$template->assign_vars(array(
-			'U_INVITE_A_FRIEND'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=invite&amp;mode=invite'),
-			'S_DISPLAY_INVITE'		=> ($auth->acl_get('u_send_invite')) ? true : false,
+			'U_INVITE_A_FRIEND'		=> append_sid("{$phpbb_root_path}ucp.$phpEx", 'i=invite&amp;mode=compose'),
+			'S_DISPLAY_INVITE'		=> ($auth->acl_get('u_send_invitations')) ? true : false,
 		));
 	}
 
-	/** ################
-	* ##### PLUGINS######
-	*/#################
+	/**
+	* function handle_credit
+	* Loads the required plugins and handles the user's credit
+	*
+	* @param string $mode
+	* @param optional string $action
+	* @param optional int $user_id
+	* @return bool/int
+	*/
+	function handle_credit($mode, $action = '', $user_id = 0)
+	{
+		global $user, $config, $auth;
+
+		// We shall give credit to the current user in most cases
+		if (!$user_id)
+		{
+			$user_id = $user->data['user_id'];
+		}
+
+		foreach ($this->plugins as $plugin_name => $plugin)
+		{
+			if (call_user_func_array(array($this, $plugin_name . '_installed'), array()))
+			{
+				if ($this->config['enable_' . $plugin_name])
+				{
+					if (!is_array($plugin[$mode]['args']))
+					{
+						$args = array($$plugin[$mode]['args']);
+					}
+					else
+					{
+						$args = array();
+
+						foreach ($plugin[$mode]['args'] as $k => $v)
+						{
+							$args[] = $$k;
+						}
+					}
+					$return = call_user_func_array(array($this, $mode . '_' . $plugin_name), $args);
+				}
+			}
+		}
+		return $return;
+	}
 
 	/**
 	* function ultimate_points_installed
+	* Checks whether Ultimate Points is available
 	*/
 	function ultimate_points_installed()
 	{
 		global $phpbb_root_path, $phpEx, $config;
 
-		$check_file = $phpbb_root_path . 'includes/points/functions_points.' . $phpEx;
-
-		if (isset($config['ultimate_points_version']))
+		if (isset($config['ultimate_points_version']) && file_exists($phpbb_root_path . 'includes/points/functions_points.' . $phpEx))
 		{
-			if (version_compare($config['ultimate_points_version'], '1.0.0', '>='))
-			{
-				if (file_exists($check_file))
-				{
-					return true;
-				}
-			}
+			return true;
 		}
 
 		return false;
 	}
 
 	/**
-	* function give_ultimate_points
+	* function checkout_ultimate_points
+	* Checks the available credit of the specified user using Ultimate Points
+	* As Ultimate Points doesn't provide an API, we have to query the database here
+	*
+	* @param int $user_id
+	* @return float $credit
 	*/
-	function give_ultimate_points($mode, $user_id)
+	function checkout_ultimate_points($user_id)
+	{
+		global $db;
+
+		$sql = 'SELECT user_points
+			FROM ' . USERS_TABLE . '
+			WHERE user_id = ' . (int) $user_id;
+		$result = $db->sql_query($sql);
+		$credit = $db->sql_fetchfield('user_points');
+		$db->sql_freeresult($result);
+
+		return $credit;
+	}
+
+	/**
+	* function give_ultimate_points
+	* Gives the specified user credit using Ultimate Points
+	*
+	* @param string $action
+	* @param int $user_id
+	*/
+	function give_ultimate_points($action, $user_id)
 	{
 		//
 
-		if ($this->ultimate_points_installed() && $this->config['enable_ultimate_points'])
-		{
-			if ($mode == 'invite')
-			{
-				add_points($user_id, $this->config['ultimate_points_invite']);
-			}
-			else
-			{
-				// $mode = 'register'
-				add_points($user_id, $this->config['ultimate_points_register']);
-			}
-		}
+		add_points($user_id, $this->config['ultimate_points_' . $action]);
+	}
+
+	/**
+	* function charge_ultimate_points
+	* Charges a fee when sending invitations using Ultimate Points
+	*
+	* @param int $user_id
+	*/
+	function charge_ultimate_points($user_id)
+	{
+		//
+
+		substract_points($user_id, $this->config['ultimate_points_fee']);
 	}
 
 	/**
 	* function cash_installed
+	* Checks whether CashMOD is available
 	*/
 	function cash_installed()
 	{
-		global $phpbb_root_path, $phpEx;
+		global $phpbb_root_path, $phpEx, $config;
 
-		$check_file = $phpbb_root_path . 'includes/mods/cash/cash_class.' . $phpEx;
-
-		if (file_exists($check_file))
+		if (isset($config['cash_version']) && file_exists($phpbb_root_path . 'includes/mods/cash/cash_class.' . $phpEx))
 		{
 			return true;
 		}
-		else
-		{
-			return false;
-		}
+
+		return false;
+	}
+
+	/**
+	* function checkout_cash
+	* Checks the available credit of the specified user using CashMOD
+	*
+	* @param int $user_id
+	* @return int $credit
+	*/
+	function checkout_cash($user_id)
+	{
+		global $cash;
+
+		$credit = $cash->get_user_cash($user_id);
+
+		return $credit;
 	}
 
 	/**
 	* function give_cash
+	* Gives the specified user credit using CashMOD
+	*
+	* @param string $action
+	* @param int $user_id
 	*/
-	function give_cash($mode, $user_id)
+	function give_cash($action, $user_id)
 	{
-		//
+		global $cash;
 
-		if ($this->cash_installed() && $this->config['enable_cash'])
-		{
-			global $cash;
-
-			if ($mode == 'invite')
-			{
-				$cash->give_cash($user_id, $this->config['cash_invite'], $this->config['cash_id_invite']);
-			}
-			else
-			{
-				// $mode = 'register'
-				$cash->give_cash($user_id, $this->config['cash_register'], $this->config['cash_id_register']);
-			}
-		}
+		$cash->give_cash($user_id, $this->config['cash_' . $action], $this->config['cash_id_' . $action]);
 	}
 
 	/**
-	* function get_currency_name
+	* function charge_cash
+	* Charges a fee when sending invitations using CashMOD
+	*
+	* @param int $user_id
 	*/
-	function get_currency_name($cash_id)
+	function charge_cash($user_id)
 	{
-		global $db;
+		global $cash;
 
-		if ($this->cash_installed())
-		{
-			global $cash;
-
-			$sql	= 'SELECT * FROM ' . CASH_TABLE . ' WHERE cash_id = ' . (int) $cash_id;
-			$result = $db->sql_query($sql);
-
-			while ($row = $db->sql_fetchrow($result))
-			{
-				$return	= $row['cash_name'];
-			}
-			$db->sql_freeresult($result);
-
-			return $return;
-		}
+		$cash->take_cash($user_id, $this->config['cash_fee'], $this->config['cash_fee_id']);
 	}
 }
 ?>

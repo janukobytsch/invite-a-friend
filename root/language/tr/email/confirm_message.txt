@@ -1,6 +1,0 @@
-Sayin {INVITE_USERNAME},
-
-Bu mesaj, {BOARD_URL} sitesine {INVITED_USERNAME} kullanici adiyla kayitli bir arkadasinizin istedigi üzerine sistem tarafindan otomatik olarak gönderilmistir.
-
-Arkadasinizin profiline asagidaki baglantiyi tiklayarak bakabilirsiniz.
-{INVITED_USER_PROFILE_URL}

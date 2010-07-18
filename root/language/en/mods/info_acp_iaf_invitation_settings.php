@@ -36,25 +36,19 @@ if (empty($lang) || !is_array($lang))
 // equally where a string contains only two placeholders which are used to wrap text
 // in a url you again do not need to specify an order e.g., 'Click %sHERE%s' is fine
 
-// Permissions
 $lang = array_merge($lang, array(
-	'acl_a_invite_settings'	=> array('lang' => 'Can manage invitation settings', 'cat' => 'misc'),
-	'acl_a_invite_log'		=> array('lang' => 'Can manage invitation log', 'cat' => 'misc'),
-    'acl_u_send_invite'		=> array('lang' => 'Can send invitations to friends', 'cat' => 'misc'),
-));
-
-$lang = array_merge($lang, array(
-	'ACP_INVITE'						=> 'Invite a friend',
-	'ACP_INVITE_SETTINGS'				=> 'Invitation settings',
-	'ACP_INVITE_SETTINGS_EXPLAIN'		=> 'Here you can set all default settings for the invitations which users can send to their friends.',
-	'ACP_INVITE_TEMPLATES'				=> 'Invitation templates',
-	'ACP_INVITE_TEMPLATES_EXPLAIN'		=> 'Here you can edit all templates related to the invitations. You can find both the templates for the confirmation sent to the inviter and the invitation itself below. As for the invitation templates, the user´s message and subject will be embedded into the template by using wildcards in curly braces. For a full list of possible wildcards look at the table below. Please note that you must not enter HTML or BBCode but plain text.',
-	'ACP_INVITE_LOG'					=> 'Invitation log',
-	'ACP_INVITE_LOG_EXPLAIN'			=> 'This lists all actions relating to the invitations which users can send to their friends. Use the form below to search for specific data. You do not need to fill out all fields.',
-	'ACP_INVITE_DISPLAY_OPTIONS'		=> 'Display options',
-	'ACP_INVITE_LIMITATION_OPTIONS'		=> 'Limitation',
-	'INVITATION'						=> 'Invitation',
-	'INVITATION_EXPLAIN'				=> 'Send an invitation to your friends',
+	'ACP_IAF_TITLE'							=> 'Invite A Friend',
+	'ACP_IAF_INVITATION_SETTINGS'			=> 'Invitation settings',
+	'ACP_IAF_INVITATION_SETTINGS_EXPLAIN'	=> 'Here you can set all default settings for the invitations which users can send to their friends.',
+	'ACP_IAF_REFERRAL_SETTINGS'				=> 'Referral settings',
+	'ACP_IAF_REFERRAL_SETTINGS_EXPLAIN'		=> 'Referrals are users associated to others who have referred them to your board by sending an invitation or being specified as their referrer during the registration process. Here you can configure the referral features and determine how they integrate with the invitations.',
+	'ACP_IAF_TEMPLATES'						=> 'Template settings',
+	'ACP_IAF_TEMPLATES_EXPLAIN'				=> 'Here you can edit all templates related to the referrals and invitations. You can find both the templates for the confirmation sent to the inviter and the invitation itself below. As for the invitation templates, the user’s message and subject will be embedded into the template by using wildcards in curly braces. For a full list of possible wildcards look at the table below. Please note that you must not enter HTML or BBCode but plain text.',
+	'ACP_IAF_LOG'							=> 'Invitation log',
+	'ACP_IAF_LOG_EXPLAIN'					=> 'This lists all actions relating to the invitations which users can send to their friends. Use the form below to search for specific data. You do not need to fill out all fields.',
+	
+	'ACP_INVITATION_LIMITATION_SETTINGS'		=> 'Limitation settings',
+	'ACP_INVITATION_DISPLAY_OPTIONS'			=> 'Display options',
 
 	// Error messages
 	'ERROR_EMAIL_DISABLED'				=> 'E-mails have been disabled and you cannot send any invitations.<br /><br /><a href="%s">» Activate E-mail-functionality</a>',
@@ -90,19 +84,7 @@ $lang = array_merge($lang, array(
 	'LOG_INVITE_REGISTER'				=> '<strong>Successful invitation</strong><br/>» key consumed in order to register „%1$s“',
 	'LOG_INVITE_ZEBRA'					=> '<strong>Friend added</strong><br/>» „%1$s“ due to his registration',
 
-	//Plugins
-	'ULTIMATE_POINTS_SETTINGS'			=> 'Ultimate Points settings',
-	'ULTIMATE_POINTS_ENABLE'			=> 'Enable Ultimate Points',
-	'ULTIMATE_POINTS_INVITE'			=> 'Ultimate points per invitation',
-	'ULTIMATE_POINTS_INVITE_EXPLAIN'	=> 'The amount of ultimate points allocated per invitation.',
-	'ULTIMATE_POINTS_REGISTER'			=> 'Ultimate points per registration',
-	'ULTIMATE_POINTS_REGISTER_EXPLAIN'	=> 'The amount of ultimate points allocated per invited friend, who registers a new account.',
-	'CASH_SETTINGS'						=> 'Cash settings',
-	'CASH_ENABLE'						=> 'Enable cash',
-	'CASH_INVITE'						=> 'Cash per invitation',
-	'CASH_INVITE_EXPLAIN'				=> 'The amount of cash allocated per invitation.',
-	'CASH_REGISTER'						=> 'Cash per registration',
-	'CASH_REGISTER_EXPLAIN'				=> 'The amount of cash allocated per invited friend, who registers a new account.',
+
 
 	// Various stuff
 	'ACC_TRANSFER'						=> 'Transfer',
@@ -112,9 +94,11 @@ $lang = array_merge($lang, array(
 	'VIEWTOPIC'							=> 'Topic',
 	'MEMBERLIST_VIEW'					=> 'Profile',
 	'INVITATIONS'						=> 'Invitations',
-	'DISPLAY_INVITER'					=> 'Invited by',
+	'DISPLAY_INVITER'					=> 'Referred by',
 	'DISPLAY_INVITE'					=> 'Invitations sent',
 	'DISPLAY_REGISTER'					=> 'Successful invitations',
+	'SUCCESSFUL_INVITATIONS'			=> 'Successful invitations',
+	'REFERRALS'							=> 'Referrals',
 	'MEMBERDAYS'						=> 'Days of membership',
 	'USER_LANGUAGE'						=> 'User’s language',
 	'INVITATIONS_DAY'					=> '%.2f invitations per day',
@@ -128,7 +112,7 @@ $lang = array_merge($lang, array(
 	'USER_ADMIN_REGISTRATIONS'			=> 'View user’s successful invitations',
 
 	// Invitation settings
-	'SETTINGS_ENABLE'							=> 'Enable »Invite A Friend«',
+	'SETTINGS_ENABLE'							=> 'Enable invitations',
 	'SETTINGS_ENABLE_KEY'						=> 'Require registration keys',
 	'SETTINGS_ENABLE_KEY_EXPLAIN'				=> 'Restricts registration to invited users, mainly for private boards.',
 	'SETTINGS_KEY_GROUP'						=> 'Invited users’ group',
@@ -150,14 +134,18 @@ $lang = array_merge($lang, array(
 	'SETTINGS_EMAIL_IDENTIFICATION_EXPLAIN'		=> 'Associate users-to-be with the one who invited them by comparing e-mail addresses and keep track of statistical information, even if the invited users do not specify a registration key.',
 	'SETTINGS_INVITE_SEARCH_ALLOWED'			=> 'Enable member search',
 	'SETTINGS_INVITE_SEARCH_ALLOWED_EXPLAIN'	=> 'If set to yes, users will be able to find a member by searching for invitation related criteria. The criterion itself must be enabled in display options.',
-	'SETTINGS_QUEUE_TIME'						=> 'Queue',
-	'SETTINGS_QUEUE_TIME_EXPLAIN'				=> 'The period of time users must wait after having sent an invitation to send another one.',
+	'SETTINGS_FRIEND_NAME_CHARS'				=> 'Friend’s name length',
+	'SETTINGS_FRIEND_NAME_CHARS_EXPLAIN'		=> 'Minimum and maximum number of characters in the friends’ names.',
+	'SETTINGS_YOUR_EMAIL_CHARS'					=> 'Sender’s e-mail lenght',
+	'SETTINGS_YOUR_EMAIL_CHARS_EXPLAIN'			=> 'Minimum and maximum number of characters in the senders’ e-mail addresses.',
+	'SETTINGS_YOUR_NAME_CHARS'					=> 'Sender’s name lenght',
+	'SETTINGS_YOUR_NAME_CHARS_EXPLAIN'			=> 'Minimum and maximum number of characters in the senders’ names.',
 	'SETTINGS_MESSAGE_CHARS'					=> 'Message length',
 	'SETTINGS_MESSAGE_CHARS_EXPLAIN'			=> 'Minimum and maximum number of characters in messages.',
 	'SETTINGS_SUBJECT_CHARS'					=> 'Subject length',
 	'SETTINGS_SUBJECT_CHARS_EXPLAIN'			=> 'Minimum and maximum number of characters in subjects.',
 	'SETTINGS_MULTIPLE_RECIPIENTS'				=> 'Multiple recipients',
-	'SETTINGS_MULTIPLE_RECIPIENTS_EXPLAIN'		=> 'Maximum number of people whom a invitation can be sent to at once.',
+	'SETTINGS_MULTIPLE_RECIPIENTS_EXPLAIN'		=> 'Maximum number of people whom a single invitation can be sent to.',
 	'SETTINGS_CONFIRM'							=> 'Send confirmation',
 	'SETTINGS_CONFIRM_EXPLAIN'					=> 'Send a confirmation message on successful invitations to the user whose invited friend registered.',
 	'SETTINGS_ZEBRA'							=> 'Add to friendlist',
@@ -176,20 +164,36 @@ $lang = array_merge($lang, array(
 	'SETTINGS_PROFILE_FIELDS_EXPLAIN'			=> 'Choose where to display which information.',	
 	'SETTINGS_ADVANCED_STATISTICS'				=> 'Display advanced statistics',
 	'SETTINGS_ADVANCED_STATISTICS_EXPLAIN'		=> 'Display additional information while viewing profiles. Requires the standard profile statistics to be enabled.',	
+
+	// Limitation
+	'SETTINGS_QUEUE_TIME'						=> 'Flood interval',
+	'SETTINGS_QUEUE_TIME_EXPLAIN'				=> 'The time a user must wait between sending new invitations.',
 	'SETTINGS_ENABLE_LIMIT_TOTAL'				=> 'Enable total limit',
 	'SETTINGS_ENABLE_LIMIT_DAILY'				=> 'Enable daily limit',
 	'SETTINGS_LIMIT_TOTAL_BASIC'				=> 'Total limit',
-	'SETTINGS_LIMIT_TOTAL_BASIC_EXPLAIN'		=> 'The number of invitations users can send overall. This basic value will increase as you add additional invitations using the following settings.',
+	'SETTINGS_LIMIT_TOTAL_BASIC_EXPLAIN'		=> 'The number of invitations users can send overall. This basic value increases as you allocate additional invitations.',
 	'SETTINGS_LIMIT_DAILY_BASIC'				=> 'Daily limit',
-	'SETTINGS_LIMIT_DAILY_BASIC_EXPLAIN'		=> 'The number of invitations users can send every day as long as they do not exceed the total limit. This basic value will increase as you add additional invitations using the following settings.',
-	'SETTINGS_LIMIT_POSTS'						=> 'Additional invitations per posts',
-	'SETTINGS_LIMIT_TOPICS'						=> 'Additional invitations per topics',
-	'SETTINGS_LIMIT_MEMBERDAYS'					=> 'Additional invitations per days of membership',
-	'SETTINGS_LIMIT_REGISTRATIONS'				=> 'Additional invitations per successful invitations',
+	'SETTINGS_LIMIT_DAILY_BASIC_EXPLAIN'		=> 'The number of invitations users can send every day as long as they do not exceed the total limit. This basic value increases as you allocate additional invitations.',
+	'SETTINGS_LIMIT_POSTS'						=> 'Invitations per posts',
+	'SETTINGS_LIMIT_TOPICS'						=> 'Invitations per topics',
+	'SETTINGS_LIMIT_MEMBERDAYS'					=> 'Invitations per days of membership',
+	'SETTINGS_LIMIT_REFERRALS'					=> 'Invitations per referrals',
+	'SETTINGS_LIMIT_REGISTRATIONS'				=> 'Invitations per successful invitations',
+
+	//Plugins
+	'SETTINGS_ENABLE_PLUGIN'					=> 'Enable plugin',
+	'SETTINGS_ENABLE_PLUGIN_EXPLAIN'			=> 'Enables additional functionality related to the plugin.',
+	'SETTINGS_INVITATION_FEE'					=> 'Charged fee per invitation',
+	'SETTINGS_ULTIMATE_POINTS_INVITE'			=> 'Points per invitation',
+	'SETTINGS_ULTIMATE_POINTS_REGISTER'			=> 'Points per successful invitation',
+	'SETTINGS_ULTIMATE_POINTS_REFERRAL'			=> 'Points per referral',
+	'SETTINGS_CASH_INVITE'						=> 'Cash per invitation',
+	'SETTINGS_CASH_REGISTER'					=> 'Cash per successful invitation',
+	'SETTINGS_CASH_REFERRAL'					=> 'Cash per referral',
 
 	// UMIL
-	'TRANSFER_INVITATION_DATA'					=> 'Transfer old data',
-	'TRANSFER_INVITATION_DATA_EXPLAIN'			=> 'Select yes to transfer statistics like the amount of invitations sent from version 0.5.4 and previous ones. The database table must not have been edited manually since that time.',
+	'TRANSFER_INVITATION_DATA'					=> 'Transfer Existing Data',
+	'TRANSFER_INVITATION_DATA_EXPLAIN'			=> 'Select yes to transfer statistics from previous versions when updating. The database table must not have been edited manually since then.',
 ));
 
 ?>

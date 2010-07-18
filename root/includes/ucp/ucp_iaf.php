@@ -3,7 +3,7 @@
 *
 * @author Bycoja bycoja@web.de
 * @package ucp
-* @version $Id ucp_invite.php 0.6.2 2010-06-22 17:28:02GMT Bycoja $
+* @version $Id ucp_iaf.php 0.7.0 2010-06-22 17:28:02GMT Bycoja $
 * @copyright (c) 2010 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -31,18 +31,16 @@ class ucp_invite
 		global $phpbb_admin_path, $phpbb_root_path, $phpEx;
 
 		include($phpbb_root_path . 'includes/functions_invite.' . $phpEx);
-		$invite	= new invite();
-		
-		$user->add_lang(array('mods/info_acp_invite', 'acp/email'));
+		$user->add_lang(array('acp/email'));
 
-		$submit				= (isset($_POST['submit'])) ? true : false;
-		$remove_rc			= (isset($_REQUEST['remove_rc'])) ? true : false;
-		$add_rc				= (isset($_REQUEST['add_rc'])) ? true : false;
-
-		$disable_form		= false;
-		$sent				= false;
-		$error 				= array();
-		$email_ary 			= array();
+		$invite			= new invite();
+		$submit			= (isset($_POST['submit'])) ? true : false;
+		$remove_rc		= (isset($_POST['remove_rc'])) ? true : false;
+		$add_rc			= (isset($_POST['add_rc'])) ? true : false;
+		$disable_form	= false;
+		$sent			= false;
+		$error 			= array();
+		$email_ary 		= array();
 
 		// CAPTCHA
 		$confirm_id			= request_var('confirm_id', '');
@@ -52,31 +50,35 @@ class ucp_invite
 		$recipient_count	= (int) request_var('rc', 1);
 		$recipient_count	= ($add_rc) ? $recipient_count + 1 : $recipient_count;
 		$recipient_count	= ($remove_rc) ? $recipient_count - 1 : $recipient_count;
-		$recipient_count	= ($recipient_count < 1) ? 1 : $recipient_count;
-		$recipient_count	= ($invite->config['multiple_recipients_max'] <= $recipient_count) ? $invite->config['multiple_recipients_max'] : $recipient_count;
+		$recipient_count	= ($recipient_count < 1 || !$auth->acl_get('u_multiple_recipients')) ? 1 : $recipient_count;
 
+		if (!$auth->acl_get('m_ignore_recipients_limit'))
+		{
+			$recipient_count = ($invite->config['multiple_recipients_max'] <= $recipient_count) ? $invite->config['multiple_recipients_max'] : $recipient_count;
+		}
 		$s_hidden_fields['rc']	= $recipient_count;
 
-		add_form_key('ucp_invite');
+		$form_key = 'ucp_invite';
+		add_form_key($form_key);
 
-		// Authorised?
-		if (!$invite->config['enable'])
-		{
-			trigger_error('INVITE_DISABLED');
-		}
-		if (!$auth->acl_get('u_send_invite'))
+		// Several checks
+		if (!$auth->acl_get('u_send_invitations'))
 		{
 		    trigger_error('NOT_AUTHORISED');
 		}
 
-		// Oops?
 		if (!$config['email_enable'])
 		{
-			trigger_error('EMAIL_DISABLED');
+			trigger_error('EMAILS_DISABLED');
 		}
 
-		// Queue?
-		if ($user->data['user_invitations'])
+		if (!$invite->config['enable'])
+		{
+			trigger_error('INVITATIONS_DISABLED');
+		}
+
+		// Do we have to wait?
+		if ($user->data['user_invitations'] && !$auth->acl_get('m_ignore_invitation_queue'))
 		{
 			$sql = 'SELECT MAX(invite_time) AS max_time FROM ' . INVITE_LOG_TABLE . ' WHERE invite_user_id = ' . $user->data['user_id'];
 			$result = $db->sql_query($sql);
@@ -92,10 +94,10 @@ class ucp_invite
 			}
 		}
 
-		// Reached limit? @todo admin-specified $limit_periods
+		// Have we reached the invitation limit? @todo admin-specified $limit_periods (limitation rules)
 		$limit_enabled	= false;
 		$limit_periods 	= array('limit_daily', 'limit_total');
-		$limit_criteria	= array('posts', 'topics', 'memberdays', 'registrations');
+		$limit_criteria	= array('posts', 'topics', 'memberdays', 'registrations', 'referrals');
 
 		foreach ($limit_periods as $k => $v)
 		{
@@ -105,7 +107,12 @@ class ucp_invite
 			}
 		}
 
-		// Collect some statistical information
+		// Are we allowed to exceed the limits?
+		if ($auth->acl_get('m_ignore_invitation_limit'))
+		{
+			$limit_enabled = false;
+		}
+
 		if ($limit_enabled)
 		{
 			// Invitations sent today (last 24h)
@@ -158,13 +165,35 @@ class ucp_invite
 			}
 		}
 
+		// Check whether we have enough money to pay the fee
+		$charge_fee = ($auth->acl_get('m_ignore_invitation_fee')) ? false : true;
+
+		if ($charge_fee)
+		{
+			foreach ($invite->plugins as $plugin_name => $plugin)
+			{
+				if ($invite->config['enable_' . $plugin_name])
+				{
+					$available_credit = $invite->handle_credit('checkout', '', $user->data['user_id']);
+
+					if (($available_credit - $invite->config[$plugin_name . '_fee'] * $recipient_count) < 0)
+					{
+						$disable_form 	= true;
+						$rc_reduce 		= ($recipient_count != 1) ? sprintf($user->lang['REDUCE_RECIPIENTS']) : '';
+						$error[] 		= sprintf($user->lang[strtoupper($plugin_name) . '_MISSING_CREDIT']) . ' ' . $rc_reduce;
+					}
+				}
+			}
+		}
+
 		// Set up the array containing the important information
 		$email_data	= array(
 			'message_type'			=> $INVITE_MESSAGE_TYPE['invite'],
 			'method'				=> EMAIL,
 			'method_user_id'		=> $user->data['user_id'],
 			'invite_language'		=> ($invite->config['invite_language_select'] == 'opt') ? utf8_normalize_nfc(request_var('form_invite_language_select', $user->data['user_lang'], true)) : (($invite->config['invite_language_select'] == 'user') ? $user->data['user_lang'] : $invite->config['invite_language_select']),
-			'priority'				=> ($invite->config['invite_priority_flag'] == MAIL_LOW_PRIORITY + 1) ? request_var('form_priority', 0) : $invite->config['invite_priority_flag'], // MAIL_LOW_PRIORITY + 1 equals optional
+			'priority'				=> ($auth->acl_get('u_change_invitation_priority') && $invite->config['invite_priority_flag'] == MAIL_LOW_PRIORITY + 1) ? request_var('form_priority', 0) : $invite->config['invite_priority_flag'], // MAIL_LOW_PRIORITY + 1 equals optional
+			'invite_real_name'		=> utf8_normalize_nfc(request_var('form_invite_real_name', '', true)),
 			'subject'				=> utf8_normalize_nfc(request_var('form_subject', '', true)),
 			'message'				=> utf8_normalize_nfc(request_var('form_message', '', true)),
 			'register_key'			=> $invite->generate_key(),
@@ -173,7 +202,7 @@ class ucp_invite
 			'invite_user_id'		=> $user->data['user_id'],
 			'invite_session_ip'		=> $user->data['session_ip'],
 			'invite_time'			=> time(),
-			'invite_zebra'			=> request_var('form_invite_zebra', 0),
+			'invite_zebra'			=> ($auth->acl_get('u_add_invitation_friend')) ? request_var('form_invite_zebra', 0) : 0,
 			'confirm_code'			=> request_var('confirm_code', ''),
 			'confirm_id'			=> request_var('confirm_id', ''),
 		);
@@ -185,8 +214,14 @@ class ucp_invite
 			$email_data['invite_' . $string . '_method'] = request_var('form_invite_' . $string . '_method', 0);
 		}
 
+		// Can we receive confirmations?
+		if (!$auth->acl_get('u_receive_confirmation'))
+		{
+			$email_data['invite_confirm'] = 0;
+		}
+
 		// The CAPTCHA kicks in here
-		if ($invite->config['invite_confirm_code'])
+		if ($invite->config['invite_confirm_code'] && !$auth->acl_get('m_ignore_invitation_captcha'))
 		{
 			if (!class_exists('phpbb_captcha_factory'))
 			{
@@ -200,19 +235,28 @@ class ucp_invite
 		// Prevalidate the static data so we don't have to do it in the loop later
 		if ($submit)
 		{
-			if (!check_form_key('ucp_invite'))
+			if (!check_form_key($form_key))
 			{
 				$error[] = 'FORM_INVALID';
 			}
 
+			// Check for character limits
+			if (!$auth->acl_get('m_ignore_characters_limit'))
+			{
+				$check_ary = array(
+					'subject' => array('string', false, $invite->config['subject_min_chars'], $invite->config['subject_max_chars']),
+					'message' => array('string', false, $invite->config['message_min_chars'], $invite->config['message_max_chars']),
+				);
+				$error = validate_data($email_data, $check_ary);
+			}
+
 			$check_ary = array(
-				'subject' => array('string', false, $invite->config['subject_min_chars'], $invite->config['subject_max_chars']),
-				'message' => array('string', false, $invite->config['message_min_chars'], $invite->config['message_max_chars']),
+				'invite_real_name' => array('string', false, 1, 60),
 			);
 			$error = validate_data($email_data, $check_ary);
 
 			// Visual Confirmation handling
-			if ($invite->config['invite_confirm_code'])
+			if ($invite->config['invite_confirm_code'] && !$auth->acl_get('m_ignore_invitation_captcha'))
 			{
 				$vc_response = $captcha->validate($email_data);
 				if ($vc_response !== false)
@@ -332,7 +376,7 @@ class ucp_invite
 		// Replace "error" strings with their real, localised form
 		$error = preg_replace('#^([A-Z_]+)$#e', "(!empty(\$user->lang['\\1'])) ? \$user->lang['\\1'] : '\\1'", $error);
 
-		if ($invite->config['invite_confirm_code'])
+		if ($invite->config['invite_confirm_code'] && !$auth->acl_get('m_ignore_invitation_captcha'))
 		{
 			$s_hidden_fields = array_merge($s_hidden_fields, $captcha->get_hidden_fields());
 		}
@@ -340,7 +384,7 @@ class ucp_invite
 		$confirm_image = '';
 
 		// Visual Confirmation - Show images
-		if ($invite->config['invite_confirm_code'])
+		if ($invite->config['invite_confirm_code'] && !$auth->acl_get('m_ignore_invitation_captcha'))
 		{
 			$template->assign_vars(array(
 				'CAPTCHA_TEMPLATE'	=> $captcha->get_template(),
@@ -348,8 +392,7 @@ class ucp_invite
 		}
 
 		$template->assign_vars(array(
-			// Display all errors: 'ERROR'		=> (sizeof($error)) ? implode('<br />', $error) : '',
-			'ERROR'					=> (sizeof($error)) ? $error[0] : '',
+			'ERROR'					=> (sizeof($error)) ? implode('<br />', array_unique($error)) : '',
 
 			'FORM_LANGUAGE_SELECT'	=> language_select($email_data['invite_language']),
 			'FORM_CONFIRM_IMG'		=> $confirm_image,
@@ -360,10 +403,10 @@ class ucp_invite
 			'S_VALUE_EMAIL'			=> EMAIL,
 			'S_VALUE_PM'			=> PM,
 			'S_DISABLE'				=> ($disable_form) ? true : false,
-			'S_DISPLAY_PRIORITY'	=> ($invite->config['invite_priority_flag'] == MAIL_LOW_PRIORITY + 1) ? true : false, // MAIL_LOW_PRIORITY + 1 equals optional
-			'S_DISPLAY_ZEBRA'		=> ($invite->config['zebra'] == OPTIONAL) ? true : false,
+			'S_DISPLAY_PRIORITY'	=> ($auth->acl_get('u_change_invitation_priority') && $invite->config['invite_priority_flag'] == MAIL_LOW_PRIORITY + 1) ? true : false, // MAIL_LOW_PRIORITY + 1 equals optional
+			'S_DISPLAY_ZEBRA'		=> ($auth->acl_get('u_add_invitation_friend') && $invite->config['zebra'] == OPTIONAL) ? true : false,
 			'S_DISPLAY_LANGUAGE'	=> ($invite->config['invite_language_select'] == 'opt') ? true : false,
-			'S_RECIPIENTS_LIMIT'	=> ($invite->config['multiple_recipients_max'] <= $recipient_count) ? true : false,
+			'S_RECIPIENTS_LIMIT'	=> (!$auth->acl_get('m_ignore_recipients_limit') && $invite->config['multiple_recipients_max'] <= $recipient_count) ? true : (!$auth->acl_get('u_multiple_recipients')) ? true : false,
 			'S_HIDDEN_FIELDS'		=> $s_hidden_fields,
 
 			'U_ACTION'				=> $this->u_action,
@@ -373,8 +416,7 @@ class ucp_invite
 		for ($i = 0; $i < $recipient_count; $i++)
 		{
 			$template->assign_block_vars('recipient_row', array(
-					'INDEX' => $i,
-
+					'INDEX' 					=> $i,
 					'FORM_REGISTER_EMAIL'		=> $email_data['register_email_' . $i],
 					'FORM_REGISTER_REAL_NAME'	=> $email_data['register_real_name_' . $i],
 				)
@@ -393,6 +435,15 @@ class ucp_invite
 			$template->assign_vars(array(
 				'S_DISPLAY_' . strtoupper($string)				=> (!$invite->config[$string]) ? false : (($invite->config[$string] == OPTIONAL) ? true : false),
 				'S_DISPLAY_' . strtoupper($string) . '_METHOD'	=> (!$invite->config[$string]) ? false : (($invite->config[$string . '_method'] == OPTIONAL) ? true : false),
+			));
+		}
+
+		// Do not ask for confirmations if we don't have any permission
+		if (!$auth->acl_get('u_receive_confirmation'))
+		{
+			$template->assign_vars(array(
+				'S_DISPLAY_CONFIRM'			=> false,
+				'S_DISPLAY_CONFIRM_METHOD'	=> false,
 			));
 		}
 

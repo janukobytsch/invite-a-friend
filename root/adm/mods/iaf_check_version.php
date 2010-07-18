@@ -3,7 +3,7 @@
 *
 * @author Bycoja bycoja@web.de
 * @package acp
-* @version $Id invite_version_check.php 0.6.2 2010-06-22 17:28:02GMT Bycoja $
+* @version $Id iaf_check_version.php 0.7.0 2010-06-22 17:28:02GMT Bycoja $
 * @copyright (c) 2010 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
@@ -27,9 +27,9 @@ class invite_check_version
 		return array(
 			'author'	=> 'Bycoja',
 			'title'		=> 'Invite A Friend',
-			'tag'		=> 'invite',
-			'version'	=> '0.6.2',
-			'file'		=> array('bycoja.bplaced.net', 'mods/versioncheck', 'invite.xml'),
+			'tag'		=> 'iaf',
+			'version'	=> '0.7.0',
+			'file'		=> array('bycoja.bplaced.net', 'mods/versioncheck', 'iaf.xml'),
 		);
 	}
 }
