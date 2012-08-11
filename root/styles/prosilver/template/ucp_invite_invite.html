@@ -1,0 +1,95 @@
+<!-- INCLUDE ucp_header.html -->
+
+<form id="invite" action="{U_ACTION}" method="post">
+
+<h2>{L_UCP_INVITE_INVITE}</h2>
+
+<div class="panel">
+	<div class="inner"><span class="corners-top"><span></span></span>
+	<p>{L_UCP_INVITE_DESCRIPTION}</p><br />
+	
+	<fieldset class="fields1">
+		<!-- IF ERROR --><p class="error">{ERROR}</p><!-- ENDIF -->
+		<!-- BEGIN recipient_row -->
+			<!-- IF not recipient_row.S_FIRST_ROW --><br /><!-- ENDIF -->
+			<dl<!-- IF S_ERROR_RECIPIENT_INDEX === recipient_row.INDEX --> style="border-left: 2px solid #BC2A4D; padding-left: 5px;"<!-- ENDIF -->>
+				<dt><label for="form_register_email_{recipient_row.INDEX}">{L_RECIPIENT_EMAIL}:</label></dt>
+				<dd><input type="text" name="form_register_email_{recipient_row.INDEX}" id="form_register_email_{recipient_row.INDEX}" value="{recipient_row.FORM_REGISTER_EMAIL}" size="45" maxlength="60" class="inputbox autowidth" /><!-- IF not recipient_row.S_FIRST_ROW and recipient_row.S_LAST_ROW --> <input name="remove_rc" value="x" class="button2" type="submit" alt="{L_REMOVE}" /><!-- ENDIF --><!-- IF not S_RECIPIENTS_LIMIT and recipient_row.S_LAST_ROW --> <input name="add_rc" value="{L_ADD}" class="button2" type="submit" alt="{L_ADD}" /><!-- ENDIF --></dd>
+			</dl>
+			<dl<!-- IF S_ERROR_RECIPIENT_INDEX === recipient_row.INDEX --> style="border-left: 2px solid #BC2A4D; padding-left: 5px;"<!-- ENDIF -->>
+				<dt><label for="form_register_real_name_{recipient_row.INDEX}">{L_RECIPIENT_NAME}:</label></dt>
+				<dd><input type="text" name="form_register_real_name_{recipient_row.INDEX}" id="form_register_real_name_{recipient_row.INDEX}" value="{recipient_row.FORM_REGISTER_REAL_NAME}" size="45" maxlength="60" class="inputbox autowidth" /></dd>
+			</dl>
+			<!-- IF not recipient_row.S_FIRST_ROW and recipient_row.S_LAST_ROW --><br /><!-- ENDIF -->
+		<!-- END recipient_row -->
+		<dl>
+			<dt><label for="form_subject">{L_SUBJECT}:</label></dt>
+			<dd>
+				<input type="text" name="form_subject" id="form_subject" value="{FORM_SUBJECT}" size="45" maxlength="75" class="inputbox autowidth" />
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="form_message">{L_MESSAGE}:</label><br /><span>{L_MESSAGE_EXPLAIN}</span></dt>
+			<dd>
+				<textarea name="form_message" id="form_message" rows="10" cols="40" class="inputbox">{FORM_MESSAGE}</textarea><br /><br />
+			</dd>
+		</dl>
+		<!-- IF S_DISPLAY_LANGUAGE -->
+		<dl>
+			<dt><label for="form_invite_language_select">{L_LANGUAGE}:</label></dt>
+			<dd><select id="form_invite_language_select" name="form_invite_language_select">{FORM_LANGUAGE_SELECT}</select></dd>
+		</dl>
+		<!-- ENDIF -->
+		<!-- IF S_DISPLAY_PRIORITY -->
+			<dl>
+				<dt><label for="form_priority">{L_MAIL_PRIORITY}:</label></dt>
+				<dd><select id="form_priority" name="form_priority"><option value="{S_MAIL_LOW_PRIORITY}">{L_MAIL_LOW_PRIORITY}</option><option value="{S_MAIL_NORMAL_PRIORITY}">{L_MAIL_NORMAL_PRIORITY}</option><option value="{S_MAIL_HIGH_PRIORITY}">{L_MAIL_HIGH_PRIORITY}</option></select></dd>
+			</dl>
+		<!-- ENDIF -->
+		<!-- IF S_DISPLAY_CONFIRM or S_DISPLAY_CONFIRM_METHOD or S_DISPLAY_ZEBRA -->
+		<dl>
+			<dt><label for="<!-- IF S_DISPLAY_CONFIRM -->form_invite_confirm<!-- ELSEIF S_DISPLAY_CONFIRM_METHOD -->form_invite_confirm_method<!-- ELSE -->form_invite_zebra<!-- ENDIF -->">{L_OPTIONS}:</label></dt>
+			<dd>
+					<fieldset class="fields1">
+						<table>
+						<tbody>
+							<!-- IF S_DISPLAY_CONFIRM or S_DISPLAY_CONFIRM_METHOD -->
+								<tr><td><input type="checkbox" name="form_invite_confirm" id="form_invite_confirm" value="1"<!-- IF FORM_INVITE_CONFIRM eq 1 --> checked="checked"<!-- ENDIF --><!-- IF not S_DISPLAY_CONFIRM --> disabled="disabled"<!-- ENDIF --> /> <label for="form_invite_confirm"><!-- IF S_DISPLAY_CONFIRM_METHOD -->{L_SEND_CONFIRMATION_METHOD}<!-- ELSE -->{L_SEND_CONFIRMATION}<!-- ENDIF --></label><!-- IF S_DISPLAY_CONFIRM_METHOD -->&nbsp; &nbsp;<select id="form_invite_confirm_method" name="form_invite_confirm_method"><option value="{S_VALUE_EMAIL}"<!-- IF FORM_INVITE_CONFIRM_METHOD eq S_VALUE_EMAIL --> selected="selected"<!-- ENDIF -->>{L_EMAIL}<option value="{S_VALUE_PM}"<!-- IF FORM_INVITE_CONFIRM_METHOD eq S_VALUE_PM --> selected="selected"<!-- ENDIF -->>{L_PM}</select><!-- ENDIF --></td></tr>
+							<!-- ENDIF -->
+							<!-- IF S_DISPLAY_ZEBRA --><tr><td><input type="checkbox" name="form_invite_zebra" id="form_invite_zebra" value="1"<!-- IF FORM_INVITE_ZEBRA eq 1 --> checked="checked"<!-- ENDIF --> /> <label for="form_invite_zebra">{L_INVITATION_ZEBRA}</label></td></tr><!-- ENDIF -->
+						</tbody>
+						</table>
+					</fieldset>
+			</dd>
+		</dl>
+		<!-- ENDIF -->
+		
+	</fieldset>
+
+	<span class="corners-bottom"><span></span></span></div>
+</div>
+
+<!-- IF not S_DISABLE and CAPTCHA_TEMPLATE -->
+	<div class="panel">
+		<div class="inner"><span class="corners-top"><span></span></span>
+			<fieldset class="fields2">
+				<!-- INCLUDE {CAPTCHA_TEMPLATE} -->
+			</fieldset>
+		<span class="corners-bottom"><span></span></span></div>
+	</div>
+<!-- ENDIF -->
+
+<fieldset class="submit-buttons">
+	{S_HIDDEN_FIELDS}
+	<input type="reset" name="reset" value="{L_RESET}" class="<!-- IF S_DISABLE -->disabled button2<!-- ELSE -->button2<!-- ENDIF -->" <!-- IF S_DISABLE -->disabled="disabled"<!-- ENDIF --> />
+	<input type="submit" name="submit" value="{L_SUBMIT}" class="<!-- IF S_DISABLE -->disabled button1<!-- ELSE -->button1<!-- ENDIF -->" <!-- IF S_DISABLE -->disabled="disabled"<!-- ENDIF --> />&nbsp;
+	{S_FORM_TOKEN}
+</fieldset>
+
+</form>
+
+<!-- IF S_ENABLE_POWERED_BY -->
+	<div style="clear: both; text-align: center; margin-top: 25px;" class="powered_by">{L_INVITE_POWERED_BY}</div>
+<!-- ENDIF -->
+
+<!-- INCLUDE ucp_footer.html -->

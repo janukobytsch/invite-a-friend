@@ -1,0 +1,160 @@
+<!-- INCLUDE overall_header.html -->
+
+<a name="maincontent"></a>
+
+<h1>{L_ACP_REFERRAL_SETTINGS}</h1>
+
+<p>{L_ACP_REFERRAL_SETTINGS_EXPLAIN}</p>
+
+<!-- IF ERROR -->
+	<div class="errorbox">
+		<h3>{L_WARNING}</h3>
+		<p>{ERROR}</p>
+	</div>
+<!-- ENDIF -->
+
+<div id="js_notice" class="errorbox">
+	<h3>{L_WARNING}</h3>
+	<p>{L_JAVASCRIPT_NOTICE}</p>
+</div>
+
+<script type="text/javascript">
+	// <![CDATA[
+		/**
+		* Handle displaying/hiding several options regarding to profile fields
+		*/
+		function display_profile_handle(location, type)
+		{
+			dE('toggle_display_t_referrer', -1);
+			dE('toggle_display_t_referrals', -1);
+			dE('toggle_display_p_referrer', -1);
+			dE('toggle_display_p_referrals', -1);
+			dE('toggle_display_m_referrer', -1);
+			dE('toggle_display_m_referrals', -1);
+
+			dE('toggle_display_' + location + '_' + type, 1);
+		}
+
+		/**
+		* Init the desired display functionality if javascript is enabled.
+		*/
+		onload = function()
+		{
+			dE('js_notice', -1);
+			<!-- IF S_REFERRAL_AUTOHIDE -->
+				dE('toggle_referral_autodisable', -1);
+			<!-- ELSE -->
+				dE('toggle_referral_autodisable', 1);
+			<!-- ENDIF -->
+			<!-- IF S_REFERRAL_AS -->
+				dE('toggle_referral_as_limit', 1);
+			<!-- ELSE -->
+				dE('toggle_referral_as_limit', -1);
+			<!-- ENDIF -->
+		}
+	// ]]>
+</script>
+
+<form id="acp_referral" method="post" action="{U_SETTINGS}">
+
+<fieldset id="referral_settings">
+	<legend>{L_GENERAL_SETTINGS}</legend>
+	<dl>
+		<dt><label for="enable_referral">{L_SETTINGS_ENABLE_REFERRAL}:</label><br /><span>{L_SETTINGS_ENABLE_REFERRAL_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="enable_referral" name="enable_referral"<!-- IF S_ENABLE_REFERRAL --> checked="checked"<!-- ENDIF --> value="1" onclick="display_referral_settings(1)" /> {L_YES}</label><label><input type="radio" class="radio" name="enable_referral"<!-- IF not S_ENABLE_REFERRAL --> checked="checked"<!-- ENDIF --> value="0" onclick="display_referral_settings(0)" /> {L_NO}</label></dd>
+	</dl>
+
+	<!-- IF S_ENABLE_REFERRAL -->
+
+	<dl>
+		<dt><label for="referral_invitation_bridge">{L_SETTINGS_REFERRAL_INVITATION_BRIDGE}:</label><br /><span>{L_SETTINGS_REFERRAL_INVITATION_BRIDGE_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="referral_invitation_bridge" name="referral_invitation_bridge"<!-- IF S_REFERRAL_INVITATION_BRIDGE --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="referral_invitation_bridge"<!-- IF not S_REFERRAL_INVITATION_BRIDGE --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="referral_require">{L_SETTINGS_REFERRAL_REQUIRE}:</label><br /><span>{L_SETTINGS_REFERRAL_REQUIRE_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="referral_require" name="referral_require"<!-- IF S_REFERRAL_REQUIRE --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="referral_require"<!-- IF not S_REFERRAL_REQUIRE --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="referral_cookie">{L_SETTINGS_REFERRAL_COOKIE}:</label><br /><span>{L_SETTINGS_REFERRAL_COOKIE_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="referral_cookie" name="referral_cookie"<!-- IF S_REFERRAL_COOKIE --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="referral_cookie"<!-- IF not S_REFERRAL_COOKIE --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="referral_friends">{L_SETTINGS_REFERRAL_FRIENDS}:</label><br /><span>{L_SETTINGS_REFERRAL_FRIENDS_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="referral_friends" name="referral_friends"<!-- IF S_REFERRAL_FRIENDS --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="referral_friends"<!-- IF not S_REFERRAL_FRIENDS --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="referral_confirmation">{L_SETTINGS_REFERRAL_CONFIRMATION}:</label><br /><span>{L_SETTINGS_REFERRAL_CONFIRMATION_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="referral_confirmation" name="referral_confirmation"<!-- IF S_REFERRAL_CONFIRMATION --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="referral_confirmation"<!-- IF not S_REFERRAL_CONFIRMATION --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label>
+			<select id="referral_confirmation_method" name="referral_confirmation_method"><option value="{S_VALUE_EMAIL}"<!-- IF S_REFERRAL_CONFIRMATION_METHOD eq S_VALUE_EMAIL --> selected="selected"<!-- ENDIF -->>{L_EMAIL}<option value="{S_VALUE_PM}"<!-- IF S_REFERRAL_CONFIRMATION_METHOD eq S_VALUE_PM --> selected="selected"<!-- ENDIF -->>{L_PM}</select>
+		</dd>
+	</dl>
+	<dl>
+		<dt><label for="referral_confirmation_duplicate">{L_SETTINGS_REFERRAL_CONFIRMATION_DUPLICATE}:</label><br /><span>{L_SETTINGS_REFERRAL_CONFIRMATION_DUPLICATE_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="referral_confirmation_duplicate" name="referral_confirmation_duplicate"<!-- IF S_REFERRAL_CONFIRMATION_DUPLICATE --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="referral_confirmation_duplicate"<!-- IF not S_REFERRAL_CONFIRMATION_DUPLICATE --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="referral_search_allowed">{L_SETTINGS_REFERRAL_SEARCH_ALLOWED}:</label><br /><span>{L_SETTINGS_REFERRAL_SEARCH_ALLOWED_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="referral_search_allowed" name="referral_search_allowed"<!-- IF S_REFERRAL_SEARCH_ALLOWED --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="referral_search_allowed"<!-- IF not S_REFERRAL_SEARCH_ALLOWED --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="referral_as">{L_SETTINGS_REFERRAL_AS}:</label><br /><span>{L_SETTINGS_REFERRAL_AS_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="referral_as" name="referral_as"<!-- IF S_REFERRAL_AS --> checked="checked"<!-- ENDIF --> value="1" onclick="dE('toggle_referral_as_limit', 1)" /> {L_YES}</label><label><input type="radio" class="radio" name="referral_as"<!-- IF not S_REFERRAL_AS --> checked="checked"<!-- ENDIF --> value="0" onclick="dE('toggle_referral_as_limit', -1)" /> {L_NO}</label></dd>
+	</dl>
+	<dl id="toggle_referral_as_limit">
+		<dt><label for="referral_as_limit">{L_SETTINGS_REFERRAL_AS_LIMIT}:</label><br /><span>{L_SETTINGS_REFERRAL_AS_LIMIT_EXPLAIN}</span></dt>
+		<dd><input size="5" maxlength="5" type="text" id="referral_as_limit" name="referral_as_limit" value="{S_REFERRAL_AS_LIMIT}" /> {L_USERS}</label></dd>
+	</dl>
+	
+	<!-- ENDIF -->
+
+</fieldset>
+
+<!-- IF S_ENABLE_REFERRAL -->
+
+<fieldset id="display_settings">
+	<legend>{L_ACP_INVITE_DISPLAY_OPTIONS}</legend>
+	<dl>
+		<dt><label for="referral_autohide">{L_SETTINGS_REFERRAL_AUTOHIDE}:</label><br /><span>{L_SETTINGS_REFERRAL_AUTOHIDE_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="referral_autohide" name="referral_autohide"<!-- IF S_REFERRAL_AUTOHIDE --> checked="checked"<!-- ENDIF --> value="1" onclick="dE('toggle_referral_autodisable', -1);" /> {L_YES}</label><label><input type="radio" class="radio" name="referral_autohide"<!-- IF not S_REFERRAL_AUTOHIDE --> checked="checked"<!-- ENDIF --> value="0" onclick="dE('toggle_referral_autodisable', 1);" /> {L_NO}</label></dd>
+	</dl>
+	<dl id="toggle_referral_autodisable">
+		<dt><label for="referral_autodisable">{L_SETTINGS_REFERRAL_AUTODISABLE}:</label><br /><span>{L_SETTINGS_REFERRAL_AUTODISABLE_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="referral_autodisable" name="referral_autodisable"<!-- IF S_REFERRAL_AUTODISABLE --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="referral_autodisable"<!-- IF not S_REFERRAL_AUTODISABLE --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="display_p_referral_link">{L_SETTINGS_DISPLAY_P_REFERRAL_LINK}:</label><br /><span>{L_SETTINGS_DISPLAY_P_REFERRAL_LINK_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="display_p_referral_link" name="display_p_referral_link"<!-- IF S_DISPLAY_P_REFERRAL_LINK --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="display_p_referral_link"<!-- IF not S_DISPLAY_P_REFERRAL_LINK --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="referral_statistics">{L_SETTINGS_ADVANCED_STATISTICS}:</label><br /><span>{L_SETTINGS_ADVANCED_STATISTICS_EXPLAIN}</span></dt>
+		<dd><label><input type="radio" class="radio" id="referral_statistics" name="referral_statistics"<!-- IF S_REFERRAL_STATISTICS --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="referral_statistics"<!-- IF not S_REFERRAL_STATISTICS --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+	</dl>
+	<dl>
+		<dt><label for="profile_location">{L_SETTINGS_PROFILE_FIELDS}:</label><br /><span>{L_SETTINGS_PROFILE_FIELDS_EXPLAIN}</span></dt>
+		<dd><select style="margin-bottom: 8px;" id="profile_location" name="profile_location" onchange="display_profile_handle(this.options[this.selectedIndex].value, profile_type.options[profile_type.selectedIndex].value);">{S_SELECT_REFERRAL_PROFILE_LOCATION}</select>
+			<select style="margin-bottom: 8px;" id="profile_type" name="profile_type" onchange="display_profile_handle(profile_location.options[profile_location.selectedIndex].value, this.options[this.selectedIndex].value);">{S_SELECT_REFERRAL_PROFILE_TYPE}</select></dd>
+		<dd id="toggle_display_t_referrer" style="display: block;"><label><input type="radio" class="radio" id="display_t_referrer" name="display_t_referrer"<!-- IF S_DISPLAY_T_REFERRER --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="display_t_referrer"<!-- IF not S_DISPLAY_T_REFERRER --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+		<dd id="toggle_display_t_referrals" style="display: none;"><label><input type="radio" class="radio" id="display_t_referrals" name="display_t_referrals"<!-- IF S_DISPLAY_T_REFERRALS --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="display_t_referrals"<!-- IF not S_DISPLAY_T_REFERRALS --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+		<dd id="toggle_display_p_referrer" style="display: none;"><label><input type="radio" class="radio" id="display_p_referrer" name="display_p_referrer"<!-- IF S_DISPLAY_P_REFERRER --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="display_p_referrer"<!-- IF not S_DISPLAY_P_REFERRER --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+		<dd id="toggle_display_p_referrals" style="display: none;"><label><input type="radio" class="radio" id="display_p_referrals" name="display_p_referrals"<!-- IF S_DISPLAY_P_REFERRALS --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="display_p_referrals"<!-- IF not S_DISPLAY_P_REFERRALS --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+		<dd id="toggle_display_m_referrer" style="display: none;"><label><input type="radio" class="radio" id="display_m_referrer" name="display_m_referrer"<!-- IF S_DISPLAY_M_REFERRER --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="display_m_referrer"<!-- IF not S_DISPLAY_M_REFERRER --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+		<dd id="toggle_display_m_referrals" style="display: none;"><label><input type="radio" class="radio" id="display_m_referrals" name="display_m_referrals"<!-- IF S_DISPLAY_M_REFERRALS --> checked="checked"<!-- ENDIF --> value="1" /> {L_YES}</label><label><input type="radio" class="radio" name="display_m_referrals"<!-- IF not S_DISPLAY_M_REFERRALS --> checked="checked"<!-- ENDIF --> value="0" /> {L_NO}</label></dd>
+	</dl>
+</fieldset>
+
+<!-- ENDIF -->
+
+<fieldset>
+	<legend>{L_ACP_SUBMIT_CHANGES}</legend>
+
+	<p class="submit-buttons">
+		<input class="button1" name="submit" type="submit" value="{L_SUBMIT}" />
+		<input class="button2" name="reset" type="reset" value="{L_RESET}" />
+	</p>
+	{S_FORM_TOKEN}
+</fieldset>
+
+</form>
+
+
+<!-- INCLUDE overall_footer.html -->
