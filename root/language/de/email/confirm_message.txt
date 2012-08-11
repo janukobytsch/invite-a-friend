@@ -1,0 +1,7 @@
+Hallo {INVITER_USERNAME},
+diese Nachricht wird dir zur Bestätigung der Registrierung des eingeladenen Benutzers {INVITED_USERNAME} auf
+{BOARD_URL}
+
+geschickt,.
+
+Hier kannst du sein Benutzerprofil ansehen: {INVITED_USER_PROFILE_URL}

@@ -292,6 +292,7 @@ $versions = array(
 					),
 				),
 			),
+		),
 
 		// Add fields to users table
 		'table_column_add' => array(
@@ -313,6 +314,7 @@ $versions = array(
 		* Enter 'custom' for the array key and the name of the function for the value.
 		*/
 		'custom'	=> 'insert_data_070',
+	),
 );
 
 // As version 0.5.4 doesn't support UMIL we have to make updating work correctly...
@@ -796,7 +798,7 @@ function insert_data_070($action, $version)
 
 				$sql_ary = array();
 
-				foreach ($i = 0; $i < sizeof($phpbb_invite_config); $i++)
+				for ($i = 0; $i < sizeof($phpbb_invite_config); $i++)
 				{
 					$sql_ary[] = array('config_name' => $phpbb_invite_config[$i]['config_name'], 'config_value' => $phpbb_invite_config[$i]['config_value']);
 				}
@@ -804,8 +806,7 @@ function insert_data_070($action, $version)
 				$db->sql_multi_insert($table_prefix . 'invite_config ', $sql_ary);
 			}
 
-			// Send a message that the command was successful
-			return 'Populating database tables';
+			return 'Added new config';
 		break;
 
  		case 'uninstall' :
