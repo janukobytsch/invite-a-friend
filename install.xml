@@ -243,7 +243,7 @@
 			<file from="root/language/en/email/invite_message.txt" to="language/en/email/invite_message.txt" />
 			<file from="root/language/en/email/referral_subject.txt" to="language/en/email/referral_subject.txt" />
 			<file from="root/language/en/email/referral_message.txt" to="language/en/email/referral_message.txt" />
-			<file from="root/install/invitation.php" to="install/invitation.php" />
+			<file from="root/install/install_invite.php" to="install/install_invite.php" />
 			<file from="root/umil/*.*" to="umil/*.*" />
 			<file from="root/referral_as.php" to="referral_as.php" />
 		</copy>
@@ -737,11 +737,10 @@ define('LOG_INVITE', 				4);]]></action>
 			<!-- IF POSTER_REFERRER and S_P_DISPLAY_REFERRER --><dt>{L_DISPLAY_REFERRER}:</dt> <dd>{POSTER_REFERRER}</dd><!-- ENDIF -->]]></action>
 			</edit>
 			<edit>
-				<find><![CDATA[			<!-- IF S_SHOW_ACTIVITY and POSTS -->
-				<dt>{L_ACTIVE_IN_FORUM}:</dt> <dd><!-- IF ACTIVE_FORUM --><strong><a href="{U_ACTIVE_FORUM}">{ACTIVE_FORUM}</a></strong><br />({ACTIVE_FORUM_POSTS} / {ACTIVE_FORUM_PCT})<!-- ELSE --> - <!-- ENDIF --></dd>
-				<dt>{L_ACTIVE_IN_TOPIC}:</dt> <dd><!-- IF ACTIVE_TOPIC --><strong><a href="{U_ACTIVE_TOPIC}">{ACTIVE_TOPIC}</a></strong><br />({ACTIVE_TOPIC_POSTS} / {ACTIVE_TOPIC_PCT})<!-- ELSE --> - <!-- ENDIF --></dd>
-			<!-- ENDIF -->]]></find>
-				<action type="after-add"><![CDATA[			<!-- IF S_P_DISPLAY_INVITE -->
+				<find><![CDATA[		</dl>
+	</div>
+	<span class="corners-bottom"><span></span></span></div>]]></find>
+				<action type="before-add"><![CDATA[			<!-- IF S_P_DISPLAY_INVITE -->
 				<dt>{L_DISPLAY_INVITE}:</dt> <dd>{POSTER_INVITE_INVITE} <!-- IF U_USER_ADMIN --> [ <a href="{U_USER_ADMIN_INVITATIONS}">{L_USER_ADMIN_INVITATIONS}</a> ]<!-- ENDIF -->
 				<!-- IF INVITATIONS_PCT --><br />({INVITATIONS_PCT} / {INVITATIONS_DAY})<!-- ENDIF --></dd>
 			<!-- ENDIF -->
