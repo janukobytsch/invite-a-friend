@@ -40,8 +40,10 @@ $lang = array_merge($lang, array(
 	'UCP_INVITE'					=> 'Einladungen',
 	'UCP_INVITE_INVITE'				=> 'Einladung schreiben',
 	'UCP_INVITE_DESCRIPTION'		=> 'Sende eine E-Mail an deine Freunde und erzähle ihnen von diesem Board.',
-	'REGISTER_KEY'					=> 'Registrierungs-Schlüssel',
+	'REGISTER_KEY'					=> 'Einladungscode',
 	'REGISTER_KEY_EXPLAIN'			=> 'Von einem Benutzer des Boards erhalten.',
+	'REFERRED_BY'					=> 'Angeworben von',
+	'REFERRED_BY_EXPLAIN'			=> 'Der Benutzername der Person, die dich angeworben hat',
 
 	// Invitation form
 	'RECIPIENT_EMAIL'				=> 'E-Mail-Adresse des Freundes',
@@ -65,18 +67,25 @@ $lang = array_merge($lang, array(
 	'INVITATION_LIMIT_DAILY_MULTI'	=> 'Du hast heute %d/%d Einladungen versendet und überschreitest das Tageslimit, wenn du %d Einladungen versendest.',
 	'INVITATION_LIMIT_TOTAL_MULTI'	=> 'Du hast insgesamt %d/%d Einladungen versendet und überschreitest das Gesamtlimit, wenn du %d Einladungen versendest.',
 	'REDUCE_RECIPIENTS'				=> 'Bitte verringere die Anzahl der Empfänger.',
-	'INVITE_YOURSELF'				=> 'Der Registrierungs-Schlüssel wurde von deinem Computer aus versendet. Um Missbrauch zu verhindern, darfst du ihn nicht verwenden.',
+	'INVITE_YOURSELF'				=> 'Der Einladungscode wurde von deinem Computer aus versendet. Um Missbrauch zu verhindern, darfst du ihn nicht verwenden.',
 	'INVITE_TO_YOUR_EMAIL'			=> 'Die angegebene E-Mail-Adresse wird bereits von dir verwendet.',
 	'INVITE_MULTIPLE'				=> 'Die angegebene E-Mail-Adresse hat bereits eine Einladung erhalten.',
 	'INVITE_SAME_RECIPIENT'			=> 'Du kannst nicht mehrere Einladungen an die gleiche E-Mail-Adresse versenden.',
-	'REGISTER_KEY_INVALID'			=> 'Der angegebene Registrierungs-Schlüssel ist ungültig.',
-	'REGISTER_KEY_INVALID_OPTIONAL'	=> 'Der angegebene Registrierungs-Schlüssel ist ungültig, lasse ihn stattdessen aus.',
+	'REGISTER_KEY_INVALID'			=> 'Der angegebene Einladungscode ist ungültig.',
+	'REGISTER_KEY_INVALID_OPTIONAL'	=> 'Der angegebene Einladungscode ist ungültig, lasse ihn stattdessen aus.',
 	'TOO_SHORT_REGISTER_REAL_NAME'	=> 'Der angegebene Name ist zu kurz.',
 	'TOO_SHORT_SUBJECT'				=> 'Der angegebene Betreff ist zu kurz.',
 	'TOO_SHORT_MESSAGE'				=> 'Die angegebene Nachricht ist zu kurz.',
 	'TOO_LONG_REGISTER_REAL_NAME'	=> 'Der angegebene Name ist zu lang.',
 	'TOO_LONG_SUBJECT'				=> 'Der angegebene Betreff ist zu lang.',
 	'TOO_LONG_MESSAGE'				=> 'Die angegebene Nachricht ist zu lang.',
+	'TOO_FEW_POSTS'					=> 'Du benötigst mindestens %d Beiträge, um Einladungen verschicken zu können.',
+	'REGISTER_KEY_EXPIRED'			=> 'Der angegebene Einladungscode ist nicht mehr gültig.',
+	'REFERRER_REQUIRED'				=> 'Du musst den Benutzernamen der Person, die dich angeworben hat, angeben',
+	'REFERRER_NOT_EXISTENT'			=> 'Der Benutzer, der dich angeworben haben soll, existiert nicht.',
+
+	// Powered by
+	'INVITE_POWERED_BY'				=> 'Powered by Invite A Friend © 2008-2012 <a href="http://jjacoby.de/" target="_blank">Bycoja</a>',
 
 	// CAPTCHA
 	'POST_CONFIRM_EXPLAIN'			=> 'Um automatisiertes Versenden von Einladungen zu unterbinden, musst du einen Bestätigungscode angeben. Der Code ist in dem Bild unterhalb dieses Textes enthalten. Wenn du nur über ein eingeschränktes Sehvermögen verfügst oder aus einem anderen Grund den Code nicht lesen kannst, kontaktiere bitte die Board-Administration.',

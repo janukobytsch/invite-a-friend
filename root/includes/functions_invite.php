@@ -201,6 +201,10 @@ class invite
 		{
 			$referrer_id = $this->user_return_data(utf8_clean_string($referrer));
 		}
+		if (!$referrer)
+		{
+			$referrer = $this->user_return_data($referrer_id, 'user_id', 'username_clean');
+		}
 
 		// Allows to keep referrals and invitation features separate
 		if ($is_invitation && !$this->config['referral_invitation_bridge'])

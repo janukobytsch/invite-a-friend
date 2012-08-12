@@ -1,8 +1,0 @@
-Hallo {INVITER_USERNAME},
-diese Nachricht wird dir zur Bestätigung der Registrierung des Benutzers {INVITED_USERNAME} auf
-{BOARD_URL}
-
-geschickt.
-
-Du wurdest als die Person angegeben, die {INVITED_USERNAME} unser Board empfohlen hat.
-Danke!

@@ -89,6 +89,155 @@ class acp_invite
 					$up_to_date	= (phpbb_version_compare($invite->config['version'], trim($latest_version_info[0]), '<')) ? false : true;
 				}
 
+				if ($action)
+				{
+					if (!confirm_box(true))
+					{
+						switch ($action)
+						{
+							case 'sync_referral_data':
+								$confirm = true;
+								$confirm_lang = 'ACP_INVITE_CONFIRM_SYNC_REFERRAL_DATA';
+							break;
+
+							default:
+								$confirm = false;
+							break;
+						}
+
+						if ($confirm)
+						{
+							confirm_box(false, $user->lang[$confirm_lang], build_hidden_fields(array(
+								'i'			=> $id,
+								'mode'		=> $mode,
+								'action'	=> $action,
+							)));
+						}
+					}
+					else
+					{
+						switch ($action)
+						{
+							case 'sync_referral_data':
+								// Get an idea of which users need to be updated
+								$sql = 'SELECT invite_user_id, register_user_id, invite_time
+										FROM '. INVITE_LOG_TABLE .'
+										WHERE register_key_used = 1';
+								$result = $db->sql_query($sql);
+								$uid_array = $db->sql_fetchrowset($result);
+								$db->sql_freeresult($result);
+
+								for ($i = 0; $i < sizeof($uid_array); $i++)
+								{
+									if ($invite->config['referral_invitation_bridge'])
+									{
+										$sql = 'SELECT COUNT(referrer_id) AS is_existent
+											FROM '. INVITE_REFERRALS_TABLE .'
+											WHERE referrer_id = ' . (int) $uid_array[$i]['invite_user_id'] . '
+												AND referral_id = ' . (int) $uid_array[$i]['register_user_id'];
+										$result = $db->sql_query($sql);
+										$exists = $db->sql_fetchfield('is_existent');
+										$db->sql_freeresult($result);
+
+										if (!$exists)
+										{
+											$sql_ary = array(
+												'user_referrer_id'		=> $uid_array[$i]['invite_user_id'],
+												'user_referrer_name'	=> $invite->user_return_data($uid_array[$i]['invite_user_id'], 'user_id', 'username_clean'),
+											);
+
+											$sql = 'UPDATE ' . USERS_TABLE . '
+													SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
+													WHERE user_id = ' . (int) $uid_array[$i]['register_user_id'];
+											$result = $db->sql_query($sql);
+											$db->sql_freeresult($result);
+
+											$sql_ary = array(
+												'referrer_id'	=> $uid_array[$i]['invite_user_id'],
+												'referral_id'	=> $uid_array[$i]['register_user_id'],
+												'time'			=> $uid_array[$i]['invite_time'],
+											);
+
+											$sql = 'INSERT INTO ' . INVITE_REFERRALS_TABLE . ' ' . $db->sql_build_array('INSERT', $sql_ary);
+											$db->sql_query($sql);
+										}
+									}
+									else
+									{
+										$sql_ary = array(
+											'user_referrer_id'		=> 0,
+											'user_referrer_name'	=> '',
+										);
+
+										$sql = 'UPDATE ' . USERS_TABLE . '
+												SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
+												WHERE user_id = ' . (int) $uid_array[$i]['register_user_id'];
+										$result = $db->sql_query($sql);
+										$db->sql_freeresult($result);
+
+										$sql = 'DELETE FROM ' . INVITE_REFERRALS_TABLE . '
+												WHERE referrer_id = ' . (int) $uid_array[$i]['invite_user_id'] . '
+												AND referral_id = ' . (int) $uid_array[$i]['register_user_id'];
+										$db->sql_query($sql);
+
+										$sql = 'SELECT COUNT(referrer_id) AS total_referrals
+											FROM '. INVITE_REFERRALS_TABLE;
+										$result = $db->sql_query($sql);
+										$total_referrals = $db->sql_fetchfield('total_referrals');
+										$db->sql_freeresult($result);
+
+										$sql = 'UPDATE ' . INVITE_CONFIG_TABLE . ' SET config_value = ' . (int) $total_referrals . ' WHERE config_name = "num_referrals"';
+										$result = $db->sql_query($sql);
+										$db->sql_freeresult($result);
+
+										$sql = 'SELECT COUNT(referrer_id) AS user_referrals
+											FROM '. INVITE_REFERRALS_TABLE . '
+											WHERE referrer_id = ' . (int) $uid_array[$i]['invite_user_id'];
+										$result = $db->sql_query($sql);
+										$user_referrals = $db->sql_fetchfield('user_referrals');
+										$db->sql_freeresult($result);
+
+										$sql = 'UPDATE ' . USERS_TABLE . '
+												SET user_referrals = ' .  $user_referrals . '
+												WHERE user_id = ' . (int) $uid_array[$i]['invite_user_id'];
+										$result = $db->sql_query($sql);
+										$db->sql_freeresult($result);
+									}
+
+									// Synch stats
+									$sql = 'SELECT COUNT(referrer_id) AS total_referrals
+										FROM '. INVITE_REFERRALS_TABLE;
+									$result = $db->sql_query($sql);
+									$total_referrals = $db->sql_fetchfield('total_referrals');
+									$db->sql_freeresult($result);
+
+									$sql = 'UPDATE ' . INVITE_CONFIG_TABLE . ' SET config_value = ' . (int) $total_referrals . ' WHERE config_name = "num_referrals"';
+									$result = $db->sql_query($sql);
+
+									$sql = 'SELECT COUNT(referrer_id) AS user_referrals
+										FROM '. INVITE_REFERRALS_TABLE . '
+										WHERE referrer_id = ' . (int) $uid_array[$i]['invite_user_id'];
+									$result = $db->sql_query($sql);
+									$user_referrals = $db->sql_fetchfield('user_referrals');
+									$db->sql_freeresult($result);
+
+									$sql = 'UPDATE ' . USERS_TABLE . '
+											SET user_referrals = ' .  $user_referrals . '
+											WHERE user_id = ' . (int) $uid_array[$i]['invite_user_id'];
+									$result = $db->sql_query($sql);
+								}
+							break;
+
+							default:
+								trigger_error('NO_MODE', E_USER_ERROR);
+							break;
+						}
+
+						add_log('admin', 'LOG_INVITE_' . strtoupper($action));
+						trigger_error($user->lang['ACP_INVITE_' . strtoupper($action) . '_SUCCESS'] . adm_back_link($this->u_action));
+					}
+				}
+
 				if ($submit)
 				{
 					if (!check_form_key($form_key))

@@ -38,8 +38,8 @@ if (empty($lang) || !is_array($lang))
 
 // Permissions
 $lang = array_merge($lang, array(
-	'acl_a_invite'		=> array('lang' => 'Kann die Einladungs-Einstellungen verwalten', 'cat' => 'misc'),
-	'acl_a_invite_log'	=> array('lang' => 'Kann das Einladungs-Protokoll verwalten', 'cat' => 'misc'),
+	'acl_a_invite'		=> array('lang' => 'Kann die Invite A Friend Einstellungen verwalten', 'cat' => 'misc'),
+	'acl_a_invite_log'	=> array('lang' => 'Kann das Invite A Friend Protokoll verwalten', 'cat' => 'misc'),
     'acl_u_send_invite'	=> array('lang' => 'Kann Einladungen an Freunde senden', 'cat' => 'misc'),
 ));
 
@@ -73,16 +73,20 @@ $lang = array_merge($lang, array(
 	'JAVASCRIPT_NOTICE'					=> 'Du musst <b>JavaScript</b> aktivieren, um alle Einstellungsmöglichkeiten nutzen zu können.',
 
 	// Overview
-	'INVITE_STATS'						=> 'Statistik',
-	'NUMBER_INVITATIONS'				=> 'Anzahl Einladungen',
-	'NUMBER_SUCCESSFUL_INVITATIONS'		=> 'Anzahl erfolgreiche Einladungen',
-	'NUMBER_REFERRALS'					=> 'Anzahl Anwerbungen',
-	'INVITATIONS_PER_DAY'				=> 'Einladungen pro Tag',
-	'SUCCESSFUL_INVITATIONS_PER_DAY'	=> 'Erfolgreiche Einladungen pro Tag',
-	'REFERRALS_PER_DAY'					=> 'Anwerbungen pro Tag',
-	'INVITE_INSTALL_DATE'				=> 'Installiert am',
-	'LAST_UPDATE'						=> 'Letztes Update',
-	'INVITE_VERSION'					=> 'Version',
+	'INVITE_STATS'							=> 'Statistik',
+	'NUMBER_INVITATIONS'					=> 'Anzahl Einladungen',
+	'NUMBER_SUCCESSFUL_INVITATIONS'			=> 'Anzahl erfolgreiche Einladungen',
+	'NUMBER_REFERRALS'						=> 'Anzahl Anwerbungen',
+	'INVITATIONS_PER_DAY'					=> 'Einladungen pro Tag',
+	'SUCCESSFUL_INVITATIONS_PER_DAY'		=> 'Erfolgreiche Einladungen pro Tag',
+	'REFERRALS_PER_DAY'						=> 'Anwerbungen pro Tag',
+	'INVITE_INSTALL_DATE'					=> 'Installiert am',
+	'LAST_UPDATE'							=> 'Letztes Update',
+	'INVITE_VERSION'						=> 'Version',
+	'ACP_INVITE_SYNC_REFERRAL_DATA'			=> 'Anwerbungen resynchronisieren',
+	'ACP_INVITE_SYNC_REFERRAL_DATA_EXPLAIN'	=> 'Berechnet die Anzahl von Anwerbungen neu und resynchronisiert Anwerber. Abhängig von "Erfolgreiche Einladungen einschließen".',
+	'ACP_INVITE_CONFIRM_SYNC_REFERRAL_DATA'	=> 'Bist du dir sicher, dass du die Anwerbungen resynchronisieren willst?',
+	'ACP_INVITE_SYNC_REFERRAL_DATA_SUCCESS'	=> 'Die Anwerbungen wurden erfolgreich synchronisiert.',
 
 	// Templates
 	'ACP_SELECT_TEMPLATE'				=> 'Template auswählen',
@@ -104,14 +108,15 @@ $lang = array_merge($lang, array(
 	'LOG_FILTER_REGISTER'				=> 'Registrierungen',
 	'LOG_FILTER_ZEBRA'					=> 'Freundschaften',
 	'LOG_FILTER_REFERRAL'				=> 'Anwerbungen',
-	'LOG_INVITE_LOG_CLEARED'			=> '<strong>Invite A Friend Protokoll bearbeitet</strong>',
-	'LOG_INVITE_SETTINGS_UPDATED'		=> '<strong>Invite A Friend Einstellungen geändert</strong>',
-	'LOG_INVITE_TEMPLATES_UPDATED'		=> '<strong>Invite A Friend Templates bearbeitet</strong>',
+	'LOG_INVITE_LOG_CLEARED'			=> '<strong>Invite A Friend - Protokoll bearbeitet</strong>',
+	'LOG_INVITE_SETTINGS_UPDATED'		=> '<strong>Invite A Friend - Einstellungen geändert</strong>',
+	'LOG_INVITE_TEMPLATES_UPDATED'		=> '<strong>Invite A Friend - Templates bearbeitet</strong>',
 	'LOG_INVITE_INVITE'					=> '<strong>Einladung versendet</strong><br/>» an „%1$s“',
 	'LOG_INVITE_CONFIRM'				=> '<strong>Bestätigung erhalten</strong><br/>» aufgrund der Registrierung von „%2$s“',
 	'LOG_INVITE_REGISTER'				=> '<strong>Erfolgreiche Einladung</strong><br/>» Registrierung des Benutzers „%1$s“',
 	'LOG_INVITE_ZEBRA'					=> '<strong>Freund hinzugefügt</strong><br/>» „%1$s“ aufgrund der Registrierung des eingeladenen Benutzer',
 	'LOG_INVITE_REFERRAL'				=> '<strong>Erfolgreiche Anwerbung</strong><br/>» Registrierung des Benutzers „%1$s“',
+	'LOG INVITE SYNC REFERRAL DATA'		=> '<strong>Invite A Friend - Anwerbungen synchronisiert</strong>',
 
 	//Plugins
 	'ULTIMATE_POINTS_SETTINGS'			=> 'Ultimate Points-Einstellungen',
@@ -165,7 +170,7 @@ $lang = array_merge($lang, array(
 	'SETTINGS_ENABLE'							=> '»Invite A Friend« aktivieren',
 	'SETTINGS_ENABLE_EXPLAIN'					=> 'Hiermit aktivierst du alle Funktionen dieser Modifikation.',
 	'SETTINGS_ENABLE_POWERED_BY'				=> '»Powered by« anzeigen',
-	'SETTINGS_ENABLE_POWERED_BY_EXPLAIN'		=> 'Du kannst diesen Verweis jederzeit ausblenden. Falls du die in diese Modifikation investierte Zeit und Arbeit zu schätzen weißt, würden wir uns sehr über eine <strong><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=3TZQ7M4WSJMLA">Spende</a></strong> freuen.',
+	'SETTINGS_ENABLE_POWERED_BY_EXPLAIN'		=> 'Du kannst diesen Verweis jederzeit ausblenden. Falls du die in diese Modifikation investierte Zeit und Arbeit zu schätzen weißt, würden wir uns sehr über eine <strong><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4SA7YVJADG5S8">Spende</a></strong> freuen.',
 	'SETTINGS_ENABLE_INVITATION'				=> 'Einladungen aktivieren',
 	'SETTINGS_ENABLE_INVITATION_EXPLAIN'		=> 'Aktiviert die grundlegende Einladungs-Funktionalität.',
 	'SETTINGS_ENABLE_KEY'						=> 'Einladungscode benötigt',
@@ -273,8 +278,9 @@ $lang = array_merge($lang, array(
 	'ACP_INVITE_UPDATE_INSTRUCTIONS'	=> '',
 
 	// UMIL
-	'TRANSFER_INVITATION_DATA'					=> 'Alte Daten übertragen',
-	'TRANSFER_INVITATION_DATA_EXPLAIN'			=> 'Überträgt alte Statistiken wie die Anzahl der versendeten Einladungen von Version 0.5.4 und früher. Es dürfen keine manuellen Eingriffe in die Datenbank stattgefunden haben.',
+	'ACP_INVITE_DONATE_BUTTON'			=> 'Invite A Friend <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4SA7YVJADG5S8"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" title="Spenden" /></a>',
+	'TRANSFER_INVITATION_DATA'			=> 'Alte Daten übertragen',
+	'TRANSFER_INVITATION_DATA_EXPLAIN'	=> 'Überträgt alte Statistiken wie die Anzahl der versendeten Einladungen von Version 0.5.4 und früher. Es dürfen keine manuellen Eingriffe in die Datenbank stattgefunden haben.',
 ));
 
 ?>

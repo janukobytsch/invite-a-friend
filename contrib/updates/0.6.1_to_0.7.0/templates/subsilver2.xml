@@ -7,7 +7,7 @@
 		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
 
 		<title lang="en">Invite A Friend</title>
-		<description lang="en">Updating the templates of Invite A Friend for subsilver2 style from 0.6.0 to 0.6.1.</description>
+		<description lang="en">Updating the templates of Invite A Friend for subsilver2 style from 0.6.1 to 0.7.0.</description>
 		<author-notes lang="en">For further information and bug reports please visit <![CDATA[http://www.phpbb.com/community/viewtopic.php?f=70&t=1224005]]></author-notes>
 
 		<author-group>
@@ -15,22 +15,45 @@
 				<realname>J. Jacoby</realname>
 				<email>bycoja@web.de</email>
 				<username>Bycoja</username>
-				<homepage>http://bycoja.bplaced.net</homepage>
+				<homepage><![CDATA[http://www.jjacoby.de]]></homepage>
 				<contributions-group>
 					<contributions status="current" position="Developer" />
 				</contributions-group>		
 			</author>
 		</author-group>
 
-		<mod-version>0.6.1</mod-version>
+		<mod-version>0.7.0</mod-version>
 
 		<installation>
 			<level>intermediate</level>
-			<time>1200</time>
-			<target-version>3.0.7-PL1</target-version>
+			<time>600</time>
+			<target-version>3.0.10</target-version>
 		</installation>
 
 		<history>
+			<entry>
+				<date>2012-08-11</date>
+				<rev-version>0.7.0 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Referral features </change>
+					<change>[Added] Referral template</change>
+					<change>[Added] Multiple recipients</change>
+					<change>[Added] Statistics</change>
+					<change>[Added] Invitation icon</change>
+					<change>[Added] More settings (expiration time, post requirement, etc.)</change>
+					<change>[Added] ACP Module: Referral settings</change>
+					<change>[Added] ACP Module: Overview</change>
+					<change>[Changed] Moved the invitation link</change>
+					<change>[Changed] Disabled the 'prevent abuse' setting by default</change>
+					<change>[Changed] Disabled the options when composing invitations by default</change>
+					<change>[Changed] Key generation</change>
+					<change>[Fixed] UMIL installation</change>
+					<change>[Fixed] Errors when installing with AutoMOD 1.0</change>
+					<change>[Fixed] Apply template changes made in the ACP correctly</change>
+					<change>[Fixed] Special characters in templates</change>
+					<change>[Fixed] Confirmation code display</change>
+				</changelog>
+			</entry>
 			<entry>
 				<date>2010-04-19</date>
 				<rev-version>0.6.1 [Beta]</rev-version>
@@ -186,36 +209,261 @@
 	<action-group>
 		<copy>
 			<file from="root/styles/subsilver2/template/ucp_invite_invite.html" to="styles/subsilver2/template/ucp_invite_invite.html" />
+			<file from="root/styles/subsilver2/template/autosuggest.js" to="styles/subsilver2/template/autosuggest.js" />
+			<file from="root/styles/subsilver2/theme/autosuggest.css" to="styles/subsilver2/theme/autosuggest.css" />
+			<file from="root/styles/subsilver2/theme/images/as_pointer.gif" to="styles/subsilver2/theme/images/as_pointer.gif" />
+			<file from="root/styles/subsilver2/theme/images/hl_corner_bl.gif" to="styles/subsilver2/theme/images/hl_corner_bl.gif" />
+			<file from="root/styles/subsilver2/theme/images/hl_corner_br.gif" to="styles/subsilver2/theme/images/hl_corner_br.gif" />
+			<file from="root/styles/subsilver2/theme/images/hl_corner_tl.gif" to="styles/subsilver2/theme/images/hl_corner_tl.gif" />
+			<file from="root/styles/subsilver2/theme/images/hl_corner_tr.gif" to="styles/subsilver2/theme/images/hl_corner_tr.gif" />
+			<file from="root/styles/subsilver2/theme/images/ul_corner_bl.gif" to="styles/subsilver2/theme/images/ul_corner_bl.gif" />
+			<file from="root/styles/subsilver2/theme/images/ul_corner_br.gif" to="styles/subsilver2/theme/images/ul_corner_br.gif" />
+			<file from="root/styles/subsilver2/theme/images/ul_corner_tl.gif" to="styles/subsilver2/theme/images/ul_corner_tl.gif" />
+			<file from="root/styles/subsilver2/theme/images/ul_corner_tr.gif" to="styles/subsilver2/theme/images/ul_corner_tr.gif" />
+			<file from="root/styles/subsilver2/theme/images/icon_mini_invitation.gif" to="styles/subsilver2/theme/images/icon_mini_invitation.gif" />
 		</copy>
 
 		<open src="styles/subsilver2/template/memberlist_body.html">
 			<edit>
-				<find><![CDATA[<!-- IF S_ENABLE_INVITE_FILTER and S_INVITE_FILTER --><h2 class="solo">{PAGE_TITLE_INVITE_SEARCH}</h2><!-- ENDIF -->]]></find>
-				<action type="after-add"><![CDATA[<!-- Calculate correct colspan -->
-<!-- IF S_IN_SEARCH_POPUP -->
-<!-- DEFINE $COLSPAN = 9 -->
-<!-- ELSE -->
-<!-- DEFINE $COLSPAN = 8 -->
+				<find><![CDATA[<!-- IF U_SORT_REGISTER --><!-- DEFINE $COLSPAN = $COLSPAN + 1 --><!-- ENDIF -->]]></find>
+				<action type="after-add"><![CDATA[<!-- IF U_SORT_REFERRER --><!-- DEFINE $COLSPAN = $COLSPAN + 1 --><!-- ENDIF -->
+<!-- IF U_SORT_REFERRALS --><!-- DEFINE $COLSPAN = $COLSPAN + 1 --><!-- ENDIF --]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[	<!-- IF U_SORT_INVITER --><th nowrap="nowrap" width="<!-- IF not U_SORT_INVITE and not U_SORT_REGISTER -->15<!-- ELSE -->10<!-- ENDIF -->%"><a href="{U_SORT_INVITER}">{L_DISPLAY_INVITER}</a></th><!-- ENDIF -->
+	<!-- IF U_SORT_INVITE --><th nowrap="nowrap" width="5%"><a href="{U_SORT_INVITE}">{L_DISPLAY_INVITE}</a></th><!-- ENDIF -->
+	<!-- IF U_SORT_REGISTER --><th nowrap="nowrap" width="5%"><a href="{U_SORT_REGISTER}">{L_DISPLAY_REGISTER}</a></th><!-- ENDIF -->]]></find>
+				<action type="replace-with"><![CDATA[	<!-- IF U_SORT_INVITER --><th nowrap="nowrap" width="<!-- IF not U_SORT_INVITE and not U_SORT_REGISTER -->15<!-- ELSE -->10<!-- ENDIF -->%"><a href="{U_SORT_INVITER}">{L_DISPLAY_INVITER}</a></th><!-- ENDIF -->
+	<!-- IF U_SORT_REFERRER --><th nowrap="nowrap" width="<!-- IF not U_SORT_REFERRALS -->15<!-- ELSE -->10<!-- ENDIF -->"><a href="{U_SORT_REFERRER}#memberlist">{L_DISPLAY_REFERRER}</a></th><!-- ENDIF -->
+	<!-- IF U_SORT_INVITE --><th nowrap="nowrap" width="5%"><a href="{U_SORT_INVITE}">{L_DISPLAY_INVITE}</a></th><!-- ENDIF -->
+	<!-- IF U_SORT_REGISTER --><th nowrap="nowrap" width="5%"><a href="{U_SORT_REGISTER}">{L_DISPLAY_REGISTER}</a></th><!-- ENDIF -->
+	<!-- IF U_SORT_REFERRALS --><th nowrap="nowrap" width="5%"><a href="{U_SORT_REFERRALS}">{L_DISPLAY_REFERRALS}</a></th><!-- ENDIF -->]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[		<!-- IF U_SORT_INVITER --><td class="gen" align="center"><!-- IF memberrow.POSTER_INVITE_INVITER -->{memberrow.POSTER_INVITE_INVITER}<!-- ENDIF --></td><!-- ENDIF -->
+		<!-- IF U_SORT_INVITE --><td class="gen" align="center">{memberrow.POSTER_INVITE_INVITE}</td><!-- ENDIF -->
+		<!-- IF U_SORT_REGISTER --><td class="gen" align="center">{memberrow.POSTER_INVITE_REGISTER}</td><!-- ENDIF -->]]></find>
+				<action type="replace-with"><![CDATA[		<!-- IF U_SORT_INVITER --><td class="gen" align="center"><!-- IF memberrow.POSTER_INVITE_INVITER -->{memberrow.POSTER_INVITE_INVITER}<!-- ENDIF --></td><!-- ENDIF -->
+		<!-- IF U_SORT_REFERRER --><td class="gen" align="center"><!-- IF memberrow.POSTER_REFERRER -->{memberrow.POSTER_REFERRER}<!-- ENDIF --></td><!-- ENDIF -->
+		<!-- IF U_SORT_INVITE --><td class="gen" align="center">{memberrow.POSTER_INVITE_INVITE}</td><!-- ENDIF -->
+		<!-- IF U_SORT_REGISTER --><td class="gen" align="center">{memberrow.POSTER_INVITE_REGISTER}</td><!-- ENDIF -->
+		<!-- IF U_SORT_REFERRALS --><td class="gen" align="center">{memberrow.POSTER_INVITE_REFERRALS}</td><!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+
+		<open src="styles/subsilver2/template/memberlist_search.html">
+			<edit>
+				<find><![CDATA[<!-- IF S_INVITE_SEARCH_ALLOWED -->
+<!-- IF U_SORT_INVITER or U_SORT_INVITE or U_SORT_REGISTER -->
+<tr>
+	<!-- IF U_SORT_INVITER -->
+	<td class="row1"><b class="genmed">{L_DISPLAY_INVITER}:</b></td>
+	<td class="row2"><input class="post" type="text" name="ui" id="ui" value="{INVITER}" /></td>
+	<!-- ENDIF -->
+	<!-- IF U_SORT_INVITE -->
+	<td class="row1"><b class="genmed">{L_DISPLAY_INVITE}:</b></td>
+	<td class="row2"><select name="invite_select">{S_INVITE_OPTIONS}</select> <input class="post" type="text" name="invite" id="invite" value="{INVITE}" /></td>
+	<!-- ENDIF -->
+	<!-- IF U_SORT_INVITER and U_SORT_INVITE and U_SORT_REGISTER --></tr><tr><!-- ENDIF -->
+	<!-- IF U_SORT_REGISTER -->
+	<td class="row1"><b class="genmed">{L_DISPLAY_REGISTER}:</b></td>
+	<td class="row2"><select name="register_select">{S_REGISTER_OPTIONS}</select> <input class="post" type="text" name="register" id="register" value="{REGISTER}" /></td>
+	<!-- ENDIF -->
+	<!-- IF U_SORT_INVITER and U_SORT_INVITE and U_SORT_REGISTER --><td colspan="2" class="row1">&nbsp;</td><!-- ENDIF -->
+	<!-- IF U_SORT_INVITER and not U_SORT_INVITE and not U_SORT_REGISTER --><td colspan="2" class="row1">&nbsp;</td><!-- ENDIF -->
+	<!-- IF not U_SORT_INVITER and not U_SORT_INVITE and U_SORT_REGISTER --><td colspan="2" class="row1">&nbsp;</td><!-- ENDIF -->
+	<!-- IF not U_SORT_INVITER and U_SORT_INVITE and not U_SORT_REGISTER --><td colspan="2" class="row1">&nbsp;</td><!-- ENDIF -->
+</tr>
 <!-- ENDIF -->
-<!-- IF U_SORT_INVITER --><!-- DEFINE $COLSPAN = $COLSPAN + 1 --><!-- ENDIF -->
-<!-- IF U_SORT_INVITE --><!-- DEFINE $COLSPAN = $COLSPAN + 1 --><!-- ENDIF -->
-<!-- IF U_SORT_REGISTER --><!-- DEFINE $COLSPAN = $COLSPAN + 1 --><!-- ENDIF -->]]></action>
+<!-- ENDIF -->]]></find>
+				<action type="replace-with"><![CDATA[<!-- IF S_INVITE_SEARCH_ALLOWED or S_REFERRAL_SEARCH_ALLOWED -->
+<!-- IF U_SORT_INVITER or U_SORT_REFERRER or U_SORT_INVITE or U_SORT_REGISTER or U_SORT_REFERRALS -->
+<tr>
+	<!-- IF S_REFERRAL_SEARCH_ALLOWED and U_SORT_REFERRER -->
+	<td class="row1"><b class="genmed">{L_DISPLAY_REFERRER}:</b></td>
+	<td class="row2"><input class="post" name="uir" id="uir" value="{REFERRER}" /></td>
+	<!-- ELSEIF S_INVITE_SEARCH_ALLOWED and U_SORT_INVITER -->
+	<td class="row1"><b class="genmed">{L_DISPLAY_INVITER}:</b></td>
+	<td class="row2"><input class="post" type="text" name="ui" id="ui" value="{INVITER}" /></td>
+	<!-- ENDIF -->
+	<!-- IF U_SORT_INVITE -->
+	<td class="row1"><b class="genmed">{L_DISPLAY_INVITE}:</b></td>
+	<td class="row2"><select name="invite_select">{S_INVITE_OPTIONS}</select> <input class="post" type="text" name="invite" id="invite" value="{INVITE}" /></td>
+	<!-- ENDIF -->
+	<!-- IF U_SORT_INVITER or U_SORT_REFERRER --><!-- IF U_SORT_INVITE and U_SORT_REGISTER --></tr><tr><!-- ENDIF --><!-- ENDIF -->
+	<!-- IF U_SORT_REGISTER -->
+	<td class="row1"><b class="genmed">{L_DISPLAY_REGISTER}:</b></td>
+	<td class="row2"><select name="register_select">{S_REGISTER_OPTIONS}</select> <input class="post" type="text" name="register" id="register" value="{REGISTER}" /></td>
+	<!-- ENDIF -->
+	<!-- IF U_SORT_INVITER or U_SORT_REFERRER --><!-- IF U_SORT_INVITE and not U_SORT_REGISTER --></tr><tr><!-- ELSEIF not U_SORT_INVITE and U_SORT_REGISTER --></tr><tr><!-- ENDIF --><!-- ELSEIF not U_SORT_INVITER and not U_SORT_REFERRER --><!-- IF U_SORT_INVITE and U_SORT_REGISTER --></tr><tr><!-- ENDIF --><!-- ENDIF -->
+	<!-- IF U_SORT_REFERRALS -->
+	<td class="row1"><b class="genmed">{L_DISPLAY_REFERRALS}:</b></td>
+	<td class="row2"><select name="referrals_select">{S_REFERRALS_OPTIONS}</select> <input class="post" type="text" name="referrals" id="referrals" value="{REFERRALS}" /></td>
+	<!-- ENDIF -->
+	<!-- IF U_SORT_INVITER or U_SORT_REFERRER -->
+		<!-- IF U_SORT_INVITE and U_SORT_REGISTER and not U_SORT_REFERRALS --><td colspan="2" class="row1">&nbsp;</td><!-- ENDIF -->
+		<!-- IF U_SORT_INVITE and not U_SORT_REGISTER and U_SORT_REFERRALS --><td colspan="2" class="row1">&nbsp;</td><!-- ENDIF -->
+		<!-- IF not U_SORT_INVITE and U_SORT_REGISTER and U_SORT_REFERRALS --><td colspan="2" class="row1">&nbsp;</td><!-- ENDIF -->
+		<!-- IF not U_SORT_INVITE and not U_SORT_REGISTER and not U_SORT_REFERRALS --><td colspan="2" class="row1">&nbsp;</td><!-- ENDIF -->
+	<!-- ELSEIF not U_SORT_INVITER and not U_SORT_REFERRER -->
+		<!-- IF U_SORT_INVITE and not U_SORT_REGISTER and not U_SORT_REFERRALS --><td colspan="2" class="row1">&nbsp;</td><!-- ENDIF -->
+		<!-- IF not U_SORT_INVITE and U_SORT_REGISTER and not U_SORT_REFERRALS --><td colspan="2" class="row1">&nbsp;</td><!-- ENDIF -->
+		<!-- IF not U_SORT_INVITE and not U_SORT_REGISTER and U_SORT_REFERRALS --><td colspan="2" class="row1">&nbsp;</td><!-- ENDIF -->
+		<!-- IF U_SORT_INVITE and U_SORT_REGISTER and U_SORT_REFERRALS --><td colspan="2" class="row1">&nbsp;</td><!-- ENDIF -->
+	<!-- ENDIF -->
+</tr>
+<!-- ENDIF -->
+<!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+
+		<open src="styles/subsilver2/template/memberlist_view.html">
+			<edit>
+				<find><![CDATA[			<!-- IF POSTER_INVITE_INVITER and S_P_DISPLAY_INVITER -->
+				<tr>
+					<td class="gen" align="{S_CONTENT_FLOW_END}" nowrap="nowrap">{L_DISPLAY_INVITER}: </td>
+					<td width="100%"><b class="gen">{POSTER_INVITE_INVITER}</b></td>
+				</tr>
+			<!-- ENDIF -->]]></find>
+				<action type="replace-with"><![CDATA[			<!-- IF S_P_DISPLAY_REFERRAL_LINK -->
+				<tr>
+					<td class="gen" align="{S_CONTENT_FLOW_END}" nowrap="nowrap">{L_REFERRAL_LINK}: </td>
+					<td width="100%">{U_REFERRAL_LINK}</td>
+				</tr>
+			<!-- ENDIF -->
+			<!-- IF POSTER_INVITE_INVITER and S_P_DISPLAY_INVITER -->
+				<tr>
+					<td class="gen" align="{S_CONTENT_FLOW_END}" nowrap="nowrap">{L_DISPLAY_INVITER}: </td>
+					<td width="100%"><b class="gen">{POSTER_INVITE_INVITER}</b></td>
+				</tr>
+			<!-- ENDIF -->
+			<!-- IF POSTER_REFERRER and S_P_DISPLAY_REFERRER -->
+				<tr>
+					<td class="gen" align="{S_CONTENT_FLOW_END}" nowrap="nowrap">{L_DISPLAY_REFERRER}: </td>
+					<td width="100%"><b class="gen">{POSTER_REFERRER}</b></td>
+				</tr>
+			<!-- ENDIF -->]]></action>
 			</edit>
 			<edit>
-				<find><![CDATA[				<td colspan="{S_TABLE_COLSPAN_SUBSILVER}"><b class="gensmall">{L_GROUP_LEADER}</b></td>]]></find>
-				<action type="replace-with"><![CDATA[				<td colspan="{$COLSPAN}"><b class="gensmall">{L_GROUP_LEADER}</b></td>]]></action>
+				<find><![CDATA[			<!-- IF S_P_DISPLAY_INVITE -->
+				<tr>
+					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_DISPLAY_INVITE}: </td>
+					<td width="100%"><b class="gen">{POSTER_INVITE_INVITE}</b><!-- IF U_USER_ADMIN --><br /><span class="genmed">[ <a href="{U_USER_ADMIN_INVITATIONS}">{L_USER_ADMIN_INVITATIONS}</a> ]</span><!-- ENDIF --><!-- IF INVITATIONS_PCT --><br /><span class="genmed">[{INVITATIONS_PCT} / {INVITATIONS_DAY}]</span><!-- ENDIF --></td>
+				</tr>
+			<!-- ENDIF -->
+			<!-- IF S_P_DISPLAY_REGISTER -->
+				<tr>
+					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_DISPLAY_REGISTER}: </td>
+					<td width="100%"><b class="gen">{POSTER_INVITE_REGISTER}</b><!-- IF U_USER_ADMIN --><br /><span class="genmed">[ <a href="{U_USER_ADMIN_REGISTRATIONS}">{L_USER_ADMIN_REGISTRATIONS}</a> ]</span><!-- ENDIF -->
+					<!-- IF REGISTRATIONS_PCT --><br />[{REGISTRATIONS_PCT} / {REGISTRATIONS_DAY}/<br />{REGISTRATIONS_SUCCESS_RATE}]<!-- ENDIF --><!-- IF S_DISPLAY_REGISTRATION_SEARCH --><br /><span class="genmed"><a href="{U_SEARCH_REGISTRATIONS}">{L_SEARCH_USER_REGISTRATIONS}</a></span><!-- ENDIF --></td>
+				</tr>
+			<!-- ENDIF -->]]></find>
+				<action type="replace-with"><![CDATA[			<!-- IF S_P_DISPLAY_INVITE -->
+				<tr>
+					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_DISPLAY_INVITE}: </td>
+					<td width="100%"><b class="gen">{POSTER_INVITE_INVITE}</b><!-- IF U_USER_ADMIN --><br /><span class="genmed">[ <a href="{U_USER_ADMIN_INVITATIONS}">{L_USER_ADMIN_INVITATIONS}</a> ]</span><!-- ENDIF --><!-- IF INVITATIONS_PCT --><br /><span class="genmed">[{INVITATIONS_PCT} / {INVITATIONS_DAY}]</span><!-- ENDIF --></td>
+				</tr>
+			<!-- ENDIF -->
+			<!-- IF S_P_DISPLAY_REGISTER -->
+				<tr>
+					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_DISPLAY_REGISTER}: </td>
+					<td width="100%"><b class="gen">{POSTER_INVITE_REGISTER}</b><!-- IF U_USER_ADMIN --><br /><span class="genmed">[ <a href="{U_USER_ADMIN_REGISTRATIONS}">{L_USER_ADMIN_REGISTRATIONS}</a> ]</span><!-- ENDIF -->
+					<!-- IF REGISTRATIONS_PCT --><br />[{REGISTRATIONS_PCT} / {REGISTRATIONS_DAY}/<br />{REGISTRATIONS_SUCCESS_RATE}]<!-- ENDIF --><!-- IF S_DISPLAY_REGISTRATION_SEARCH --><br /><span class="genmed"><a href="{U_SEARCH_REGISTRATIONS}">{L_SEARCH_USER_REGISTRATIONS}</a></span><!-- ENDIF --></td>
+				</tr>
+			<!-- ENDIF -->
+			<!-- IF S_P_DISPLAY_REFERRALS -->
+				<tr>
+					<td class="gen" align="{S_CONTENT_FLOW_END}" valign="top" nowrap="nowrap">{L_DISPLAY_REFERRALS}: </td>
+					<td width="100%"><b class="gen">{POSTER_REFERRALS}</b><!-- IF U_USER_ADMIN --><br /><span class="genmed">[ <a href="{U_USER_ADMIN_REFERRALS}">{L_USER_ADMIN_REFERRALS}</a> ]</span><!-- ENDIF -->
+					<!-- IF REFERRALS_PCT --><br />[{REFERRALS_PCT} / {REFERRALS_DAY}]<!-- ENDIF --><!-- IF S_DISPLAY_REFERRALS_SEARCH --><br /><span class="genmed"><a href="{U_SEARCH_REFERRALS}">{L_SEARCH_USER_REFERRALS}</a></span><!-- ENDIF --></td>
+				</tr>
+			<!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+
+		<open src="styles/subsilver2/template/overall_header.html">
+			<edit>
+				<find><![CDATA[<link rel="stylesheet" href="{T_STYLESHEET_LINK}" type="text/css" />]]></find>
+				<action type="after-add"><![CDATA[<!-- IF S_ENABLE_REFERRAL_AS and S_DISPLAY_REFERRAL -->
+	<script type="text/javascript" src="{T_SUPER_TEMPLATE_PATH}/autosuggest.js"></script>
+	<link rel="stylesheet" href="{T_THEME_PATH}/autosuggest.css" type="text/css" media="screen" charset="utf-8" />
+<!-- ENDIF -->]]></action>
 			</edit>
 			<edit>
-				<find><![CDATA[				<td colspan="{S_TABLE_COLSPAN_SUBSILVER}"><b class="gensmall">{L_GROUP_MEMBERS}</b></td>]]></find>
-				<action type="replace-with"><![CDATA[				<td colspan="{$COLSPAN}"><b class="gensmall">{L_GROUP_MEMBERS}</b></td>]]></action>
+				<find><![CDATA[						<!-- IF S_DISPLAY_PM --> &nbsp;<a href="{U_PRIVATEMSGS}"><img src="{T_THEME_PATH}/images/icon_mini_message.gif" width="12" height="13" alt="*" /> {PRIVATE_MESSAGE_INFO}<!-- IF PRIVATE_MESSAGE_INFO_UNREAD -->, {PRIVATE_MESSAGE_INFO_UNREAD}<!-- ENDIF --></a><!-- ENDIF -->]]></find>
+				<action type="after-add"><![CDATA[						<!-- IF S_DISPLAY_INVITE_LEFT -->&nbsp; &nbsp;<a href="{U_INVITE_A_FRIEND}"><img src="{T_THEME_PATH}/images/icon_mini_invitation.gif" width="12" height="13" alt="*" /> {L_INVITE}</a><!-- ENDIF -->]]></action>
 			</edit>
 			<edit>
-				<find><![CDATA[		<td class="row1" colspan="{S_TABLE_COLSPAN_SUBSILVER}" align="center">]]></find>
-				<action type="replace-with"><![CDATA[		<td class="row1" colspan="{$COLSPAN}" align="center">]]></action>
+				<find><![CDATA[					<!-- IF S_DISPLAY_INVITE --> &nbsp;<a href="{U_INVITE_A_FRIEND}"><img src="{T_THEME_PATH}/images/icon_mini_message.gif" width="12" height="13" alt="*" /> {L_ACP_INVITE}</a><!-- ENDIF -->]]></find>
+				<action type="replace-with"><![CDATA[]]></action>
 			</edit>
 			<edit>
-				<find><![CDATA[	<td class="cat" colspan="{S_TABLE_COLSPAN_SUBSILVER}" align="center"><!-- IF S_IN_SEARCH_POPUP and not S_SELECT_SINGLE --><input class="btnlite" type="submit" value="{L_SELECT_MARKED}" /><!-- ELSE --><span class="gensmall">{L_SELECT_SORT_METHOD}:</span>&nbsp;<select name="sk">{S_MODE_SELECT}</select>&nbsp; <span class="gensmall">{L_ORDER}</span>&nbsp;<select name="sd">{S_ORDER_SELECT}</select>&nbsp; <input type="submit" name="submit" value="{L_SUBMIT}" class="btnlite" /><!-- ENDIF --></td>]]></find>
-				<action type="replace-with"><![CDATA[	<td class="cat" colspan="{$COLSPAN}" align="center"><!-- IF S_IN_SEARCH_POPUP and not S_SELECT_SINGLE --><input class="btnlite" type="submit" value="{L_SELECT_MARKED}" /><!-- ELSE --><span class="gensmall">{L_SELECT_SORT_METHOD}:</span>&nbsp;<select name="sk">{S_MODE_SELECT}</select>&nbsp; <span class="gensmall">{L_ORDER}</span>&nbsp;<select name="sd">{S_ORDER_SELECT}</select>&nbsp; <input type="submit" name="submit" value="{L_SUBMIT}" class="btnlite" /><!-- ENDIF --></td>]]></action>
+				<find><![CDATA[				<!-- IF S_DISPLAY_SEARCH -->&nbsp; &nbsp;<a href="{U_SEARCH}"><img src="{T_THEME_PATH}/images/icon_mini_search.gif" width="12" height="13" alt="*" /> {L_SEARCH}</a><!-- ENDIF -->
+				<!-- IF not S_IS_BOT -->]]></find>
+				<action type="after-add"><![CDATA[					<!-- IF S_DISPLAY_INVITE_RIGHT -->&nbsp; &nbsp;<a href="{U_INVITE_A_FRIEND}"><img src="{T_THEME_PATH}/images/icon_mini_invitation.gif" width="12" height="13" alt="*" /> {L_INVITATION}</a><!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+
+		<open src="styles/subsilver2/template/ucp_register.html">
+			<edit>
+				<find><![CDATA[<!-- IF S_DISPLAY_REGISTER_KEY -->
+	<tr>
+		<td class="row1"><b class="genmed">{L_REGISTER_KEY}<!-- IF S_ENABLE_KEY_OPTIONAL -->&nbsp; ({L_OPTIONAL})<!-- ENDIF -->: </b><br /><span class="gensmall">{L_REGISTER_KEY_EXPLAIN}</span></td>
+		<td class="row2"><input class="post" type="text" name="key" size="25" value="{REGISTER_KEY}" /></td>
+	</tr>
+<!-- ENDIF -->]]></find>
+				<action type="replace-with"><![CDATA[]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[<tr>
+	<td class="row1"><b class="genmed">{L_CONFIRM_PASSWORD}: </b></td>
+	<td class="row2"><input class="post" type="password" name="password_confirm" size="25" value="{PASSWORD_CONFIRM}" /></td>
+</tr>]]></find>
+				<action type="after-add"><![CDATA[<!-- IF S_DISPLAY_REGISTER_KEY -->
+	<tr>
+		<td class="row1"><b class="genmed">{L_REGISTER_KEY}<!-- IF S_ENABLE_KEY_OPTIONAL -->&nbsp; ({L_OPTIONAL})<!-- ENDIF -->: </b><br /><span class="gensmall">{L_REGISTER_KEY_EXPLAIN}</span></td>
+		<td class="row2"><input class="post" type="text" name="key" size="25" value="{REGISTER_KEY}" /></td>
+	</tr>
+<!-- ENDIF -->
+<!-- IF S_DISPLAY_REFERRAL -->
+	<tr>
+		<td class="row1"><b class="genmed">{L_REFERRED_BY}<br /><span class="gensmall">{L_REFERRED_BY_EXPLAIN}</span></td>
+		<td class="row2"><!-- IF not S_DISABLE_REFERRAL --><input class="post" type="text" name="referrer" id="referrer" size="25" value="{REFERRER}" /><!-- ELSE --><strong>{REFERRER}</strong><!-- ENDIF --><input type="hidden" name="referrer_id" id="referrer_id" value="{REFERRER_ID}" /></dd></td>
+	</tr>
+<!-- ENDIF -->]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[<!-- IF not S_REGISTER_KEY_EMPTY --><input type="hidden" value="{REGISTER_KEY}" name="key" class="button2" /><!-- ENDIF -->]]></find>
+				<action type="replace-with"><![CDATA[]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[<!-- INCLUDE overall_footer.html -->]]></find>
+				<action type="before-add"><![CDATA[<!-- IF S_ENABLE_REFERRAL_AS and S_DISPLAY_REFERRAL -->
+<script type="text/javascript">
+	/**
+	* Ajax autosuggest
+	*/
+	var options = {
+		script:"{ROOT_PATH}referral_as.php?ajax=true&json=true&",
+		varname:"input",
+		json:true,
+		shownoresults:false,
+		callback: function (obj) { document.getElementById('referrer_id').value = obj.id; }
+	};
+	var as_json = new bsn.AutoSuggest('referrer', options);
+</script>
+<!-- ENDIF -->]]></action>
+			</edit>
+		</open>
+
+		<open src="styles/subsilver2/template/viewtopic_body.html">
+			<edit>
+				<find><![CDATA[					<!-- IF postrow.POSTER_FROM --><br /><b>{L_LOCATION}:</b> {postrow.POSTER_FROM}<!-- ENDIF -->]]></find>
+				<action type="after-add"><![CDATA[					<!-- IF postrow.POSTER_INVITE_INVITER and S_T_DISPLAY_INVITER --><br /><b>{L_DISPLAY_INVITER}:</b> {postrow.POSTER_INVITE_INVITER}<!-- ENDIF -->
+					<!-- IF postrow.POSTER_REFERRER and S_T_DISPLAY_REFERRER --><br /><b>{L_DISPLAY_REFERRER}:</b> {postrow.POSTER_REFERRER}<!-- ENDIF -->
+					<!-- IF S_T_DISPLAY_INVITE --><br /><b>{L_DISPLAY_INVITE}:</b> {postrow.POSTER_INVITE_INVITE}<!-- ENDIF -->
+					<!-- IF S_T_DISPLAY_REGISTER --><br /><b>{L_DISPLAY_REGISTER}:</b> {postrow.POSTER_INVITE_REGISTER}<!-- ENDIF -->
+					<!-- IF S_T_DISPLAY_REFERRALS --><br /><b>{L_DISPLAY_REFERRALS}:</b> {postrow.POSTER_REFERRALS}<!-- ENDIF -->]]></action>
 			</edit>
 		</open>
 

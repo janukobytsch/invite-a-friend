@@ -115,6 +115,16 @@
 </table>
 
 <!-- IF S_FOUNDER or S_SETTINGS_AUTH -->
+<fieldset>
+	<legend>{L_STATISTIC_RESYNC_OPTIONS}</legend>
+	<form id="sync_referral_data_form" method="post" action="{U_ACTION}">
+		<dl>
+			<dt><label for="sync_referral_data_action">{L_ACP_INVITE_SYNC_REFERRAL_DATA}</label><br /><span>{L_ACP_INVITE_SYNC_REFERRAL_DATA_EXPLAIN}</span></dt>
+			<dd><input type="hidden" name="action" value="sync_referral_data" /><input class="button2" type="submit" id="sync_referral_data_action" name="sync_referral_data_action" value="{L_RUN}" /></dd>
+		</dl>
+	</form>
+</fieldset>
+
 <form id="acp_invite" method="post" action="{U_SETTINGS}">
 <fieldset>
 	<legend>{L_GENERAL_SETTINGS}</legend>

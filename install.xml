@@ -8,7 +8,6 @@
 
 		<title lang="en">Invite A Friend</title>
 		<description lang="en">Invite A Friend is a phpBB3 Modification, which adds referral and invitation features to the phpBB board in order to have more control over the user registration process and increase the number of users.
-
 			This can either be accomplished by specifying a referral user or sending out invitations with an invitation code attached. The invitation code cannot only be required to make your board private but also helps to associate new users with their referrer adding a more social component to the phpBB board. Supporting Ultimate Points and Cash Mod.</description>
 		<author-notes lang="en">Update instructions from previous releases can be found within the contrib/updates folder.
 			For further information and bug reports please visit <![CDATA[http://www.phpbb.com/community/viewtopic.php?f=70&t=1224005]]>
@@ -235,6 +234,7 @@
 			<file from="root/styles/prosilver/theme/images/ul_corner_br.gif" to="styles/prosilver/theme/images/ul_corner_br.gif" />
 			<file from="root/styles/prosilver/theme/images/ul_corner_tl.gif" to="styles/prosilver/theme/images/ul_corner_tl.gif" />
 			<file from="root/styles/prosilver/theme/images/ul_corner_tr.gif" to="styles/prosilver/theme/images/ul_corner_tr.gif" />
+			<file from="root/styles/prosilver/theme/images/icon_invitation.gif" to="styles/prosilver/theme/images/icon_invitation.gif" />
 			<file from="root/language/en/mods/info_acp_invite.php" to="language/en/mods/info_acp_invite.php" />
 			<file from="root/language/en/mods/info_ucp_invite.php" to="language/en/mods/info_ucp_invite.php" />
 			<file from="root/language/en/email/confirm_subject.txt" to="language/en/email/confirm_subject.txt" />

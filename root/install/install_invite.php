@@ -36,7 +36,7 @@ $options = array(
 $transfer_invitation_data = request_var('transfer_invitation_data', '', true);
 
 // The name of the mod to be displayed during installation.
-$mod_name = 'ACP_INVITE';
+$mod_name = 'ACP_INVITE_DONATE_BUTTON';
 
 /*
 * The name of the config variable which will hold the currently installed version
@@ -288,7 +288,7 @@ $versions = array(
 					'COLUMNS'		=> array(
 						'referrer_id'	=> array('UINT', 0),
 						'referral_id'	=> array('UINT', 0),
-						'time'			=> array('UINT', 0),
+						'time'			=> array('UINT:11', 0),
 					),
 				),
 			),
@@ -378,6 +378,99 @@ include($phpbb_root_path . 'umil/umil_auto.' . $phpEx);
 * Will only work correctly if no entries in the invitatin log table have been deleted manually.
 */
 function transfer_invitation_data()
+{
+	global $db, $umil;
+
+	// Array to be filled with the existing invitation data
+	$invitation_data = array();
+
+	// Array to be filled with the number of existing invitations for each user
+	$invitation_count = array();
+
+	// Grab data within the invitation table from previous versions
+	$sql 	= 'SELECT *
+		FROM ' . INVITE_LOG_TABLE;
+	$result	= $db->sql_query($sql);
+	$invitation_data = $db->sql_fetchrowset($result);
+	$db->sql_freeresult($result);
+
+	// Requires the invitation related database fields in the users table to be set
+	for ($i = 0, $size = sizeof($invitation_data); $i < $size; $i++)
+	{
+		// Initialise the invitation count when running for the first time
+		if (!isset($invitation_count[$invitation_data[$i]['invite_user_id']]['user_invitations']))
+		{
+			$invitation_count[$invitation_data[$i]['invite_user_id']]['user_invitations'] = 0;
+			$invitation_count[$invitation_data[$i]['invite_user_id']]['user_registrations'] = 0;
+		}
+
+		// Add referral data and associate the invited user with the one who invited him
+		if ($invitation_data[$i]['register_user_id'] && $invitation_data[$i]['register_key_used'])
+		{
+			$sql 	= 'SELECT username_clean
+				FROM ' . USERS_TABLE . '
+				WHERE user_id = ' . $invitation_data[$i]['invite_user_id'];
+			$result = $db->sql_query($sql);
+			$invite_username = $db->sql_fetchfield('username_clean');
+			$db->sql_freeresult($result);
+
+			$sql_ary	= array(
+				'user_inviter_id'	=> (int) $invitation_data[$i]['invite_user_id'],
+				'user_inviter_name'	=> $invite_username,
+			);
+
+			$sql = 'UPDATE ' . USERS_TABLE . '
+				SET ' . $db->sql_build_array('UPDATE', $sql_ary) . '
+				WHERE user_id = ' . (int) $invitation_data[$i]['register_user_id'];
+			$result = $db->sql_query($sql);
+
+			$invitation_count[$invitation_data[$i]['invite_user_id']]['user_registrations']++;
+		}
+		$invitation_count[$invitation_data[$i]['invite_user_id']]['user_invitations']++;
+	}
+
+	// Add the number of invitations sent
+	foreach ($invitation_count as $user_id => $user_count_ary)
+	{
+		// Check whether the database fields in users table are already filled
+		$sql = 'SELECT user_invitations, user_registrations
+			FROM ' . USERS_TABLE . "
+			WHERE user_id = $user_id";
+		$result = $db->sql_query($sql);
+		while ($row = $db->sql_fetchrow($result))
+		{
+			$existing['user_invitations'] = $row['user_invitations'];
+			$existing['user_registrations'] = $row['user_registrations'];
+		}
+		$db->sql_freeresult($result);
+
+		// Go on with next user if the invitation log table had been edited manually
+		if ((($user_count_ary['user_invitations'] - $existing['user_invitations']) < 0) || $increase['user_registrations'] < 0)
+		{
+			continue;
+		}
+		else
+		{
+			$sql_ary	= array(
+				'user_invitations'		=> $user_count_ary['user_invitations'],
+				'user_registrations'	=> $user_count_ary['user_registrations'],
+			);
+
+			$sql = 'UPDATE ' . USERS_TABLE . '
+				SET ' . $db->sql_build_array('UPDATE', $sql_ary) . "
+				WHERE user_id = $user_id";
+			$result = $db->sql_query($sql);
+		}
+	}
+}
+
+/*
+* Here is our custom function that will be called in order to import existing invitation data for use of referral features added in 0.7.0
+* Requires the invitation related database fields in the users table to be set
+*
+* Depending on the amount of existing data calling this function will run a lot of queries... be warned!
+*/
+function import_invitation_referral_data()
 {
 	global $db, $umil;
 
@@ -705,7 +798,7 @@ function insert_data_070($action, $version)
 					array('config_name'=>'display_m_inviter','config_value'=>'0'),
 					array('config_name'=>'display_m_referrals','config_value'=>'1'),
 					array('config_name'=>'display_m_referrer','config_value'=>'1'),
-					array('config_name'=>'display_m_register','config_value'=>'1'),
+					array('config_name'=>'display_m_register','config_value'=>'0'),
 					array('config_name'=>'display_navigation_left','config_value'=>'1'),
 					array('config_name'=>'display_navigation_right','config_value'=>'1'),
 					array('config_name'=>'display_p_invite','config_value'=>'1'),
@@ -713,13 +806,13 @@ function insert_data_070($action, $version)
 					array('config_name'=>'display_p_referral_link','config_value'=>'1'),
 					array('config_name'=>'display_p_referrals','config_value'=>'1'),
 					array('config_name'=>'display_p_referrer','config_value'=>'1'),
-					array('config_name'=>'display_p_register','config_value'=>'1'),
+					array('config_name'=>'display_p_register','config_value'=>'0'),
 					array('config_name'=>'display_registration','config_value'=>'1'),
 					array('config_name'=>'display_t_invite','config_value'=>'1'),
 					array('config_name'=>'display_t_inviter','config_value'=>'0'),
 					array('config_name'=>'display_t_referrals','config_value'=>'1'),
 					array('config_name'=>'display_t_referrer','config_value'=>'1'),
-					array('config_name'=>'display_t_register','config_value'=>'1'),
+					array('config_name'=>'display_t_register','config_value'=>'0'),
 					array('config_name'=>'enable','config_value'=>'1'),
 					array('config_name'=>'enable_cash','config_value'=>'0'),
 					array('config_name'=>'enable_email_identification','config_value'=>'1'),

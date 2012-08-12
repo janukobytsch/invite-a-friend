@@ -449,7 +449,7 @@
 		<open src="includes/constants.php">
 			<edit>
 				<find><![CDATA[define('LOG_INVITE', 				4);]]></find>
-				<action type="after-add"><![CDATA[define('INVITE_REFERRALS_TABLE',	$table_prefix . 'invite_referrals');]]></action>
+				<action type="before-add"><![CDATA[define('INVITE_REFERRALS_TABLE',	$table_prefix . 'invite_referrals');]]></action>
 			</edit>
 		</open>
 
@@ -658,7 +658,8 @@
 <!-- IF U_SORT_INVITER --><!-- DEFINE $COLSPAN = $COLSPAN + 1 --><!-- ENDIF -->
 <!-- IF U_SORT_INVITE --><!-- DEFINE $COLSPAN = $COLSPAN + 1 --><!-- ENDIF -->
 <!-- IF U_SORT_REGISTER --><!-- DEFINE $COLSPAN = $COLSPAN + 1 --><!-- ENDIF -->]]></find>
-				<action type="after-add"><![CDATA[define('INVITE_REFERRALS_TABLE',	$table_prefix . 'invite_referrals');]]></action>
+				<action type="after-add"><![CDATA[<!-- IF U_SORT_REFERRER --><!-- DEFINE $COLSPAN = $COLSPAN + 1 --><!-- ENDIF -->
+<!-- IF U_SORT_REFERRALS --><!-- DEFINE $COLSPAN = $COLSPAN + 1 --><!-- ENDIF -->]]></action>
 			</edit>
 			<edit>
 				<find><![CDATA[		<h2 class="solo"><!-- IF S_ENABLE_INVITE_FILTER and S_INVITE_FILTER -->{PAGE_TITLE_INVITE_SEARCH}<!-- ELSE -->{PAGE_TITLE}<!-- ENDIF --><!-- IF SEARCH_WORDS -->: <a href="{U_SEARCH_WORDS}">{SEARCH_WORDS}</a><!-- ENDIF --></h2>]]></find>
@@ -685,11 +686,14 @@
 			<!-- IF U_SORT_REFERRALS --><th class="posts"><a href="{U_SORT_REFERRALS}">{L_DISPLAY_REFERRALS}</a></th><!-- ENDIF -->]]></action>
 			</edit>
 			<edit>
-				<find><![CDATA[	<!-- ELSEIF S_SHOW_GROUP -->
-		<th class="name">{L_GROUP_MEMBERS}</th>]]></find>
+				<find><![CDATA[		<!-- IF U_SORT_INVITER --><th class="<!-- IF not U_SORT_INVITE and not U_SORT_REGISTER -->joined<!-- ELSE -->posts<!-- ENDIF -->"><a href="{U_SORT_INVITER}#memberlist">{L_DISPLAY_INVITER}</a></th><!-- ENDIF -->
+		<!-- IF U_SORT_INVITE --><th class="posts"><a href="{U_SORT_INVITE}#memberlist">{L_DISPLAY_INVITE}</a></th><!-- ENDIF -->
+		<!-- IF U_SORT_REGISTER --><th class="posts"><a href="{U_SORT_REGISTER}">{L_DISPLAY_REGISTER}</a><!-- ENDIF -->]]></find>
 				<action type="replace-with"><![CDATA[		<!-- IF U_SORT_INVITER --><th class="<!-- IF not U_SORT_INVITE and not U_SORT_REGISTER -->joined<!-- ELSE -->posts<!-- ENDIF -->"><a href="{U_SORT_INVITER}#memberlist">{L_DISPLAY_INVITER}</a></th><!-- ENDIF -->
-		<!-- IF U_SORT_INVITE --><th class="posts" width="50"><a href="{U_SORT_INVITE}#memberlist">{L_DISPLAY_INVITE}</a></th><!-- ENDIF -->
-		<!-- IF U_SORT_REGISTER --><th class="posts"><a href="{U_SORT_REGISTER}">{L_DISPLAY_REGISTER}</a><!-- ENDIF -->]]></action>
+		<!-- IF U_SORT_REFERRER --><th class="<!-- IF not U_SORT_REFERRALS -->joined<!-- ELSE -->posts<!-- ENDIF -->"><a href="{U_SORT_REFERRER}#memberlist">{L_DISPLAY_REFERRER}</a></th><!-- ENDIF -->
+		<!-- IF U_SORT_INVITE --><th class="posts"><a href="{U_SORT_INVITE}#memberlist">{L_DISPLAY_INVITE}</a></th><!-- ENDIF -->
+		<!-- IF U_SORT_REGISTER --><th class="posts"><a href="{U_SORT_REGISTER}">{L_DISPLAY_REGISTER}</a><!-- ENDIF -->
+		<!-- IF U_SORT_REFERRALS --><th class="posts"><a href="{U_SORT_REFERRALS}">{L_DISPLAY_REFERRALS}</a></th><!-- ENDIF -->]]></action>
 			</edit>
 			<edit>
 				<find><![CDATA[		<!-- IF U_SORT_INVITER --><td class="<!-- IF not U_SORT_INVITE and not U_SORT_REGISTER -->joined<!-- ELSE -->posts<!-- ENDIF -->"><!-- IF memberrow.POSTER_INVITE_INVITER -->{memberrow.POSTER_INVITE_INVITER}<!-- ENDIF --></td><!-- ENDIF -->
