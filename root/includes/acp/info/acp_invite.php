@@ -3,8 +3,8 @@
 *
 * @author Bycoja bycoja@web.de
 * @package acp
-* @version $Id acp_invite.php 0.6.2 2010-06-22 17:28:02GMT Bycoja $
-* @copyright (c) 2010 Bycoja
+* @version $Id acp_invite.php 0.7.0 2012-06-22 17:28:02GMT Bycoja $
+* @copyright (c) 2008-2012 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
@@ -19,7 +19,7 @@ class acp_invite_info
 		return array(
 			'filename'	=> 'acp_invite',
 			'title'		=> 'ACP_INVITE',
-			'version'	=> '0.6.2',
+			'version'	=> '0.7.0',
 			'modes'		=> array(
 				'overview'			=> array('title' => 'ACP_INVITE_OVERVIEW', 'auth' => 'acl_a_invite_settings', 'cat' => array('ACP_BOARD_CONFIGURATION')),
 				'settings'			=> array('title' => 'ACP_INVITE_SETTINGS', 'auth' => 'acl_a_invite_settings', 'cat' => array('ACP_BOARD_CONFIGURATION')),

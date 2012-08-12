@@ -3,8 +3,8 @@
 *
 * @author Bycoja bycoja@web.de
 * @package phpBB3
-* @version $Id functions_invite.php 0.6.2 2010-06-22 17:28:02GMT Bycoja $
-* @copyright (c) 2010 Bycoja
+* @version $Id functions_invite.php 0.7.0 2012-06-22 17:28:02GMT Bycoja $
+* @copyright (c) 2008-2012 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */

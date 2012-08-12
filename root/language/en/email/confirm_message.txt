@@ -1,0 +1,5 @@
+Hello {INVITER_USERNAME},
+this message has been sent in order to confirm the registration of your friend {INVITED_USERNAME} on
+{BOARD_URL}
+
+Follow this link to view his profile: {INVITED_USER_PROFILE_URL}

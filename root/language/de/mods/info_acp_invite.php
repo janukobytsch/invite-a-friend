@@ -5,8 +5,8 @@
 *
 * @author Bycoja bycoja@web.de
 * @package language
-* @version $Id info_acp_invite.php 0.6.2 2010-06-22 17:28:02GMT Bycoja $
-* @copyright (c) 2010 Bycoja
+* @version $Id info_acp_invite.php 0.7.0 2012-06-22 17:28:02GMT Bycoja $
+* @copyright (c) 2008-2012 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 * German tranlation by:
@@ -270,12 +270,6 @@ $lang = array_merge($lang, array(
 	'SETTINGS_REFERRAL_CONFIRMATION_EXPLAIN'	=> 'Falls aktiviert, erhalten Benutzer eine Nachricht, wenn sie als Anwerber angegeben werden oder sich ein neuer Benutzer über ihren Rekrutierungslink registriert.',
 	'SETTINGS_REFERRAL_CONFIRMATION_DUPLICATE'	=> 'Bestätigung für erfolgreiche Einladungen senden',
 	'SETTINGS_REFERRAL_CONFIRMATION_DUPLICATE_EXPLAIN'	=> 'Falls aktiviert, erhalten Benutzer eine Bestätigung, auch wenn die erfolgreiche Anwerbung das Resultat einer Einladung ist.<br/><em>Dies führt zu doppelten Bestätigung, falls die erfolgreiche Einladung ebenfalls bestätigt wird.</em>',
-
-	// Version check
-	'ACP_INVITE_VERSION_CHECK'			=> 'Invite A Friend Versionsprüfung',
-	'ACP_INVITE_VERSION_CHECK_EXPLAIN'	=> 'Prüft, ob deine Installation von Invite A Friend auf dem neuesten Stand ist.',
-	'ACP_INVITE_VERSION_UP_TO_DATE'		=> 'Deine Installation von Invite A Friend auf dem neuesten Stand ist. Es stehen derzeit keine Updates zur Verfügung.',
-	'ACP_INVITE_UPDATE_INSTRUCTIONS'	=> '',
 
 	// UMIL
 	'ACP_INVITE_DONATE_BUTTON'			=> 'Invite A Friend <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4SA7YVJADG5S8"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" title="Spenden" /></a>',

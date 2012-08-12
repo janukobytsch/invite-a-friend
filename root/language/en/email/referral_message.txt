@@ -1,0 +1,5 @@
+Hello {INVITER_USERNAME},
+this message has been sent because {INVITED_USERNAME} has specified you as his referrer.
+Thank you for helping our board to grow!
+
+Follow this link to view his profile: {INVITED_USER_PROFILE_URL}

@@ -3,8 +3,8 @@
 *
 * @author Bycoja bycoja@web.de
 * @package umil
-* @version $Id invitation.php 0.6.1 2010-04-16 01:37:02GMT Bycoja $
-* @copyright (c) 2010 Bycoja
+* @version $Id invitation.php 0.7.0 2012-04-16 01:37:02GMT Bycoja $
+* @copyright (c) 2008-2012 Bycoja
 * @license http://opensource.org/licenses/gpl-license.php GNU Public License
 *
 */
