@@ -33,7 +33,7 @@ $INVITE_MESSAGE_TYPE = array(
 */      
 class invite
 {
-	var $version = '0.6.2';
+	var $version = '0.7.0';
 	var $INVITE_MESSAGE_TYPE = array('invite' => 0, 'confirm' => 1, 'referral' => 2,);
 
 	var $config;
