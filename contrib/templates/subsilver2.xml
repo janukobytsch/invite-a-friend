@@ -433,10 +433,8 @@
 
 		<open src="styles/subsilver2/template/viewtopic_body.html">
 			<edit>
-				<find><![CDATA[					<!-- IF postrow.POSTER_INVITE_INVITER and S_T_DISPLAY_INVITER --><br /><b>{L_DISPLAY_INVITER}:</b> {postrow.POSTER_INVITE_INVITER}<!-- ENDIF -->
-					<!-- IF S_T_DISPLAY_INVITE --><br /><b>{L_DISPLAY_INVITE}:</b> {postrow.POSTER_INVITE_INVITE}<!-- ENDIF -->
-					<!-- IF S_T_DISPLAY_REGISTER --><br /><b>{L_DISPLAY_REGISTER}:</b> {postrow.POSTER_INVITE_REGISTER}<!-- ENDIF -->]]></find>
-				<action type="replace-with"><![CDATA[					<!-- IF postrow.POSTER_INVITE_INVITER and S_T_DISPLAY_INVITER --><br /><b>{L_DISPLAY_INVITER}:</b> {postrow.POSTER_INVITE_INVITER}<!-- ENDIF -->
+				<find><![CDATA[<!-- IF postrow.POSTER_FROM --><br /><b>{L_LOCATION}:</b> {postrow.POSTER_FROM}<!-- ENDIF -->]]></find>
+				<action type="after-add"><![CDATA[					<!-- IF postrow.POSTER_INVITE_INVITER and S_T_DISPLAY_INVITER --><br /><b>{L_DISPLAY_INVITER}:</b> {postrow.POSTER_INVITE_INVITER}<!-- ENDIF -->
 					<!-- IF postrow.POSTER_REFERRER and S_T_DISPLAY_REFERRER --><br /><b>{L_DISPLAY_REFERRER}:</b> {postrow.POSTER_REFERRER}<!-- ENDIF -->
 					<!-- IF S_T_DISPLAY_INVITE --><br /><b>{L_DISPLAY_INVITE}:</b> {postrow.POSTER_INVITE_INVITE}<!-- ENDIF -->
 					<!-- IF S_T_DISPLAY_REGISTER --><br /><b>{L_DISPLAY_REGISTER}:</b> {postrow.POSTER_INVITE_REGISTER}<!-- ENDIF -->
