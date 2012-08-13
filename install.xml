@@ -7,7 +7,7 @@
 		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
 
 		<title lang="en">Invite A Friend</title>
-		<description lang="en">Invite A Friend is a phpBB3 Modification, which adds referral and invitation features to the phpBB board in order to have more control over the user registration process and increase the number of users.
+		<description lang="en">Invite A Friend is a phpBB3 Modification, which adds referral and invitation features to your phpBB board in order to have more control over the user registration process and help the growth of your community.
 			This can either be accomplished by specifying a referral user or sending out invitations with an invitation code attached. The invitation code cannot only be required to make your board private but also helps to associate new users with their referrer adding a more social component to the phpBB board. Supporting Ultimate Points and Cash Mod.</description>
 		<author-notes lang="en">Update instructions from previous releases can be found within the contrib/updates folder.
 			For further information and bug reports please visit <![CDATA[http://www.phpbb.com/community/viewtopic.php?f=70&t=1224005]]>
