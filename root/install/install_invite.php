@@ -807,7 +807,7 @@ function insert_data_070($action, $version)
 					array('config_name'=>'display_p_referrals','config_value'=>'1'),
 					array('config_name'=>'display_p_referrer','config_value'=>'1'),
 					array('config_name'=>'display_p_register','config_value'=>'0'),
-					array('config_name'=>'display_registration','config_value'=>'1'),
+					array('config_name'=>'display_registration','config_value'=>'0'),
 					array('config_name'=>'display_t_invite','config_value'=>'1'),
 					array('config_name'=>'display_t_inviter','config_value'=>'0'),
 					array('config_name'=>'display_t_referrals','config_value'=>'1'),
@@ -882,10 +882,10 @@ function insert_data_070($action, $version)
 					array('config_name'=>'set_cookie','config_value'=>'1'),
 					array('config_name'=>'subject_max_chars','config_value'=>'50'),
 					array('config_name'=>'subject_min_chars','config_value'=>'1'),
-					array('config_name'=>'tracking_time','config_value'=>'1344131366'),
+					array('config_name'=>'tracking_time','config_value'=>time()),
 					array('config_name'=>'ultimate_points_invite','config_value'=>'5'),
 					array('config_name'=>'ultimate_points_register','config_value'=>'20'),
-					array('config_name'=>'version','config_value'=>'0.6.1'),
+					array('config_name'=>'version','config_value'=>'0.7.0'),
 					array('config_name'=>'zebra','config_value'=>'2')
 				);
 
