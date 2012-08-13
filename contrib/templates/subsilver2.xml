@@ -15,21 +15,45 @@
 				<realname>J. Jacoby</realname>
 				<email>bycoja@web.de</email>
 				<username>Bycoja</username>
+				<homepage><![CDATA[http://www.jjacoby.de]]></homepage>
 				<contributions-group>
 					<contributions status="current" position="Developer" />
 				</contributions-group>		
 			</author>
 		</author-group>
 
-		<mod-version>0.6.2</mod-version>
+		<mod-version>0.7.0</mod-version>
 
 		<installation>
 			<level>intermediate</level>
-			<time>1500</time>
-			<target-version>3.0.7-PL1</target-version>
+			<time>900</time>
+			<target-version>3.0.10</target-version>
 		</installation>
 
 		<history>
+			<entry>
+				<date>2012-08-11</date>
+				<rev-version>0.7.0 [Beta]</rev-version>
+				<changelog lang="en">
+					<change>[Added] Referral features </change>
+					<change>[Added] Referral template</change>
+					<change>[Added] Multiple recipients</change>
+					<change>[Added] Statistics</change>
+					<change>[Added] Invitation icon</change>
+					<change>[Added] More settings (expiration time, post requirement, etc.)</change>
+					<change>[Added] ACP Module: Referral settings</change>
+					<change>[Added] ACP Module: Overview</change>
+					<change>[Changed] Moved the invitation link</change>
+					<change>[Changed] Disabled the 'prevent abuse' setting by default</change>
+					<change>[Changed] Disabled the options when composing invitations by default</change>
+					<change>[Changed] Key generation</change>
+					<change>[Fixed] UMIL installation</change>
+					<change>[Fixed] Errors when installing with AutoMOD 1.0</change>
+					<change>[Fixed] Apply template changes made in the ACP correctly</change>
+					<change>[Fixed] Special characters in templates</change>
+					<change>[Fixed] Confirmation code display</change>
+				</changelog>
+			</entry>
 			<entry>
 				<date>2010-06-27</date>
 				<rev-version>0.6.2 [Beta]</rev-version>

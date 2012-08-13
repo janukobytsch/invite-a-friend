@@ -15,12 +15,12 @@
 				<realname>J. Jacoby</realname>
 				<email>bycoja@web.de</email>
 				<username>Bycoja</username>
+				<homepage><![CDATA[http://www.jjacoby.de]]></homepage>
 				<contributions-group>
 					<contributions status="current" position="Developer" />
 				</contributions-group>		
 			</author>
 		</author-group>
-
 		<mod-version>0.7.0</mod-version>
 
 		<installation>
@@ -46,43 +46,6 @@
 					<change>[Changed] Disabled the 'prevent abuse' setting by default</change>
 					<change>[Changed] Disabled the options when composing invitations by default</change>
 					<change>[Changed] Key generation</change>
-					<change>[Fixed] UMIL installation</change>
-					<change>[Fixed] Errors when installing with AutoMOD 1.0</change>
-					<change>[Fixed] Apply template changes made in the ACP correctly</change>
-					<change>[Fixed] Special characters in templates</change>
-					<change>[Fixed] Confirmation code display</change>
-				</changelog>
-			</entry>
-			<entry>
-				<date>2010-06-27</date>
-				<rev-version>0.7.0 [Beta]</rev-version>
-				<changelog lang="en">
-					<change>[Added] Referral features </change>
-					<change>[Added] More templates (including referral ones)</change>
-					<change>[Added] Templates can be sent to both the referring and the referred user</change>
-					<change>[Added] Multiple recipients</change>
-					<change>[Added] New permissions</change>
-					<change>[Added] Board statistics</change>
-					<change>[Added] Invitation icon</change>
-					<change>[Added] UCP Module: Invitation log (user-specific)</change>
-					<change>[Added] UCP Module: Pending registrations (user-specific)</change>
-					<change>[Added] ACP Module: Referral settings</change>
-					<change>[Added] ACP Module: Pending registrations</change>
-					<change>[Added] Possibility to disable keys which haven't been used yet</change>
-					<change>[Added] Possibility to make keys expire after a specific period</change>
-					<change>[Added] More settings for providing advantage to invited users</change>
-					<change>[Added] More settings for customizing the invitation form</change>
-					<change>[Added] More settings for Ultimate Points System/Cash MOD</change>
-					<change>[Changed] Moved the invitation link to the top right navigation</change>
-					<change>[Changed] Separated the registration key from the registration link in the invitation e-mail</change>
-					<change>[Changed] Disabled the 'prevent abuse' setting by default</change>
-					<change>[Changed] Disabled the options when composing invitations by default</change>
-					<change>[Changed] Invitation form</change>
-					<change>[Changed] Key generation</change>
-					<change>[Changed] Improved handling of suppored modifications</change>
-					<change>[Changed] Language vars (e.g. 'Registration keys' renamed to 'Referral keys')</change>
-					<change>[Changed] Moved all config data from phpbb_invite_config to phpbb_config</change>
-					<change>[Changed] Prefixed modification related vars with 'iaf_'</change>
 					<change>[Fixed] UMIL installation</change>
 					<change>[Fixed] Errors when installing with AutoMOD 1.0</change>
 					<change>[Fixed] Apply template changes made in the ACP correctly</change>
