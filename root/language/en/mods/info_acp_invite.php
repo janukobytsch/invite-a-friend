@@ -272,7 +272,7 @@ $lang = array_merge($lang, array(
 	'SETTINGS_REFERRAL_CONFIRMATION_DUPLICATE_EXPLAIN'	=> 'If enabled, users will receive a confirmation even though the referral is due to a successful invitation.<br/><em>Note: This will result in duplicate confirmations, if successful invitations are confirmed too.</em>',
 
 	// UMIL
-	'ACP_INVITE_DONATE_BUTTON'			=> 'Invite A Friend <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4SA7YVJADG5S8"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" title="Donate" /></a>',
+	'ACP_INVITE_DONATE_BUTTON'			=> 'Invite A Friend <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4SA7YVJADG5S8"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" target="_blank" title="Donate" /></a>',
 	'TRANSFER_INVITATION_DATA'			=> 'Transfer old data',
 	'TRANSFER_INVITATION_DATA_EXPLAIN'	=> 'Select yes to transfer statistics like the amount of invitations sent from version 0.5.4 and previous ones. The database table must not have been edited manually since that time.',
 ));

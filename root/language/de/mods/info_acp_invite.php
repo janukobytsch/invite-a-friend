@@ -272,7 +272,7 @@ $lang = array_merge($lang, array(
 	'SETTINGS_REFERRAL_CONFIRMATION_DUPLICATE_EXPLAIN'	=> 'Falls aktiviert, erhalten Benutzer eine Bestätigung, auch wenn die erfolgreiche Anwerbung das Resultat einer Einladung ist.<br/><em>Dies führt zu doppelten Bestätigung, falls die erfolgreiche Einladung ebenfalls bestätigt wird.</em>',
 
 	// UMIL
-	'ACP_INVITE_DONATE_BUTTON'			=> 'Invite A Friend <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4SA7YVJADG5S8"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" title="Spenden" /></a>',
+	'ACP_INVITE_DONATE_BUTTON'			=> 'Invite A Friend <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=4SA7YVJADG5S8"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" target="_blank" title="Spenden" /></a>',
 	'TRANSFER_INVITATION_DATA'			=> 'Alte Daten übertragen',
 	'TRANSFER_INVITATION_DATA_EXPLAIN'	=> 'Überträgt alte Statistiken wie die Anzahl der versendeten Einladungen von Version 0.5.4 und früher. Es dürfen keine manuellen Eingriffe in die Datenbank stattgefunden haben.',
 ));
